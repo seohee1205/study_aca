@@ -94,5 +94,6 @@ y_pred = model.predict(x_test)
 print('acc : ', accuracy_score(np.argmax(y_test, axis=1), np.argmax(y_pred, axis=1)))
 
 
-
+# loss : [1.5436173677444458, 0.3106796145439148]
+# acc :  0.3106796116504854
 
