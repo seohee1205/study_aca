@@ -68,20 +68,27 @@ model.fit(x_train, y_train, epochs = 50, batch_size = 10,
 
 
 #4. 평가, 예측
+
 results = model.evaluate(x_test, y_test)
 print(results)
 print('loss : ', results[0])
 print('acc : ', results[1])
 
 y_pred = model.predict(x_test)
+      
+# print(y_test.shape)         # (30, 3)
+# print(y_pred.shape)         # (30, 3)
+# print(y_test[:5])       
+# print(y_pred[:5])
 
-print(y_test.shape)     # (36, 3)
-print(y_pred.shape)     # (36, 3)
-print(y_test[:5])
-print(y_pred[:5])
-
-y_test_acc = np.argmax(x_test, axis = 1)
+y_test_acc = np.argmax(y_test, axis = 1)    # 각 행에 있는 열끼리 비교
 y_pred = np.argmax(y_pred, axis = 1)
 
+print(y_test_acc)
+print(y_pred)
+
+acc = accuracy_score(y_test_acc, y_pred)
+print('accuracy_score : ', acc)
+
 # accuracy_score를 사용해서 스코어를 빼세요.
-# accuracy : 0.9166666666666666
+# accuracy_score :  0.8055555555555556

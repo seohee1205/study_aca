@@ -43,7 +43,7 @@ print(y)
 
 ############################### train_csv 데이터에서 x와 y 분리
 x_train, x_test, y_train, y_test = train_test_split(
-    x, y, shuffle = True, train_size = 0.7, random_state= 300
+    x, y, shuffle = True, train_size = 0.8, random_state= 8377751
 )
 
 print(x_train.shape, x_test.shape)  # (7620, 8) (3266, 8)
@@ -61,7 +61,7 @@ model.add(Dense(1))
 
 
 #3. 컴파일, 훈련
-model.compile(loss = 'mae', optimizer = 'adam')
+model.compile(loss = 'mse', optimizer = 'adam')
 
 # 정의하기
 
@@ -70,8 +70,8 @@ es = EarlyStopping(monitor= 'val_loss', patience = 25, mode= 'min',     # if mod
               restore_best_weights= True)  
 
 
-hist = model.fit(x_train, y_train, epochs = 500, batch_size = 70,
-                 validation_split = 0.2,
+hist = model.fit(x_train, y_train, epochs = 5000, batch_size = 30,
+                 validation_split = 0.3,
                  verbose = 1,
                  callbacks = [es])
 
@@ -121,15 +121,15 @@ print("RMSE : ", rmse)
 
 # 파일 생성
 y_submit = model.predict(test_csv)
-print(y_submit)
+# print(y_submit)
 
 submission = pd.read_csv(path + 'samplesubmission.csv', index_col = 0)
-print(submission)
+# print(submission)
 submission['count'] = y_submit
-print(submission)
+# print(submission)
 
 path_save = './_save/kaggle_bike/'
-submission.to_csv(path_save + 'submit_0308_0735.csv')
+submission.to_csv(path_save + 'submit_0310_0411.csv')
 
 
 # loss :  110.45850372314453

@@ -114,3 +114,4 @@ print(y_pred)
 acc = accuracy_score(y_test_acc, y_pred)
 print('accuracy_score : ', acc)
 
+# accuracy_score :  0.9666666666666667

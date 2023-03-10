@@ -43,7 +43,7 @@ print(y)
 
 ############# x와 y 분리
 x_train, x_test, y_train, y_test = train_test_split(
-    x, y, shuffle= True, train_size= 0.9, random_state= 3040447, stratify = y
+    x, y, shuffle= True, train_size= 0.80, random_state= 8377751, stratify = y
 )
 
 print(x_train.shape, x_test.shape)  # (521, 8) (131, 8)
@@ -51,24 +51,24 @@ print(y_train.shape, y_test.shape)  # (521,) (131,)
 
 #2. 모델 구성
 model = Sequential()
-model.add(Dense(10, activation = 'relu', input_dim = 8))
-model.add(Dense(9, activation = 'linear'))
-model.add(Dense(9, activation = 'linear'))
+model.add(Dense(6, activation = 'relu', input_dim = 8))
+model.add(Dense(8, activation = 'linear'))
+model.add(Dense(8, activation = 'linear'))
 model.add(Dense(7, activation = 'linear'))
 model.add(Dense(1, activation = 'sigmoid'))
 
 
 #3. 컴파일, 훈련
 model.compile(loss = 'binary_crossentropy', optimizer = 'adam',
-              metrics= ['accuracy', 'mse'])
+              metrics= ['accuracy'])
 
 # 정의하기
-es = EarlyStopping(monitor = 'val_loss', patience = 55, mode = 'min',
+es = EarlyStopping(monitor = 'val_accuracy', patience = 152, mode = 'max',
                    verbose = 1,
                     restore_best_weights = True)
 
-hist = model.fit(x_train, y_train, epochs = 1000, batch_size = 10,
-          validation_split = 0.07,
+hist = model.fit(x_train, y_train, epochs = 5000, batch_size = 15,
+          validation_split = 0.3,
           verbose = 1,
           callbacks = [es])
 
@@ -105,7 +105,17 @@ submission['Outcome'] = y_submit
 # print(submission)
 
 path_save = './_save/dacon_diabetes/'
-submission.to_csv(path_save + 'submit_0309_0445.csv')
+submission.to_csv(path_save + 'submit_0310_0408.csv')
 
 
-# acc :  0.7727272727272727
+
+# acc :  0.7175572519083969
+# acc :  0.7755102040816326
+
+# acc :  0.816793893129771
+# acc :  0.7709923664122137
+
+# acc :  0.7878787878787878
+# acc :  0.7244897959183674
+
+# acc :  0.7862595419847328

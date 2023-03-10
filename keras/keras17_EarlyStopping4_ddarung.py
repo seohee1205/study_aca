@@ -5,6 +5,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error
 from tensorflow.python.keras.callbacks import EarlyStopping
 import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib
 
 #1. 데이터
 path = './_data/ddarung/'
@@ -49,7 +51,7 @@ print(y)
 ############################### train_csv 데이터에서 x와 y를 분리 #########################################
 
 x_train, x_test, y_train, y_test = train_test_split(
-    x, y, shuffle = True, train_size = 0.8, random_state = 650
+    x, y, shuffle = True, train_size = 0.95, random_state = 3748
 )
                                                                 # 결측치 제거 후
 print(x_train.shape, x_test.shape)   # (1021, 9) (438, 9)   ->  (929, 9) (399, 9)
@@ -58,11 +60,11 @@ print(y_train.shape, y_test.shape)  # (1021,) (438,)        ->  (929,) (399,)
 
 #2. 모델 구성
 model = Sequential()
-model.add(Dense(10, input_dim = 9))
-model.add(Dense(5, activation = 'relu'))
-model.add(Dense(7, activation = 'relu'))
-model.add(Dense(2, activation = 'relu'))
-model.add(Dense(3, activation = 'relu'))
+model.add(Dense(50, input_dim = 9))
+model.add(Dense(30, activation = 'relu'))
+model.add(Dense(38, activation = 'relu'))
+model.add(Dense(20, activation = 'relu'))
+model.add(Dense(13, activation = 'relu'))
 model.add(Dense(1))
 
 
@@ -71,13 +73,13 @@ model.compile(loss = 'mse', optimizer = 'adam')
 
 # 정의하기
 
-es = EarlyStopping(monitor= 'val_loss', patience = 20, mode= 'min',     # if mode = auto: 자동으로 min 또는 max로 맞춰줌 
+es = EarlyStopping(monitor= 'val_loss', patience = 34, mode= 'min',     # if mode = auto: 자동으로 min 또는 max로 맞춰줌 
               verbose= 1,    
               restore_best_weights= True)  
 
 
-hist = model.fit(x_train, y_train, epochs = 1000, batch_size = 24,
-                 validation_split = 0.2, 
+hist = model.fit(x_train, y_train, epochs = 1200, batch_size = 17,
+                 validation_split = 0.1, 
                  verbose = 1,
                  callbacks= [es]    # es 호출
                  )
@@ -95,8 +97,7 @@ hist = model.fit(x_train, y_train, epochs = 1000, batch_size = 24,
 # print("======================발로스=======================")
 
 
-import matplotlib.pyplot as plt
-import matplotlib
+
 matplotlib.rcParams['font.family'] = 'Malgun Gothic'    # 한글 깨짐 방지 / 앞으로 나눔체로 쓰기 
 
 plt.figure(figsize=(9, 6)) 
@@ -128,15 +129,15 @@ print("RMSE : ", rmse)
 
 # 파일 생성
 y_submit = model.predict(test_csv)
-print(y_submit)
+# print(y_submit)
 
 submission = pd.read_csv(path + 'submission.csv', index_col = 0)
-print(submission)
+# print(submission)
 submission['count'] = y_submit
-print(submission)
+# print(submission)
 
 path_save = './_save/ddarung/'
-submission.to_csv(path_save + 'submit_0308_0735.csv')
+submission.to_csv(path_save + 'submit_0310_0725.csv')
 
 
 
@@ -144,3 +145,26 @@ submission.to_csv(path_save + 'submit_0308_0735.csv')
 # r2 스코어 :  0.28345819422862617
 # RMSE :  55.78924758144579
 
+# loss :  2478.425048828125
+# r2 스코어 :  0.38003674904894336
+# RMSE :  49.78378529019188
+
+# loss :  2822.980224609375
+# r2 스코어 :  0.3657213874632297
+# RMSE :  53.13172491713578
+
+# loss :  2124.457763671875
+# r2 스코어 :  0.4725340134574372
+# RMSE :  46.09183933099399
+
+# loss :  2968.57080078125
+# r2 스코어 :  0.2994585312635253
+# RMSE :  54.48459031816007
+
+# loss :  2378.901123046875
+# r2 스코어 :  0.3605940721523315
+# RMSE :  48.773977720609345
+
+# loss :  2509.903564453125
+# r2 스코어 :  0.03678900927228934
+# RMSE :  50.098940600870165
