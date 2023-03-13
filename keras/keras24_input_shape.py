@@ -1,3 +1,4 @@
+# 이미지 
 #  전처리 (정규화)
 from sklearn.datasets import load_boston
 from sklearn.model_selection import train_test_split
@@ -35,10 +36,10 @@ x_train, x_test, y_train, y_test = train_test_split(
 )
 
 # 전처리 (정규화)는 데이터를 나눈 후 한다
-# scaler = MinMaxScaler()   # 하나로 모아줄 때  
+scaler = MinMaxScaler()   # 하나로 모아줄 때  
 # scaler = StandardScaler()   # 표준 정규표를 만들 때
 # scaler = MaxAbsScaler()
-scaler = RobustScaler()
+# scaler = RobustScaler()
 scaler.fit(x_train)     # fit의 범위: x_train
 x_train = scaler.transform(x_train)
 x_test = scaler.transform(x_test) # x_train의 변화 비율에 맞춰하기 때문에 scaler에 fit을 할 필요가 없음(변환만 해줌)
@@ -54,12 +55,15 @@ print(np.min(x_test), np.max(x_test)) # 0.0 1.0
 
 #2. 모델 구성
 model = Sequential()
-model.add(Dense(10, input_dim = 13))
-model.add(Dense(5, activation = 'relu'))
-model.add(Dense(7, activation = 'relu'))
-model.add(Dense(2, activation = 'relu'))
-model.add(Dense(4, activation = 'relu'))
-model.add(Dense(1))
+# model.add(Dense(1, input_dim = 13))
+model.add(Dense(1, input_shape = (13,)))    # 열의 개수를 벡터 형식을 명시해줌 => (열, )
+
+# if 데이터가 3차원이면(시계열 데이터)
+# (1000, 100, 1) ---> input_shape=(100, 1)
+# if 데이터가 4차원이면(이미지 데이터)
+# (60000, 32, 32, 3) ---> input_shape=(32, 32, 3)   # 행무시
+
+
 
 #3. 컴파일, 훈련
 model.compile(loss = 'mse', optimizer = 'adam')
@@ -96,36 +100,5 @@ plt.show()
 loss = model.evaluate(x_test, y_test)
 print('loss : ', loss)
 
-y_predict = model.predict(x_test)
-r2 = r2_score(y_predict, y_test)
-print('r2 스코어 : ', r2)
-
-def RMSE(y_test, y_predict):
-    return np.sqrt(mean_squared_error(y_test, y_predict))
-
-rmse = RMSE(y_test, y_predict)              # RMSE 함수 사용
-print("RMSE : ", rmse)
-
-
-
-
-# scaler = MinMaxScaler()   
-# loss :  202.76222229003906
-# r2 스코어 :  0.0
-# RMSE :  14.239460037535109
-
-# scaler = StandardScaler()  
-# loss :  13.657934188842773
-# r2 스코어 :  0.7867631507179603
-# RMSE :  3.6956639469883763
-
-# scaler = MaxAbsScaler()
-# loss :  16.32269859313965
-# r2 스코어 :  0.7547217268313051
-# RMSE :  4.040135978642256
-
-# scaler = RobustScaler()
-# loss :  14.30684757232666
-# r2 스코어 :  0.7764227320897101
-# RMSE :  3.7824394687559457
+# loss :  20.41268539428711
 

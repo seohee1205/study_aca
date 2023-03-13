@@ -1,8 +1,9 @@
-#  전처리 (정규화)
+# 함수형 모델
+
 from sklearn.datasets import load_boston
 from sklearn.model_selection import train_test_split
-from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Dense
+from tensorflow.python.keras.models import Sequential,Model
+from tensorflow.python.keras.layers import Dense,Input
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler, StandardScaler  # preprocessing: 전처리 / MinMaxScaler: 정규화 / StandardScaler: 평균점을 중심으로 데이터를 가운데로 모은다
 from sklearn.preprocessing import MaxAbsScaler, RobustScaler 
@@ -20,16 +21,6 @@ print(type(x))      # <class 'numpy.ndarray'>
 print(x)
 
 
-# 보스턴 임포트 못 하는 사람 (1.2 부터 안 되니까 1.1 버전 설치)
-# pip uninstall scikit-learn     # 사이킷런 삭제
-# pip install scikit- learn==1.1.0      # 1.1 버전 설치
-
-# print(np.min(x), np.max(x)) # 0.0 711.0
-# scaler = MinMaxScaler()
-# scaler.fit(x)
-# x = scaler.transform(x)     # 변환
-# print(np.min(x), np.max(x)) # 0.0 1.0
-
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, train_size= 0.8, random_state= 650
 )
@@ -46,20 +37,30 @@ print(np.min(x_test), np.max(x_test)) # 0.0 1.0
 
 
 
-# 정규화: 0 ~ 1 사이로 만들어주는 것,  y 제외 x의 훈련 데이터만
-# => 정규화 했을 때 무조건 성능 좋아지는 거 X, 좋아질 수도 있고 안 좋아질 수 있음
-# 정규화 비율 구하는 공식
-# X / Max	->	X - min / max - min
-# ex)	10~100 일 때, X - 10 / 100 - 10
 
-#2. 모델 구성
-model = Sequential()
-model.add(Dense(10, input_dim = 13))
-model.add(Dense(5, activation = 'relu'))
-model.add(Dense(7, activation = 'relu'))
-model.add(Dense(2, activation = 'relu'))
-model.add(Dense(4, activation = 'relu'))
-model.add(Dense(1))
+# 모델
+# model = Sequential()
+# model.add(Dense(10, input_dim = 13, name= 'S1' ))
+# model.add(Dense(5, name= 'S2'))
+# model.add(Dense(7, name= 'S3' ))
+# model.add(Dense(2, name= 'S4'))
+# model.add(Dense(4, name= 'S5' ))
+# model.add(Dense(1))
+# model.summary()
+
+#2. 함수형 모델 구성
+input1 = Input(shape=(13,), name = 'h1') # 인풋명시, 
+dense1 = Dense(10, name = 'h2', activation = 'relu')(input1)  # Dense 모델 구성 후, 이 모델은 어디에서 시작해서 어디에서 끝나는지 연결
+dense2 = Dense(5, name = 'h3', activation = 'relu')(dense1)
+dense3 = Dense(7, name = 'h4', activation = 'relu')(dense2)
+dense4 = Dense(2, name = 'h5', activation = 'relu')(dense3)
+dense5 = Dense(4, name = 'h6', activation = 'relu')(dense4)
+output1 = Dense(1)(dense5)
+model = Model(inputs = input1, outputs = output1)
+
+
+
+
 
 #3. 컴파일, 훈련
 model.compile(loss = 'mse', optimizer = 'adam')
@@ -78,17 +79,6 @@ hist = model.fit(x_train, y_train, epochs = 1000, batch_size = 30,
                  )
 
 
-matplotlib.rcParams['font.family'] = 'Malgun Gothic'    # 한글 깨짐 방지 / 앞으로 나눔체로 쓰기 
-
-plt.figure(figsize=(9, 6)) 
-plt.plot(hist.history['loss'], marker = '.', c = 'red', label = 'loss')      # 선 긋기 / 순서대로 할 때는 x를 명시하지 않아도 됨.
-plt.plot(hist.history['val_loss'], marker = '.', c= 'blue', label = 'val_loss')
-plt.title('보스턴')
-plt.xlabel('epochs')
-plt.ylabel('loss, val_loss')
-plt.legend()    # 선에 이름 표시
-plt.grid()      # 격자
-plt.show()
 
 
 
@@ -107,25 +97,28 @@ rmse = RMSE(y_test, y_predict)              # RMSE 함수 사용
 print("RMSE : ", rmse)
 
 
-
-
-# scaler = MinMaxScaler()   
-# loss :  202.76222229003906
-# r2 스코어 :  0.0
-# RMSE :  14.239460037535109
-
-# scaler = StandardScaler()  
-# loss :  13.657934188842773
-# r2 스코어 :  0.7867631507179603
-# RMSE :  3.6956639469883763
+'''
+# scaler = MinMaxScaler() 
+loss :  202.77447509765625
+r2 스코어 :  -17610223.053002313
+RMSE :  14.239890052307342
+ 
+# scaler = StandardScaler() 
+loss :  10.598248481750488
+r2 스코어 :  0.8342501706494181
+RMSE :  3.2554951577071503
 
 # scaler = MaxAbsScaler()
-# loss :  16.32269859313965
-# r2 스코어 :  0.7547217268313051
-# RMSE :  4.040135978642256
+loss :  12.886128425598145
+r2 스코어 :  0.7933013240365123
+RMSE :  3.5897253871998074
 
 # scaler = RobustScaler()
-# loss :  14.30684757232666
-# r2 스코어 :  0.7764227320897101
-# RMSE :  3.7824394687559457
+loss :  14.537967681884766
+r2 스코어 :  0.7840139166781994
+RMSE :  3.812868646025028
+
+'''
+
+
 

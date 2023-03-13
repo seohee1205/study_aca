@@ -3,8 +3,12 @@ from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Dense
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error
+from sklearn.preprocessing import MinMaxScaler, StandardScaler  # preprocessing: 전처리 / MinMaxScaler: 정규화 / StandardScaler: 평균점을 중심으로 데이터를 가운데로 모은다
+from sklearn.preprocessing import MaxAbsScaler, RobustScaler
 from tensorflow.python.keras.callbacks import EarlyStopping
 import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib
 
 #1. 데이터
 path = './_data/kaggle_bike/'
@@ -49,6 +53,17 @@ x_train, x_test, y_train, y_test = train_test_split(
 print(x_train.shape, x_test.shape)  # (7620, 8) (3266, 8)
 print(y_train.shape, y_test.shape)  # (7620,) (3266,)
 
+# 전처리 (정규화)는 데이터를 나눈 후 한다
+# scaler = MinMaxScaler()   # 하나로 모아줄 때  
+# scaler = StandardScaler()   # 표준 정규표를 만들 때
+# scaler = MaxAbsScaler()
+scaler = RobustScaler()
+scaler.fit(x_train)     # fit의 범위: x_train
+x_train = scaler.transform(x_train)
+x_test = scaler.transform(x_test) # x_train의 변화 비율에 맞춰하기 때문에 scaler에 fit을 할 필요가 없음(변환만 해줌)
+print(np.min(x_test), np.max(x_test)) # 0.0 1.0
+
+test_csv = scaler.transform(test_csv)   # test_csv에도 sclaer해줘야 함
 
 #2. 모델 구성
 model = Sequential()
@@ -76,33 +91,6 @@ hist = model.fit(x_train, y_train, epochs = 300, batch_size = 35,
                  callbacks = [es])
 
 
-# print("=============================================")
-# print(hist)
-# # <tensorflow.python.keras.callbacks.History object at 0x00000227C99A01F0>
-# print("=============================================")
-# print(hist.history)
-# print("=============================================")
-# print(hist.history['loss'])
-# print("======================발로스=======================")
-# print(hist.history['val_loss'])
-# print("======================발로스=======================")
-
-
-import matplotlib.pyplot as plt
-import matplotlib
-matplotlib.rcParams['font.family'] = 'Malgun Gothic'    # 한글 깨짐 방지 / 앞으로 나눔체로 쓰기 
-
-plt.figure(figsize=(9, 6)) 
-plt.plot(hist.history['loss'], marker = '.', c = 'red', label = 'loss')      # 선 긋기 / 순서대로 할 때는 x를 명시하지 않아도 됨.
-plt.plot(hist.history['val_loss'], marker = '.', c= 'blue', label = 'val_loss')
-plt.title('캐글_자전거')
-plt.xlabel('epochs')
-plt.ylabel('loss, val_loss')
-plt.legend()    # 선에 이름 표시
-plt.grid()      # 격자
-plt.show()
-
-# val_loss가 loss보다 높은 위치에 있음
 
 #4. 평가, 예측
 loss = model.evaluate(x_test, y_test)
@@ -133,16 +121,31 @@ path_save = './_save/kaggle_bike/'
 submission.to_csv(path_save + 'submit_0310_0752.csv')
 '''
 
-# loss :  110.45850372314453
-# r2 스코어 :  -1.3564627277954266
-# RMSE :  160.9768239258089
 
-# loss :  21350.001953125
-# r2 스코어 :  -0.8468715454004552
-# RMSE :  146.11641512177823
+'''
+# scaler = MinMaxScaler() 
+loss :  24479.375
+r2 스코어 :  -1.9464606339533783
+RMSE :  156.4588559988911
 
-# loss :  24315.267578125
-# r2 스코어 :  -1.6060172128378545
-# RMSE :  155.93352985155477
 
+# scaler = StandardScaler() 
+loss :  24165.287109375
+r2 스코어 :  -1.5670971607989488
+RMSE :  155.4518722416699
+
+
+# scaler = MaxAbsScaler()
+loss :  24867.8828125
+r2 스코어 :  -1.687211939484385
+RMSE :  157.69553617348853
+
+
+# scaler = RobustScaler()
+loss :  23392.2578125
+r2 스코어 :  -1.0825096521649828
+RMSE :  152.94527605972337
+
+
+'''
 

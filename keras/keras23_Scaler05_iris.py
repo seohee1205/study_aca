@@ -4,6 +4,8 @@ from sklearn.model_selection import train_test_split
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Dense
 from sklearn.metrics import accuracy_score
+from sklearn.preprocessing import MinMaxScaler, StandardScaler  # preprocessing: 전처리 / MinMaxScaler: 정규화 / StandardScaler: 평균점을 중심으로 데이터를 가운데로 모은다
+from sklearn.preprocessing import MaxAbsScaler, RobustScaler 
 from sklearn.metrics import r2_score, mean_squared_error
 from sklearn.metrics import r2_score, accuracy_score
 from tensorflow.python.keras.callbacks import EarlyStopping
@@ -49,6 +51,17 @@ x_train, x_test, y_train, y_test = train_test_split(
 print(y_train)
 print(np.unique(y_train, return_counts= True))
 
+# 전처리 (정규화)는 데이터를 나눈 후 한다
+# scaler = MinMaxScaler()   # 하나로 모아줄 때  
+# scaler = StandardScaler()   # 표준 정규표를 만들 때
+# scaler = MaxAbsScaler()
+scaler = RobustScaler()
+scaler.fit(x_train)     # fit의 범위: x_train
+x_train = scaler.transform(x_train)
+x_test = scaler.transform(x_test) # x_train의 변화 비율에 맞춰하기 때문에 scaler에 fit을 할 필요가 없음(변환만 해줌)
+print(np.min(x_test), np.max(x_test)) # 0.0 1.0
+
+
 #2. 모델 구성
 model = Sequential()
 model.add(Dense(50, activation = 'relu', input_dim = 4))
@@ -67,51 +80,47 @@ es = EarlyStopping(monitor = 'val_loss', patience = 55, mode = 'min',
                    verbose = 1,
                     restore_best_weights = True)
 
-model.fit(x_train, y_train, epochs = 1000, batch_size = 10,
+hist = model.fit(x_train, y_train, epochs = 1000, batch_size = 10,
           validation_split = 0.2,
           verbose = 1,
           callbacks = [es])
 
-'''
+
 #4. 평가, 예측
-y_predict=model.predict(x_test)
-y_predict=np.array(y_predict)
-print(y_predict)
-print("-----------")
-print(y_test)
+loss = model.evaluate(x_test, y_test)
+print('loss : ', loss)
 
-y_predict=np.argmax(y_predict,axis=1)
-y_test=np.argmax(y_test,axis=1)
+y_predict = model.predict(x_test)
+r2 = r2_score(y_predict, y_test)
+print('r2 스코어 : ', r2)
 
-acc = accuracy_score(y_test, y_predict)
-print('acc : ', acc)
+def RMSE(y_test, y_predict):
+    return np.sqrt(mean_squared_error(y_test, y_predict))
+
+rmse = RMSE(y_test, y_predict)              # RMSE 함수 사용
+print("RMSE : ", rmse)
+
+
+
 '''
+# scaler = MinMaxScaler() 
+loss :  [0.30106744170188904, 0.8999999761581421]
+r2 스코어 :  0.7030519726009721
+RMSE :  0.23915629
+ 
+# scaler = StandardScaler() 
+loss :  [0.2990906834602356, 0.8999999761581421]
+r2 스코어 :  0.6423876262792557
+RMSE :  0.24335258
 
+# scaler = MaxAbsScaler()
+loss :  [0.12192866206169128, 0.8999999761581421]
+r2 스코어 :  0.8394102886960373
+RMSE :  0.1710427
 
-# [실습] accuracy_score를 사용해서 스코어를 빼세요.
-# acc :  0.9666666666666667
-###############################################################################
-#4. 평가, 예측
+# scaler = RobustScaler()
+loss :  [0.23344926536083221, 0.8999999761581421]
+r2 스코어 :  0.7296007580095054
+RMSE :  0.21674226
 
-results = model.evaluate(x_test, y_test)
-print(results)
-print('loss : ', results[0])
-print('acc : ', results[1])
-
-y_pred = model.predict(x_test)
-      
-# print(y_test.shape)         # (30, 3)
-# print(y_pred.shape)         # (30, 3)
-# print(y_test[:5])       
-# print(y_pred[:5])
-
-y_test_acc = np.argmax(y_test, axis = 1)    # 각 행에 있는 열끼리 비교
-y_pred = np.argmax(y_pred, axis = 1)
-
-print(y_test_acc)
-print(y_pred)
-
-acc = accuracy_score(y_test_acc, y_pred)
-print('accuracy_score : ', acc)
-
-# accuracy_score :  0.9666666666666667
+'''

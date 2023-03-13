@@ -5,8 +5,9 @@ from sklearn.model_selection import train_test_split
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Dense
 from sklearn.metrics import accuracy_score
+from sklearn.preprocessing import MinMaxScaler, StandardScaler  # preprocessing: 전처리 / MinMaxScaler: 정규화 / StandardScaler: 평균점을 중심으로 데이터를 가운데로 모은다
+from sklearn.preprocessing import MaxAbsScaler, RobustScaler 
 from sklearn.metrics import r2_score, mean_squared_error
-from sklearn.metrics import r2_score, accuracy_score
 from tensorflow.python.keras.callbacks import EarlyStopping
 from tensorflow.keras.utils import to_categorical   # (케라스에 원핫)
 
@@ -37,6 +38,15 @@ x_train, x_test, y_train, y_test = train_test_split(
 print(y_train)
 print(np.unique(y_train, return_counts= True))
 
+# 전처리 (정규화)는 데이터를 나눈 후 한다
+# scaler = MinMaxScaler()   # 하나로 모아줄 때  
+# scaler = StandardScaler()   # 표준 정규표를 만들 때
+# scaler = MaxAbsScaler()
+scaler = RobustScaler()
+scaler.fit(x_train)     # fit의 범위: x_train
+x_train = scaler.transform(x_train)
+x_test = scaler.transform(x_test) # x_train의 변화 비율에 맞춰하기 때문에 scaler에 fit을 할 필요가 없음(변환만 해줌)
+print(np.min(x_test), np.max(x_test)) # 0.0 1.0
 
 #2. 모델 구성
 model = Sequential()
@@ -65,29 +75,41 @@ model.fit(x_train, y_train, epochs = 2000, batch_size = 5000,
 
 
 #4. 평가, 예측
+loss = model.evaluate(x_test, y_test)
+print('loss : ', loss)
 
-results = model.evaluate(x_test, y_test)
-print(results)
-print('loss : ', results[0])
-print('acc : ', results[1])
+y_predict = model.predict(x_test)
+r2 = r2_score(y_predict, y_test)
+print('r2 스코어 : ', r2)
 
-y_pred = model.predict(x_test)
+def RMSE(y_test, y_predict):
+    return np.sqrt(mean_squared_error(y_test, y_predict))
 
-# print(y_test.shape)
-# print(y_pred.shape)
-# print(y_test[:5])
-# print(y_pred[:5])
-
-y_test_acc = np.argmax(y_test, axis = 1)
-y_pred = np.argmax(y_pred, axis = 1)
-
-print(y_test_acc)
-print(y_pred)
-
-acc = accuracy_score(y_test_acc, y_pred)
-print('accuracy_score : ', acc)
+rmse = RMSE(y_test, y_predict)              # RMSE 함수 사용
+print("RMSE : ", rmse)
 
 
-# accuracy_score :  0.8838153920294657
 
-# accuracy_score :  0.8968443155512336
+
+'''
+# scaler = MinMaxScaler() 
+loss :  [0.24726928770542145, 0.9012417793273926]
+r2 스코어 :  0.6788020244994685
+RMSE :  0.14291944
+ 
+# scaler = StandardScaler() 
+loss :  [0.19262652099132538, 0.9255871176719666]
+r2 스코어 :  0.7516323143039403
+RMSE :  0.12495616
+
+# scaler = MaxAbsScaler()
+loss :  [0.2575257420539856, 0.8986514806747437]
+r2 스코어 :  0.6820219033250622
+RMSE :  0.14556749
+
+# scaler = RobustScaler()
+loss :  [0.19338463246822357, 0.9262927770614624]
+r2 스코어 :  0.7675418032355454
+RMSE :  0.124693565
+
+'''
