@@ -2,13 +2,13 @@ import numpy as np
 import pandas as pd
 from sklearn.datasets import fetch_covtype
 from sklearn.model_selection import train_test_split
-from tensorflow.python.keras.models import Sequential, Model
-from tensorflow.python.keras.layers import Dense, Input
+from tensorflow.python.keras.models import Sequential, Model, load_model
+from tensorflow.python.keras.layers import Dense, Input, Dropout
 from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import MinMaxScaler, StandardScaler  # preprocessing: 전처리 / MinMaxScaler: 정규화 / StandardScaler: 평균점을 중심으로 데이터를 가운데로 모은다
 from sklearn.preprocessing import MaxAbsScaler, RobustScaler 
 from sklearn.metrics import r2_score, mean_squared_error
-from tensorflow.python.keras.callbacks import EarlyStopping
+from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.utils import to_categorical   # (케라스에 원핫)
 
 #1. 데이터
@@ -49,35 +49,54 @@ x_test = scaler.transform(x_test) # x_train의 변화 비율에 맞춰하기 때
 print(np.min(x_test), np.max(x_test)) # 0.0 1.0
 
 # #2. 모델 구성
-# model = Sequential()
-# model.add(Dense(50,activation = 'relu', input_dim = 54 ))
-# model.add(Dense(50, activation = 'relu'))
-# model.add(Dense(50, activation = 'relu'))
-# model.add(Dense(50, activation = 'relu'))
-# model.add(Dense(50, activation = 'relu'))
-# model.add(Dense(50, activation = 'relu'))
-# model.add(Dense(7, activation = 'softmax'))
+model = Sequential()
+model.add(Dense(50,activation = 'relu', input_dim = 54 ))
+model.add(Dropout(0.3))
+model.add(Dense(50, activation = 'relu'))
+model.add(Dropout(0.2))
+model.add(Dense(50, activation = 'relu'))
+model.add(Dropout(0.5))
+model.add(Dense(50, activation = 'relu'))
+model.add(Dense(50, activation = 'relu'))
+model.add(Dense(50, activation = 'relu'))
+model.add(Dense(7, activation = 'softmax'))
 
-#(함수형) 모델 구성
-input1 = Input(shape=(54,)) # 인풋명시, 
-dense1 = Dense(50, activation = 'relu')(input1)  # Dense 모델 구성 후, 이 모델은 어디에서 시작해서 어디에서 끝나는지 연결
-dense2 = Dense(50, activation = 'relu')(dense1)
-dense3 = Dense(50, activation = 'relu')(dense2)
-dense4 = Dense(50, activation = 'relu')(dense3)
-dense5 = Dense(50, activation = 'relu')(dense4)
-output1 = Dense(7, activation = 'softmax')(dense5)
-model = Model(inputs = input1, outputs = output1)
+# #(함수형) 모델 구성
+# input1 = Input(shape=(54,)) # 인풋명시, 
+# dense1 = Dense(50, activation = 'relu')(input1)  # Dense 모델 구성 후, 이 모델은 어디에서 시작해서 어디에서 끝나는지 연결
+# dense2 = Dense(50, activation = 'relu')(dense1)
+# dense3 = Dense(50, activation = 'relu')(dense2)
+# dense4 = Dense(50, activation = 'relu')(dense3)
+# dense5 = Dense(50, activation = 'relu')(dense4)
+# output1 = Dense(7, activation = 'softmax')(dense5)
+# model = Model(inputs = input1, outputs = output1)
 
-
+filepath = './_save/MCP/keras27_4/'
+filename = '{epoch:04d}-{val_loss:4f}.hdf5'
 
 #3. 컴파일, 훈련
 model.compile(loss = 'categorical_crossentropy', optimizer = 'adam',
               metrics = ['acc'])
 
+import datetime
+date = datetime.datetime.now()
+print(date)  # 2023-03-14 11:11:30.046663
+date = date.strftime("%m%d_%H%M") # 시간을 문자로 (월, 일, 시간, 분)
+print(date)  # 0314_1116
+
+filepath = './_save/MCP/keras28/'
+filename = '{epoch:04d}-{val_loss:4f}.hdf5'
+
 # 정의하기
 es = EarlyStopping(monitor = 'val_loss', patience = 55, mode = 'min',
                    verbose = 1,
                    restore_best_weights = True)
+
+mcp = ModelCheckpoint(monitor='val_loss', mode = 'auto',
+        verbose = 1, 
+        save_best_only= True,
+        filepath="".join([filepath, 'k27_', date, '_', filename]))
+
 
 
 model.fit(x_train, y_train, epochs = 2000, batch_size = 5000,
@@ -104,18 +123,9 @@ print("RMSE : ", rmse)
 
 
 '''
-# scaler = MinMaxScaler() 
-loss :  [0.2527399957180023, 0.8982384204864502]
-r2 스코어 :  0.6710971602053248
-RMSE :  0.14466819
- 
-# scaler = StandardScaler() 
 
-
-# scaler = MaxAbsScaler()
-
-
-# scaler = RobustScaler()
-
+loss :  [0.4652458131313324, 0.8097467422485352]
+r2 스코어 :  -0.3724910796379016
+RMSE :  0.19734387
 
 '''

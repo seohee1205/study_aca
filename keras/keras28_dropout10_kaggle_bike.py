@@ -1,11 +1,11 @@
 import numpy as np
-from tensorflow.python.keras.models import Sequential, Model
-from tensorflow.python.keras.layers import Dense, Input
+from tensorflow.python.keras.models import Sequential, Model, load_model
+from tensorflow.python.keras.layers import Dense, Input, Dropout
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error
 from sklearn.preprocessing import MinMaxScaler, StandardScaler  # preprocessing: 전처리 / MinMaxScaler: 정규화 / StandardScaler: 평균점을 중심으로 데이터를 가운데로 모은다
 from sklearn.preprocessing import MaxAbsScaler, RobustScaler
-from tensorflow.python.keras.callbacks import EarlyStopping
+from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib
@@ -66,33 +66,50 @@ print(np.min(x_test), np.max(x_test)) # 0.0 1.0
 test_csv = scaler.transform(test_csv)   # test_csv에도 sclaer해줘야 함
 
 # #2. 모델 구성
-# model = Sequential()
-# model.add(Dense(20, input_dim = 8))
-# model.add(Dense(15, activation = 'relu'))
-# model.add(Dense(7, activation = 'relu'))
-# model.add(Dense(11, activation = 'relu'))
-# model.add(Dense(3, activation = 'relu'))
-# model.add(Dense(1))
+model = Sequential()
+model.add(Dense(20, input_dim = 8))
+model.add(Dropout(0.3))
+model.add(Dense(15, activation = 'relu'))
+model.add(Dropout(0.2))
+model.add(Dense(7, activation = 'relu'))
+model.add(Dropout(0.5))
+model.add(Dense(11, activation = 'relu'))
+model.add(Dense(3, activation = 'relu'))
+model.add(Dense(1))
 
 #(함수형) 모델 구성
-input1 = Input(shape=(8,)) # 인풋명시, 
-dense1 = Dense(20, activation = 'relu')(input1)  # Dense 모델 구성 후, 이 모델은 어디에서 시작해서 어디에서 끝나는지 연결
-dense2 = Dense(15, activation = 'relu')(dense1)
-dense3 = Dense(7, activation = 'relu')(dense2)
-dense4 = Dense(11, activation = 'relu')(dense3)
-dense5 = Dense(3, activation = 'relu')(dense4)
-output1 = Dense(1,)(dense5)
-model = Model(inputs = input1, outputs = output1)
+# input1 = Input(shape=(8,)) # 인풋명시, 
+# dense1 = Dense(20, activation = 'relu')(input1)  # Dense 모델 구성 후, 이 모델은 어디에서 시작해서 어디에서 끝나는지 연결
+# dense2 = Dense(15, activation = 'relu')(dense1)
+# dense3 = Dense(7, activation = 'relu')(dense2)
+# dense4 = Dense(11, activation = 'relu')(dense3)
+# dense5 = Dense(3, activation = 'relu')(dense4)
+# output1 = Dense(1,)(dense5)
+# model = Model(inputs = input1, outputs = output1)
 
 
 #3. 컴파일, 훈련
 model.compile(loss = 'mse', optimizer = 'adam')
+
+import datetime
+date = datetime.datetime.now()
+print(date)  # 2023-03-14 11:11:30.046663
+date = date.strftime("%m%d_%H%M") # 시간을 문자로 (월, 일, 시간, 분)
+print(date)  # 0314_1116
+
+filepath = './_save/MCP/keras28/'
+filename = '{epoch:04d}-{val_loss:4f}.hdf5'
 
 # 정의하기
 
 es = EarlyStopping(monitor= 'val_loss', patience = 35, mode= 'min',     # if mode = auto: 자동으로 min 또는 max로 맞춰줌 
               verbose= 1,    
               restore_best_weights= True)  
+
+mcp = ModelCheckpoint(monitor='val_loss', mode = 'auto',
+        verbose = 1, 
+        save_best_only= True,
+        filepath="".join([filepath, 'k27_', date, '_', filename]))
 
 
 hist = model.fit(x_train, y_train, epochs = 300, batch_size = 35,
@@ -121,33 +138,23 @@ y_submit = model.predict(test_csv)
 # print(y_submit)
 
 
-'''
+
 # 파일 생성
-submission = pd.read_csv(path + 'samplesubmission.csv', index_col = 0)
+submission = pd.read_csv(path + 'sampleSubmission.csv', index_col = 0)
 # print(submission)
 submission['count'] = y_submit
 # print(submission)
 
 path_save = './_save/kaggle_bike/'
-submission.to_csv(path_save + 'submit_0310_0752.csv')
+submission.to_csv(path_save + 'submit_0314_0305.csv')
+
+
+
 '''
 
-
-'''
-# scaler = MinMaxScaler() 
-
-
-# scaler = StandardScaler() 
-
-
-
-# scaler = MaxAbsScaler()
-
-
-
-# scaler = RobustScaler()
-
-
+loss :  31053.16015625
+r2 스코어 :  -16.585638518802217
+RMSE :  176.21906268076984
 
 '''
 

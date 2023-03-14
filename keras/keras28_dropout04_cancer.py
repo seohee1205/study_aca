@@ -1,13 +1,13 @@
 #  전처리 (정규화)
 from sklearn.datasets import load_breast_cancer 
 from sklearn.model_selection import train_test_split
-from tensorflow.python.keras.models import Sequential, Model
-from tensorflow.python.keras.layers import Dense, Input
+from tensorflow.python.keras.models import Sequential, Model, load_model
+from tensorflow.python.keras.layers import Dense, Input, Dropout
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler, StandardScaler  # preprocessing: 전처리 / MinMaxScaler: 정규화 / StandardScaler: 평균점을 중심으로 데이터를 가운데로 모은다
 from sklearn.preprocessing import MaxAbsScaler, RobustScaler 
 from sklearn.metrics import r2_score, mean_squared_error
-from tensorflow.python.keras.callbacks import EarlyStopping
+from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
 
 #1. 데이터
 datasets = load_breast_cancer()
@@ -34,36 +34,51 @@ print(np.min(x_test), np.max(x_test)) # 0.0 1.0
  
 
 #2. 모델 
-# model = Sequential()
-# model.add(Dense(1, input_dim = 30))
-# model.add(Dense(5, activation = 'relu'))
-# model.add(Dense(7, activation = 'relu'))
-# model.add(Dense(12, activation = 'relu'))
-# model.add(Dense(4, activation = 'relu'))
-# model.add(Dense(3, activation = 'relu'))
-# model.add(Dense(1))
+model = Sequential()
+model.add(Dense(1, input_dim = 30))
+model.add(Dropout(0.3))
+model.add(Dense(5, activation = 'relu'))
+model.add(Dropout(0.2))
+model.add(Dense(7, activation = 'relu'))
+model.add(Dropout(0.5))
+model.add(Dense(12, activation = 'relu'))
+model.add(Dense(4, activation = 'relu'))
+model.add(Dense(3, activation = 'relu'))
+model.add(Dense(1))
 
 #(함수형) 모델 구성
-input1 = Input(shape=(30,)) # 인풋명시, 
-dense1 = Dense(1)(input1)  # Dense 모델 구성 후, 이 모델은 어디에서 시작해서 어디에서 끝나는지 연결
-dense2 = Dense(5, activation = 'relu')(dense1)
-dense3 = Dense(7, activation = 'relu')(dense2)
-dense4 = Dense(12, activation = 'relu')(dense3)
-dense5 = Dense(4, activation = 'relu')(dense4)
-dense6 = Dense(3, activation = 'relu')(dense5)
-output1 = Dense(1, activation= 'sigmoid')(dense6)
-model = Model(inputs = input1, outputs = output1)
+# input1 = Input(shape=(30,)) # 인풋명시, 
+# dense1 = Dense(1)(input1)  # Dense 모델 구성 후, 이 모델은 어디에서 시작해서 어디에서 끝나는지 연결
+# dense2 = Dense(5, activation = 'relu')(dense1)
+# dense3 = Dense(7, activation = 'relu')(dense2)
+# dense4 = Dense(12, activation = 'relu')(dense3)
+# dense5 = Dense(4, activation = 'relu')(dense4)
+# dense6 = Dense(3, activation = 'relu')(dense5)
+# output1 = Dense(1, activation= 'sigmoid')(dense6)
+# model = Model(inputs = input1, outputs = output1)
 
 
 #3. 컴파일, 훈련
 model.compile(loss = 'binary_crossentropy', optimizer = 'adam',
               metrics= ['accuracy', 'acc', 'mse'], #'mean_suquared_error'] # 결과에 mse, mae도 보고 싶으면 metrics에 추가하면 됨.
               ) # 'accuracy' = 'acc'
+import datetime
+date = datetime.datetime.now()
+print(date)  # 2023-03-14 11:11:30.046663
+date = date.strftime("%m%d_%H%M") # 시간을 문자로 (월, 일, 시간, 분)
+print(date)  # 0314_1116
+filepath = './_save/MCP/keras28/'
+filename = '{epoch:04d}-{val_loss:4f}.hdf5'
 
 # 정의하기 (얼리스탑핑)
 es = EarlyStopping(monitor = 'val_loss', patience = 25, mode = 'min',
                    verbose = 1,
                     restore_best_weights = True)
+
+mcp = ModelCheckpoint(monitor='val_loss', mode = 'auto',
+        verbose = 1, 
+        save_best_only= True,
+        filepath="".join([filepath, 'k27_', date, '_', filename]))
 
 hist = model.fit(x_train, y_train, epochs = 1000, batch_size = 25,
           validation_split = 0.2,
@@ -89,25 +104,10 @@ print("RMSE : ", rmse)
 
 
 '''
-# scaler = MinMaxScaler() 
-loss :  [0.40389567613601685, 0.9122806787490845, 0.9122806787490845, 0.28770172595977783]
-r2 스코어 :  0.6264073447593612
-RMSE :  0.5363783206973398
- 
-# scaler = StandardScaler() 
-loss :  [9.336153030395508, 0.3947368562221527, 0.3947368562221527, 0.67178875207901]
-r2 스코어 :  -70.52871231138708
-RMSE :  0.8196271648619659
+loss :  [9.336153030395508, 0.3947368562221527, 0.3947368562221527, 0.7022879123687744]
+r2 스코어 :  -182.69330124190438
+RMSE :  0.8380261741218118
 
-# scaler = MaxAbsScaler()
-loss :  [0.3525400459766388, 0.9385964870452881, 0.9385964870452881, 0.7037107944488525]
-r2 스코어 :  0.2264552271378436
-RMSE :  0.838874703440049
-
-# scaler = RobustScaler()
-loss :  [9.336153030395508, 0.3947368562221527, 0.3947368562221527, 1.192171335220337]
-r2 스코어 :  -8.422600434579955
-RMSE :  1.0918659462584173
 
 
 '''

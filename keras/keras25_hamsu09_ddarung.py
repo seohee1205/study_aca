@@ -1,8 +1,10 @@
 import numpy as np
-from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Dense
+from tensorflow.python.keras.models import Sequential, Model
+from tensorflow.python.keras.layers import Dense, Input
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error
+from sklearn.preprocessing import MinMaxScaler, StandardScaler  # preprocessing: 전처리 / MinMaxScaler: 정규화 / StandardScaler: 평균점을 중심으로 데이터를 가운데로 모은다
+from sklearn.preprocessing import MaxAbsScaler, RobustScaler
 from tensorflow.python.keras.callbacks import EarlyStopping
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -57,15 +59,37 @@ x_train, x_test, y_train, y_test = train_test_split(
 print(x_train.shape, x_test.shape)   # (1021, 9) (438, 9)   ->  (929, 9) (399, 9)
 print(y_train.shape, y_test.shape)  # (1021,) (438,)        ->  (929,) (399,)
 
+# 전처리 (정규화)는 데이터를 나눈 후 한다
+scaler = MinMaxScaler()   # 하나로 모아줄 때  
+# scaler = StandardScaler()   # 표준 정규표를 만들 때
+# scaler = MaxAbsScaler()
+# scaler = RobustScaler()
+scaler.fit(x_train)     # fit의 범위: x_train
+x_train = scaler.transform(x_train)
+x_test = scaler.transform(x_test) # x_train의 변화 비율에 맞춰하기 때문에 scaler에 fit을 할 필요가 없음(변환만 해줌)
+print(np.min(x_test), np.max(x_test)) # 0.0 1.0
 
-#2. 모델 구성
-model = Sequential()
-model.add(Dense(50, input_dim = 9))
-model.add(Dense(30, activation = 'relu'))
-model.add(Dense(38, activation = 'relu'))
-model.add(Dense(20, activation = 'relu'))
-model.add(Dense(13, activation = 'relu'))
-model.add(Dense(1))
+test_csv = scaler.transform(test_csv)   # test_csv에도 sclaer해줘야 함
+
+# #2. 모델 구성
+# model = Sequential()
+# model.add(Dense(50, input_dim = 9))
+# model.add(Dense(30, activation = 'relu'))
+# model.add(Dense(38, activation = 'relu'))
+# model.add(Dense(20, activation = 'relu'))
+# model.add(Dense(13, activation = 'relu'))
+# model.add(Dense(1))
+
+
+#(함수형) 모델 구성
+input1 = Input(shape=(9,)) # 인풋명시, 
+dense1 = Dense(50, activation = 'relu')(input1)  # Dense 모델 구성 후, 이 모델은 어디에서 시작해서 어디에서 끝나는지 연결
+dense2 = Dense(30, activation = 'relu')(dense1)
+dense3 = Dense(38, activation = 'relu')(dense2)
+dense4 = Dense(20, activation = 'relu')(dense3)
+dense5 = Dense(13, activation = 'relu')(dense4)
+output1 = Dense(1,)(dense5)
+model = Model(inputs = input1, outputs = output1)
 
 
 #3. 컴파일, 훈련
@@ -85,32 +109,6 @@ hist = model.fit(x_train, y_train, epochs = 1200, batch_size = 17,
                  )
 
 
-# print("=============================================")
-# print(hist)
-# # <tensorflow.python.keras.callbacks.History object at 0x00000227C99A01F0>
-# print("=============================================")
-# print(hist.history)
-# print("=============================================")
-# print(hist.history['loss'])
-# print("======================발로스=======================")
-# print(hist.history['val_loss'])
-# print("======================발로스=======================")
-
-
-
-matplotlib.rcParams['font.family'] = 'Malgun Gothic'    # 한글 깨짐 방지 / 앞으로 나눔체로 쓰기 
-
-plt.figure(figsize=(9, 6)) 
-plt.plot(hist.history['loss'], marker = '.', c = 'red', label = 'loss')      # 선 긋기 / 순서대로 할 때는 x를 명시하지 않아도 됨.
-plt.plot(hist.history['val_loss'], marker = '.', c= 'blue', label = 'val_loss')
-plt.title('따릉이')
-plt.xlabel('epochs')
-plt.ylabel('loss, val_loss')
-plt.legend()    # 선에 이름 표시
-plt.grid()      # 격자
-plt.show()
-
-# val_loss가 loss보다 높은 위치에 있음
 
 #4. 평가, 예측
 loss = model.evaluate(x_test, y_test)
@@ -126,44 +124,29 @@ def RMSE(y_test, y_predict):
 rmse = RMSE(y_test, y_predict)              # RMSE 함수 사용
 print("RMSE : ", rmse)
 
-y_submit = model.predict(test_csv)
-# print(y_submit)
 
-submission = pd.read_csv(path_save + 'submission.csv', index_col = 0)
-# print(submission)
-submission['count'] = y_submit
-# print(submission)
-
+'''
 # 파일 생성
 path_save = './_save/ddarung/'
 submission.to_csv(path_save + 'submit_0310_0725.csv')
+'''
+
+
+'''
+# scaler = MinMaxScaler() 
+
+ 
+# scaler = StandardScaler() 
+
+
+# scaler = MaxAbsScaler()
 
 
 
-# loss :  3112.440185546875
-# r2 스코어 :  0.28345819422862617
-# RMSE :  55.78924758144579
+# scaler = RobustScaler()
 
-# loss :  2478.425048828125
-# r2 스코어 :  0.38003674904894336
-# RMSE :  49.78378529019188
 
-# loss :  2822.980224609375
-# r2 스코어 :  0.3657213874632297
-# RMSE :  53.13172491713578
+'''
 
-# loss :  2124.457763671875
-# r2 스코어 :  0.4725340134574372
-# RMSE :  46.09183933099399
 
-# loss :  2968.57080078125
-# r2 스코어 :  0.2994585312635253
-# RMSE :  54.48459031816007
 
-# loss :  2378.901123046875
-# r2 스코어 :  0.3605940721523315
-# RMSE :  48.773977720609345
-
-# loss :  2509.903564453125
-# r2 스코어 :  0.03678900927228934
-# RMSE :  50.098940600870165
