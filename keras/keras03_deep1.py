@@ -3,6 +3,8 @@ import numpy as np
 x = np.array([1, 2, 3]) # 배열하는 숫자
 y = np.array([1, 2, 3])
 
+print(x.shape)
+
 #2. 모델구성
 import tensorflow as tf
 from tensorflow.keras.models import Sequential     # 텐서플로 케라스의 모델을 순차적으로 가져다 쓰겠다.

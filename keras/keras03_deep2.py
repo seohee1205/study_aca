@@ -23,7 +23,7 @@ model.compile(loss = 'mse', optimizer = 'adam')     # 손실 0? , loss를 최적
 model.fit(x, y, epochs = 100)
 
 #4. 평가, 예측
-loss = model.evaluate(x, y)
+loss = model.evaluate(x, y)     # evaluate: 평가
 print('loss : ', loss)
 
 result = model.predict([4])
