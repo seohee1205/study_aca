@@ -69,7 +69,7 @@ drop3 = Dropout(0.4)(dense3)
 dense4 = Dense(10,activation='relu')(drop3)
 dense5 = Dense(8,activation='relu')(dense4)
 dense6 = Dense(5,activation='relu')(dense5)
-output1 = Dense(12,activation='softmax')(dense6)
+output1 = Dense(2,activation='softmax')(dense6)
 
 model = Model(inputs=input1, outputs=output1)
 
@@ -110,10 +110,10 @@ print('f1', f1_score)
 
 # 파일 생성
 submission = pd.read_csv(path + 'sample_submission.csv', index_col = 0)
-submission['상담전화건수'] = y_submit
+submission['전화해지여부'] = y_submit
 path_save = './_save/dacon_call'
 
-submission.to_csv(path_save + 'submit_0317_0928.csv')
+submission.to_csv(path_save + 'submit_0317_0305.csv')
 
 
 
