@@ -42,20 +42,76 @@ x_train, x_test, y_train, y_test = train_test_split(
 print(x_train.shape, x_test.shape)      # (1168, 79) (292, 79)
 print(y_train.shape, y_test.shape)      # (1168,) (292,)
 
-# 분리형을 수치형으로 바꿔주기
-from sklearn.preprocessing import LabelEncoder, RobustScaler          # 데이터 전처리?
-le = LabelEncoder()
-le.fit(train_csv['type'])   # 0과 1로 인정
-aaa = le.transform(train_csv['type'])
-print(aaa)
-print(type(aaa))    # <class 'numpy.ndarray'>
-print(aaa.shape)    # (5497,) 벡터 형태
-print(np.unique(aaa, return_counts= True))      # 몇 개씩 있는지    (array([0, 1]), array([1338, 4159], dtype=int64)) => 0이 1338개, 1이 4159개
 
-train_csv['type'] = aaa
-print(train_csv)
-test_csv['type'] = le.transform(test_csv['type'])
+##################################
+from sklearn.preprocessing import OrdinalEncoder
 
+print(np.unique(train_csv['MasVnrType']))
+
+
+'''
+data = pd.DataFrame({
+    'MSZoning': ['RH', 'RL', 'RM', 'FV', 'C (all)']
+    'Street': ['Pave', 'Grvl', 'apple'],
+    'Alley': ['NA', 'Pave', 'Grvl']
+    'LotShape': ['Reg', 'IR1', 'RM', 'FV', 'C (all)']
+    'LandContour': ['Lvl', 'HLS', 'Bnk', 'Low', 'C (all)']
+    'Utilities': ['AllPub', 'NoSeWa']
+    'LotConfig': ['Corner' 'CulDSac' 'FR2' 'FR3' 'Inside']
+    'LandSlope': ['Gtl' 'Mod' 'Sev']
+    'Neighborhood': ['Blmngtn' 'Blueste' 'BrDale' 'BrkSide' 'ClearCr' 'CollgCr' 'Crawfor'
+    'Edwards' 'Gilbert' 'IDOTRR' 'MeadowV' 'Mitchel' 'NAmes' 'NPkVill'
+    'NWAmes' 'NoRidge' 'NridgHt' 'OldTown' 'SWISU' 'Sawyer' 'SawyerW'
+    'Somerst' 'StoneBr' 'Timber' 'Veenker']
+    'Condition1': ['Artery' 'Feedr' 'Norm' 'PosA' 'PosN' 'RRAe' 'RRAn' 'RRNe' 'RRNn']
+    # 10개
+    
+    'Condition2': ['Artery' 'Feedr' 'Norm' 'PosA' 'PosN' 'RRAe' 'RRAn' 'RRNn']
+    'BldgType': ['1Fam' '2fmCon' 'Duplex' 'Twnhs' 'TwnhsE']
+    'HouseStyle': ['1.5Fin' '1.5Unf' '1Story' '2.5Fin' '2.5Unf' '2Story' 'SFoyer' 'SLvl']
+    'RoofStyle': 'Flat' 'Gable' 'Gambrel' 'Hip' 'Mansard' 'Shed']
+    'RoofMatl': ['ClyTile' 'CompShg' 'Membran' 'Metal' 'Roll' 'Tar&Grv' 'WdShake' 'WdShngl']
+    'Exterior1st': ['AsbShng' 'AsphShn' 'BrkComm' 'BrkFace' 'CBlock' 'CemntBd' 'HdBoard'
+ 'ImStucc' 'MetalSd' 'Plywood' 'Stone' 'Stucco' 'VinylSd' 'Wd Sdng'
+ 'WdShing']
+    'Exterior2nd': ['AsbShng' 'AsphShn' 'Brk Cmn' 'BrkFace' 'CBlock' 'CmentBd' 'HdBoard'
+ 'ImStucc' 'MetalSd' 'Other' 'Plywood' 'Stone' 'Stucco' 'VinylSd'
+ 'Wd Sdng' 'Wd Shng']
+    'RoofMatl': []
+    'RoofMatl': []
+    'RoofMatl': []
+    ####### 10개
+    
+    'RoofMatl': []
+    'RoofMatl': []
+    
+    
+    
+    
+})
+'''
+
+
+
+
+
+# # 분리형을 수치형으로 바꿔주기
+# le = LabelEncoder()
+# le.fit(train_csv['MSSubClass'])   # 0과 1로 인정
+# aaa = le.transform(train_csv['MSSubClass'])
+# print(aaa)
+# print(type(aaa))    # <class 'numpy.ndarray'>
+# print(aaa.shape)    # (5497,) 벡터 형태
+# print(np.unique(aaa, return_counts= True))      # 몇 개씩 있는지    (array([0, 1]), array([1338, 4159], dtype=int64)) => 0이 1338개, 1이 4159개
+
+# train_csv['MSSubClass'] = aaa
+# print(train_csv)
+# test_csv['MSSubClass'] = le.transform(test_csv['MSSubClass'])
+
+
+
+
+'''
 scaler = RobustScaler()
 scaler.fit(x_train)                 # fit의 범위: x_train
 x_train = scaler.transform(x_train)
@@ -63,6 +119,7 @@ x_test = scaler.transform(x_test) # x_train의 변화 비율에 맞춰하기 때
 # print(np.min(x_test), np.max(x_test))   # 0과 1이 나오는지 확인해
 
 test_csv = scaler.transform(test_csv)   # test_csv에도 sclaer해줘야 함
+
 
 
 # #2. 모델 
@@ -126,3 +183,4 @@ submission = pd.read_csv(path + 'sample_submission.csv', index_col = 0)
 path_save = './_save/kaggle_house/'
 submission.to_csv(path_save + 'submit_0317_0845.csv')
 
+'''

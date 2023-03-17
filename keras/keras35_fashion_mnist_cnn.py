@@ -1,11 +1,14 @@
+import numpy as np
+import pandas as pd
 from tensorflow.keras.datasets import cifar100, fashion_mnist
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Dense, Conv2D, Flatten, MaxPooling2D, Dropout
-import numpy as np
 from tensorflow.python.keras.callbacks import EarlyStopping
 from sklearn.metrics import accuracy_score
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MaxAbsScaler,RobustScaler 
+from sklearn.preprocessing import MinMaxScaler,StandardScaler
 from tensorflow.keras.utils import to_categorical
+from sklearn.metrics import r2_score, mean_squared_error
 import time
 
 #1. 데이터
