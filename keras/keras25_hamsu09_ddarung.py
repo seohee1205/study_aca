@@ -102,6 +102,7 @@ es = EarlyStopping(monitor= 'val_loss', patience = 34, mode= 'min',     # if mod
               restore_best_weights= True)  
 
 
+
 hist = model.fit(x_train, y_train, epochs = 1200, batch_size = 17,
                  validation_split = 0.2, 
                  verbose = 1,

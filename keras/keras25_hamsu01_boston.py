@@ -60,8 +60,6 @@ model = Model(inputs = input1, outputs = output1)
 
 
 
-
-
 #3. 컴파일, 훈련
 model.compile(loss = 'mse', optimizer = 'adam')
 
@@ -77,9 +75,6 @@ hist = model.fit(x_train, y_train, epochs = 1000, batch_size = 30,
                  verbose = 1,
                  callbacks= [es]    # es 호출
                  )
-
-
-
 
 
 #4. 평가, 예측
