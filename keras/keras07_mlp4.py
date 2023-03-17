@@ -15,7 +15,7 @@ print(y.shape)
 
 #2. 모델구성
 model = Sequential()
-model.add(Dense(10, input_dim = 3))     # 열이 2개니까 (열 = 피처 = 컬럼 = 특성)
+model.add(Dense(10, input_dim = 3))     # 열이 3개니까 (열 = 피처 = 컬럼 = 특성)
 model.add(Dense(9))
 model.add(Dense(8))
 model.add(Dense(5))

@@ -2,7 +2,7 @@ from sklearn.datasets import fetch_california_housing
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 import numpy as np
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split     # 데이터 분리
 
 #1. 데이터
 datasets = fetch_california_housing()

@@ -14,6 +14,3 @@ print(y_train[3333])
 import matplotlib.pyplot as plt
 plt.imshow(x_train[3333], 'gray')
 plt.show()
-
-
-
