@@ -77,7 +77,7 @@ data = pd.DataFrame({
     'Exterior2nd': ['AsbShng' 'AsphShn' 'Brk Cmn' 'BrkFace' 'CBlock' 'CmentBd' 'HdBoard'
  'ImStucc' 'MetalSd' 'Other' 'Plywood' 'Stone' 'Stucco' 'VinylSd'
  'Wd Sdng' 'Wd Shng']
-    'RoofMatl': []
+   col26 'MasVnrType': []
     'RoofMatl': []
     'RoofMatl': []
     ####### 10개
