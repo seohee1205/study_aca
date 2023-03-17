@@ -1,8 +1,8 @@
 from tensorflow.keras.datasets import mnist
-from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Dense, Conv2D, Flatten, Dropout, MaxPooling2D
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Conv2D, Flatten, Dropout, MaxPooling2D
 import numpy as np
-from tensorflow.python.keras.callbacks import EarlyStopping
+from tensorflow.keras.callbacks import EarlyStopping
 from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras.utils import to_categorical
@@ -54,6 +54,7 @@ model.add(Dense(10, activation = 'softmax'))
 
 model.summary()
 
+
 '''
 Model: "sequential"
 _________________________________________________________________
@@ -81,35 +82,18 @@ Non-trainable params: 0
 _________________________________________________________________
 '''
  
- 
 
-'''
 #3. 컴파일, 훈련
-start_time = time.time()
 model.compile(loss = 'categorical_crossentropy', optimizer = 'adam',
               metrics = ['acc'])
+model.fit(x_train, y_train, epochs=30, batch_size=128)
 
-
-
-# 정의하기
-es = EarlyStopping(monitor = 'loss', patience = 15, mode = 'auto',
-                   verbose = 1, restore_best_weights = True)
-
-model.fit(x_train, y_train, epochs = 100, batch_size = 5000,
-          validation_split = 0.2,
-          verbose = 1,
-          callbacks = [es])
-
-end_time = time.time()
 
 #4. 평가, 예측
-result = model.evaluate(x_test, y_test)
-print('result : ', result)
+results = model.evaluate(x_test, y_test)
+print('result : ', results)
+print('loss :', results[0])
+print('acc :', results[1])
 
-y_predict = model.predict(x_test)
-y_predict = np.argmax(y_predict, axis=1)
-y_test_acc = np.argmax(y_test, axis=1)
-
-acc = accuracy_score(y_test_acc, y_predict)
-print('acc : ', acc)
-'''
+# 메모리 터지면
+# batch_size 조절, layer 개수 조절
