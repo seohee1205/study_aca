@@ -1,5 +1,4 @@
 #  전처리 (정규화)
-
 from sklearn.model_selection import train_test_split
 from tensorflow.python.keras.models import Sequential, Model, load_model
 from tensorflow.python.keras.layers import Dense, Input, Dropout

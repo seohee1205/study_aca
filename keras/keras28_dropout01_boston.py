@@ -6,8 +6,8 @@
 
 from sklearn.datasets import load_boston
 from sklearn.model_selection import train_test_split
-from tensorflow.python.keras.models import Sequential,Model, load_model
-from tensorflow.python.keras.layers import Dense,Input, Dropout
+from tensorflow.python.keras.models import Sequential, Model, load_model
+from tensorflow.python.keras.layers import Dense, Input, Dropout
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler, StandardScaler  # preprocessing: 전처리 / MinMaxScaler: 정규화 / StandardScaler: 평균점을 중심으로 데이터를 가운데로 모은다
 from sklearn.preprocessing import MaxAbsScaler, RobustScaler 

@@ -30,9 +30,10 @@ print(train_csv.isnull().sum())
 
 df = pd.read_csv(path + 'train.csv')
 
+
 # 특정 열의 결측치를 특정 값으로 대체
-mean = df['LotFrontage'].mean()
-df['LotFrontage'] = df['LotFrontage'].fillna(mean)
+# mean = df['LotFrontage'].mean()
+# df['LotFrontage'] = df['LotFrontage'].fillna(mean)
 
 #1-2. 라벨인코딩
 le=LabelEncoder()
@@ -47,10 +48,11 @@ print(train_csv.shape)
 
 
 #1-3. x, y 데이터 분리
-x = train_csv.drop(['SalePrice'], axis = 1)
+x = train_csv.drop(['SalePrice', 'LotFrontage'], axis = 1)
 print(x.shape)
 y = train_csv['SalePrice']
 print(y.shape)
+test_csv = test_csv.drop(['LotFrontage'], axis =1)
 
 #1-4. train, test 분리
 x_train, x_test, y_train, y_test = train_test_split(
@@ -67,11 +69,11 @@ print(y_train.shape, y_test.shape)      # (1008,) (113,)
 # x_train = scaler.transform(x_train)
 # x_test = scaler.transform(x_test) # x_train의 변화 비율에 맞춰하기 때문에 scaler에 fit을 할 필요가 없음(변환만 해줌)
 # # print(np.min(x_test), np.max(x_test))   # 0과 1이 나오는지 확인해
-# test_csv = scaler.transform(test_csv)   # test_csv에도 sclaer해줘야 함
+# test_csv = scaler.transform(test_csv)   # test_csv에도 scaler해줘야 함
 
 
 #2. 모델 
-input1 = Input(shape=(79,))
+input1 = Input(shape=(78,))
 dense1 = Dense(30)(input1)
 drop1 = Dropout(0.5)(dense1)
 dense2 = Dense(24, activation = 'relu')(drop1)
@@ -115,6 +117,7 @@ def RMSE(y_test, y_predict):
 rmse = RMSE(y_test, y_predict)              # RMSE 함수 사용
 print("RMSE : ", rmse)
 
+
 # 시간 측정
 import datetime
 date = datetime.datetime.now()
@@ -128,4 +131,4 @@ y_submit = np.array(y_submit)
 # 파일 생성
 submission = pd.read_csv(path + 'sample_submission.csv', index_col = 0)
 submission['SalePrice'] = y_submit
-submission.to_csv(path_save + 'submit_0320_0933.csv')
+submission.to_csv(path_save + 'submit_0320_1047.csv')

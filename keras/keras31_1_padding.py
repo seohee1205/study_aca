@@ -14,7 +14,6 @@ model.add(Conv2D(filters = 4,
                 kernel_size = (3, 3), 
                 padding = 'valid',      # # shape 유지시켜주고 싶지 않으면 valid
                 activation= 'relu'))   # 출력 : (N, 6, 6, 4)        4차원의 데이터를 받음, 출력도 4차원 
-
 model.add(Conv2D(10, (2, 2)))            # 출력 : (N, 5, 5, 10)
 model.add(Flatten())                    # 출력 : (N, 5*5*10) -> (N, 250)
 model.add(Dense(32, activation= 'relu'))

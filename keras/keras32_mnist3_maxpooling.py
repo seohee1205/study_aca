@@ -37,7 +37,7 @@ x_train = x_train.reshape(60000, 28, 28, 1)
 x_test = x_test.reshape(10000, 28, 28, 1)
 
 # Scaler랑 똑같음
-# x_train = x_train/255.
+# x_train = x_train/255.    # 실수형이니까 . 붙여주기
 # x_test = x_test/255.
 
 

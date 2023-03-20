@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from tensorflow.keras.datasets import cifar100, fashion_mnist
+from tensorflow.keras.datasets import fashion_mnist
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Dense, Conv2D, Flatten, MaxPooling2D, Dropout
 from tensorflow.python.keras.callbacks import EarlyStopping
