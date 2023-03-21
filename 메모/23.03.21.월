@@ -1,0 +1,63 @@
+23.03.20.월
+
+1.
+cnn에서 dropout 사용 가능
+maxpooling
+
+2.
+훈련에서 callback 시키는 earlystopping, mcp
+
+3. input과 output만 알면 모델 형성 가능
+
+4.
+model.add(Conv2D(64,(2,2),	input_shape=(28, 28, 1)
+		 	   -> (batch_size, 가로, 세로, 채널)
+=> 4차원으로 받아들임
+
+5.
+model.add(Conv2D(32,(2,2)
+-> (batch_size, 가로, 세로, 채널) = (100, 27, 27, 64)
+
+6.
+batch_size를 작게 주면 오래 걸림, 크게 주면 터짐
+(배치 사이즈 * 커널 사이즈이기 때문에 커지므로 터지게 됨)
+
+7.
+이미지데이터를 DNN으로 훈련시키면
+CNN보다 연산량 감소
+
+8.
+시계열데이터는 통상적으로 RNN을 사용한다
+
+9.
+cmd 창에서 
+d:
+md temp에서 md = make directory
+cd temp = temp 폴더 안으로 들어가기
+pip download tensorflow-cpu==2.7.2
+dir/w	아니면 탐색기에서 확인가능
+conda create -n tf272cpu python=3.9.15
+y
+conda env list
+activate tf272cpu
+pip list
+python
+컨트롤 + z 눌러서 나오기
+pip install tensorflow_cpu-2.7.2-cp39-cp39-win_amd64.whl
+
+오류났을 때는
+pip uninstall protobuf
+y
+pip download protobuf==3.20.0
+pip install protobuf-3.20.0-cp39-cp39-win_amd64.whl
+pip install tensorflow_cpu-2.7.2-cp39-cp39-win_amd64.whl
+python
+import tensorflow as tf
+tf._version_
+tf.__version__
+
+
+10. 텐서플로 로컬 설치 방법
+pip download 통해서 로컬로 설치파일을 미리 받아놔야함
+pip install (텐서플로 설치 디렉토리)
+whl 파일에 모아뒀다가 한번에 보내기
