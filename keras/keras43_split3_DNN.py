@@ -39,12 +39,12 @@ print(y.shape)      # (96,)
 x_predict = split_x(x_predict, 4)
 print(x_predict.shape)
 
-x = x.reshape(96, 4, 1)  # (7, 4)
-x_predict = x_predict.reshape(7, 4, 1)
+# x = x.reshape(96, 4, 1)  # (7, 4)
+# x_predict = x_predict.reshape(7, 4, 1)
 
 #2. 모델
 model = Sequential()
-model.add(LSTM(10, input_shape = (4, 1), activation = 'linear'))
+model.add(Dense(10, input_shape = (4,), activation = 'linear'))
 model.add(Dense(40, activation = 'relu'))
 model.add(Dense(20, activation = 'relu'))
 model.add(Dense(30, activation = 'relu'))
