@@ -30,7 +30,7 @@ model.add(GRU(18, ))
 model.add(Dense(10))
 model.add(Dense(1))
 
-# LSTM은 2차원, GRU는 input 3차원, output 2차원 
+# LSTM은 Input 3차원, output 2차원 / GRU는 input 3차원, output 2차원 
 # model.summary()
 
 # RNN에서 받는 데이터는 시계열 데이터
