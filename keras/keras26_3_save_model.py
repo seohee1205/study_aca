@@ -51,14 +51,16 @@ model = Model(inputs = input1, outputs = output1)
 
 # 모델 저장
 # model.save('./_save/keras26_3_save_model.h5')
-
+ # 여기에 하면 모델만 저장됨
 
 #3. 컴파일, 훈련
 model.compile(loss = 'mse', optimizer = 'adam')
 model.fit(x_train, y_train, epochs = 10)
 
 # 모델 저장
-model.save('./_save/keras26_3_save_model.h5')   # 가중치까지 저장
+model.save('./_save/keras26_3_save_model.h5')   # 모델, 훈련 웨이트, 가중치까지 저장
+
+# .h5 = 모델, hdf5 = 가중치     <다르게 사용할 수도 있음>
 
 #4. 평가, 예측
 loss = model.evaluate(x_test, y_test)

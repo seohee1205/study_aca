@@ -1,5 +1,5 @@
 import numpy as np
-from sklearn.datasets import load_iris
+from sklearn.datasets import load_wine
 from sklearn.model_selection import train_test_split
 from tensorflow.python.keras.models import Sequential, Model, load_model
 from tensorflow.python.keras.layers import Dense, Input, Dropout
@@ -13,7 +13,7 @@ import pandas as pd
 from tensorflow.keras.utils import to_categorical   # (케라스에 원핫)
 
 #1. 데이터
-datasets = load_iris()
+datasets = load_wine()
 print(datasets.DESCR)   # 판다스에서 describe() 와 동일
 print(datasets.feature_names) # 판다스에서 clolumns 와 동일
 # ['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)']

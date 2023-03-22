@@ -15,10 +15,10 @@ model.add(Dense(1))
 model.summary()
 
 # Model: "sequential"
-# _____________________________________________________________            
-#  Layer (type)                Output Shape              Param #                       ( unit 개수 * unit 개수 ) + ( input_dim(feature) 수 * unit 개수 ) + ( 1(bias) * unit 개수 )
-# =================================================================     
-#  simple_rnn (SimpleRNN)      (None, 10)                120                            (10 * 10) + (1 * 10) + (1 * 10)     =  120
+# _________________________________________________________________            
+#  Layer (type)                Output Shape              Param #                  ( unit 개수 * unit 개수 ) + ( input_dim(feature) 수 * unit 개수 ) + ( 1(bias) * unit 개수 )
+# =================================================================    
+#  simple_rnn (SimpleRNN)      (None, 10)                120                          (10 * 10) + (1 * 10) + (1 * 10)     =  120
 
 #  dense (Dense)               (None, 7)                 77   
              
@@ -28,10 +28,10 @@ model.summary()
 
 
 # Model: "sequential"
-# _________________________________________________________________
-#  Layer (type)                Output Shape              Param #                        ()
-# =================================================================
-#  lstm (LSTM)                 (None, 10)                480
+# _________________________________________________________________         ( unit 개수 * unit 개수 ) + ( input_dim(feature) 수 * unit 개수 ) + ( 1(bias) * unit 개수 )
+#  Layer (type)                Output Shape              Param #                     4 *  {(10 * 10) + (1 * 10) + (1 * 10)}
+# =================================================================              # 4개인 이유: state 1개 + 게이트 3개
+#  lstm (LSTM)                 (None, 10)                480                        
 
 #  dense (Dense)               (None, 7)                 77
 
