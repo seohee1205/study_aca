@@ -25,8 +25,8 @@ x = x.reshape(13, 3, 1)
 input1 = Input(shape=(3, 1))
 GRU1 = Bidirectional(LSTM(10))(input1)
 dense1 = Dense(50,activation='relu')(GRU1)
-dense2 = Dense(30,activation='relu')(dense1)
-dense3 = Dense(20,activation='relu')(dense2)
+dense2 = Dense(40,activation='relu')(dense1)
+dense3 = Dense(32,activation='relu')(dense2)
 dense4 = Dense(24,activation='relu')(dense3)
 output1 = Dense(1)(dense2)
 model = Model(inputs=input1, outputs=output1)
@@ -36,7 +36,7 @@ model = Model(inputs=input1, outputs=output1)
 model.compile(loss = 'mse', optimizer = 'adam')
 
 
-es = EarlyStopping(monitor = 'loss', patience = 22, mode = 'auto',
+es = EarlyStopping(monitor = 'loss', patience = 30, mode = 'auto',
                    verbose = 1, restore_best_weights = True)
 
 # mcp = ModelCheckpoint(monitor='loss', mode = 'auto',
@@ -45,7 +45,7 @@ es = EarlyStopping(monitor = 'loss', patience = 22, mode = 'auto',
 #         filepath= './_save/MCP/keras40_LSTM6_scale.hdf5')   # 가중치만
                           
 
-model.fit(x, y, epochs = 2000, callbacks = [es]) #mcp])
+model.fit(x, y, epochs = 3000, callbacks = [es]) #mcp])
 
 
 
@@ -57,3 +57,6 @@ result = model.predict(x_predict)
 print('loss : ', loss)
 print('[50, 60, 70]의 결과 : ', result)
 
+
+# loss :  0.0007926234393380582
+# [50, 60, 70]의 결과 :  [[77.64399]]
