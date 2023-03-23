@@ -1,3 +1,4 @@
+# 0부터 9까지의 수를 분류하는 모델 (다중분류)
 from tensorflow.keras.datasets import cifar10
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Dense, Conv2D, Flatten, MaxPooling2D, Dropout

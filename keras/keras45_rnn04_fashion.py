@@ -1,15 +1,11 @@
-# 10개의 옷 그림을 분류하는 모델 (다중 분류)
+from tensorflow.keras.datasets import cifar100, fashion_mnist
+from tensorflow.python.keras.models import Sequential, Model
+from tensorflow.python.keras.layers import Dense, Input, GRU, MaxPooling2D, Dropout
 import numpy as np
-import pandas as pd
-from tensorflow.keras.datasets import fashion_mnist
-from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Dense, Conv2D, Flatten, MaxPooling2D, Dropout
 from tensorflow.python.keras.callbacks import EarlyStopping
 from sklearn.metrics import accuracy_score
-from sklearn.preprocessing import MaxAbsScaler,RobustScaler 
-from sklearn.preprocessing import MinMaxScaler,StandardScaler
+from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras.utils import to_categorical
-from sklearn.metrics import r2_score, mean_squared_error
 import time
 
 #1. 데이터
@@ -30,41 +26,29 @@ x_test = x_test.reshape(10000, 28*28)
 y_train = to_categorical(y_train) 
 y_test = to_categorical(y_test) 
     
-print(y_train)  # [5 0 4 ... 5 6 8]
-print(y_train.shape)    # (60000, 10)
-print(y_test)   # [7 2 1 ... 4 5 6]
-print(y_test.shape)     # (10000, 10)
+# print(y_train)  # [5 0 4 ... 5 6 8]
+# print(y_train.shape)    # (60000, 10)
+# print(y_test)   # [7 2 1 ... 4 5 6]
+# print(y_test.shape)     # (10000, 10)
 
 Scaler = MinMaxScaler()     # 2차원에서만 됨
 Scaler.fit(x_train) 
 x_train = Scaler.transform(x_train)
 x_test = Scaler.transform(x_test)
 
-# Scaler랑 똑같음
-# x_train = x_train/255.
-# x_test = x_test/255.
+# 이미지는 4차원이니까 다시 4차원으로 바꿔주기
+x_train = x_train.reshape(60000, 28, 28, 3)
+x_test = x_test.reshape(10000, 28, 28, 3)
 
 #2. 모델 구성
-
-x_train = x_train.reshape(60000, 28, 28, 1)
-x_test = x_test.reshape(10000, 28, 28, 1)
-# reshape는 구조만 바뀌고, 순서와 내용(값)은 바뀌지 않는다 / 곱해서 합치면 동일 
-
-
-print(np.max(x_train), np.min(x_train))     # (1.0 0.0)
-
-
-model = Sequential()
-model.add(Conv2D(10, (2, 2), padding = 'same', input_shape = (28, 28, 1)))
-model.add(Dropout(0.5))
-model.add(Conv2D(filters = 5, kernel_size = (3,3), activation = 'relu'))
-model.add(Conv2D(filters = 6, kernel_size = (4,4), padding = 'valid', activation = 'relu'))
-model.add(Dense(32, activation = 'relu'))
-model.add(Dropout(0.5))
-model.add(Flatten())
-model.add(Dense(16, activation = 'relu'))
-model.add(Dense(8, activation = 'relu'))
-model.add(Dense(10, activation = 'softmax'))
+input1 = Input(shape=(28*28, 3))
+GRU1 = GRU(54, activation='relu',  return_sequences = True)(input1)
+GRU2 = GRU(34, activation='relu',  return_sequences = True)(GRU1)
+GRU3 = GRU(24)(GRU2)
+dense1 = Dense(16,activation='relu')(GRU3)
+dense2 = Dense(12,activation='relu')(dense1)
+output1 = Dense(10, activation = 'softmax')(dense2)
+model = Model(inputs=input1, outputs=output1)
 
 
 #3. 컴파일, 훈련
@@ -77,7 +61,12 @@ model.compile(loss = 'categorical_crossentropy', optimizer = 'adam',
 es = EarlyStopping(monitor = 'loss', patience = 100, mode = 'auto',
                    verbose = 1, restore_best_weights = True)
 
-model.fit(x_train, y_train, epochs = 500, batch_size = 125,
+# mcp = ModelCheckpoint(monitor='val_loss', mode = 'auto',
+#         verbose = 1, 
+#         save_best_only= True,
+#         filepath= './_save/MCP/keras27_3_MCP.hdf5')
+
+model.fit(x_train, y_train, epochs = 100, batch_size = 1000,
           validation_split = 0.2,
           verbose = 1,
           callbacks = [es])
@@ -98,6 +87,3 @@ print('acc : ', acc)
 # 걸린 시간
 print('time', round(end_time-start_time,2))
 
-# result :  [0.45846712589263916, 0.9072999954223633]
-# acc :  0.9073
-# time 2040.96
