@@ -1,6 +1,6 @@
 from tensorflow.keras.datasets import cifar100, fashion_mnist
 from tensorflow.python.keras.models import Sequential, Model
-from tensorflow.python.keras.layers import Dense, Input, GRU, MaxPooling2D, Dropout
+from tensorflow.python.keras.layers import Dense, Input, Conv1D, Flatten
 import numpy as np
 from tensorflow.python.keras.callbacks import EarlyStopping
 from sklearn.metrics import accuracy_score
@@ -41,13 +41,13 @@ x_train = x_train.reshape(60000, 28,28)
 x_test = x_test.reshape(10000, 28,28)
 
 #2. 모델 구성
-input1 = Input(shape=(28,28))
-GRU1 = GRU(54, activation='relu',  return_sequences = True)(input1)
-GRU2 = GRU(34, activation='relu',  return_sequences = True)(GRU1)
-GRU3 = GRU(24)(GRU2)
-dense1 = Dense(16,activation='relu')(GRU3)
-dense2 = Dense(12,activation='relu')(dense1)
-output1 = Dense(10, activation = 'softmax')(dense2)
+input1 = Input(shape=(28, 28))
+Conv1 = Conv1D(64, 2, activation='linear')(input1)
+Conv2 = Conv1D(26, 2, activation='relu')(Conv1)
+Flat1 = Flatten()(Conv2)
+dense2 = Dense(16, activation='relu')(Flat1)
+dense3 = Dense(12, activation='relu')(dense2)
+output1 = Dense(10, activation = 'relu')(dense3)
 model = Model(inputs=input1, outputs=output1)
 
 
@@ -88,7 +88,6 @@ print('acc : ', acc)
 print('time', round(end_time-start_time,2))
 
 
-
-# result :  [0.32893529534339905, 0.8851000070571899]
-# acc :  0.8851
-# time 863.07
+# result :  [nan, 0.10000000149011612]
+# acc :  0.1
+# time 46.95

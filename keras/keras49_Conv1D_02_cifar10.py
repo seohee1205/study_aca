@@ -1,6 +1,6 @@
 from tensorflow.keras.datasets import cifar10
 from keras.models import Sequential, Model
-from keras.layers import Dense, Input, GRU, Dropout
+from keras.layers import Dense, Input, Conv1D, Flatten
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 from tensorflow.python.keras.callbacks import EarlyStopping
@@ -40,13 +40,14 @@ x_test = x_test.reshape(10000, 32*32, 3)
 
 #2. 모델 구성
 input1 = Input(shape=(32*32, 3))
-GRU1 = GRU(54, activation='relu',  return_sequences = True)(input1)
-GRU2 = GRU(34, activation='relu',  return_sequences = True)(GRU1)
-GRU3 = GRU(24)(GRU2)
-dense1 = Dense(16,activation='relu')(GRU3)
-dense2 = Dense(12,activation='relu')(dense1)
-output1 = Dense(10, activation = 'softmax')(dense2)
+Conv1 = Conv1D(64, 2, activation='linear')(input1)
+Conv2 = Conv1D(26, 2, activation='relu')(Conv1)
+Flat1 = Flatten()(Conv2)
+dense2 = Dense(16, activation='relu')(Flat1)
+dense3 = Dense(12, activation='relu')(dense2)
+output1 = Dense(10, activation = 'softmax')(dense3)
 model = Model(inputs=input1, outputs=output1)
+
 
 #3. 컴파일, 훈련
 model.compile(loss = 'categorical_crossentropy', optimizer = 'adam',
@@ -54,7 +55,7 @@ model.compile(loss = 'categorical_crossentropy', optimizer = 'adam',
 
 # 정의하기
 start = time.time()
-es = EarlyStopping(monitor = 'loss', patience = 55, mode = 'auto',
+es = EarlyStopping(monitor = 'loss', patience = 40, mode = 'auto',
                    verbose = 1, restore_best_weights = True)
 
 # mcp = ModelCheckpoint(monitor='val_loss', mode = 'auto',
@@ -63,7 +64,7 @@ es = EarlyStopping(monitor = 'loss', patience = 55, mode = 'auto',
 #         filepath="".join([filepath, 'k27_', date, '_', filename]))
 
 
-model.fit(x_train, y_train, epochs = 100, batch_size = 1500,
+model.fit(x_train, y_train, epochs = 500, batch_size = 34,
           validation_split= 0.2,
           verbose = 1,
           callbacks = [es])
