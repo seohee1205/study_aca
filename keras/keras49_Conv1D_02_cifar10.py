@@ -33,7 +33,7 @@ scaler.fit(x_train)
 x_train = scaler.transform(x_train)
 x_test = scaler.transform(x_test)
 
-# 이미지는 4차원이니까 다시 4차원으로 바꿔주기
+
 x_train = x_train.reshape(50000, 32*32, 3)
 x_test = x_test.reshape(10000, 32*32, 3)
 
@@ -64,7 +64,7 @@ es = EarlyStopping(monitor = 'loss', patience = 40, mode = 'auto',
 #         filepath="".join([filepath, 'k27_', date, '_', filename]))
 
 
-model.fit(x_train, y_train, epochs = 500, batch_size = 34,
+model.fit(x_train, y_train, epochs = 500, batch_size = 85,
           validation_split= 0.2,
           verbose = 1,
           callbacks = [es])
