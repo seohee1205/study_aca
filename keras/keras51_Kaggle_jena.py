@@ -108,7 +108,7 @@ es = EarlyStopping(monitor = 'val_loss', patience = 100, mode = 'auto',
 #         save_best_only= True,
 #         filepath="".join([filepath, 'k27_', date, '_', filename]))
 
-model.fit(x_train, y_train, epochs = 500, batch_size = 2500,
+model.fit(x_train, y_train, epochs = 500, batch_size = 50,
           validation_split = 0.2,
           verbose = 1,
           callbacks = [es])
@@ -133,4 +133,8 @@ print("RMSE : ", rmse)
 print('걸린 시간 : ', np.round(end-start, 2))
 
 
-
+# 2642/2642 [==============================] - 11s 4ms/step - loss: 1.3302 - mae: 0.4219
+# loss :  [1.330181360244751, 0.42189234495162964]
+# r2 스코어 :  0.9772983751916163
+# RMSE :  1.1533349392465
+# 걸린 시간 :  349.55
