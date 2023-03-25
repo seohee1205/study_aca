@@ -5,11 +5,11 @@
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from tensorflow.keras.models import Sequential, Model
-from tensorflow.keras.layers import Dense, Conv1D, Input, Flatten
+from tensorflow.python.keras.models import Sequential, Model
+from tensorflow.python.keras.layers import Dense, Conv1D, Input, Flatten
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_absolute_error, r2_score, mean_squared_error
-from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
+from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
 import time
 
 #1. 데이터
@@ -56,9 +56,11 @@ print(x_train.shape, y_train.shape)     # (294385, 13), (294385,)
 print(x_test.shape, y_test.shape)       # 84531, 13) (84531,)
 print(x_predict.shape, y_predict.shape) # (41635, 13) (41635,)
 
+
 scaler=MinMaxScaler()
 scaler.fit(x_train)
 x=scaler.transform(x)
+
 
 dataset = np.array(range(1, 420551))
 timesteps = 6
@@ -87,12 +89,14 @@ print(x_predict.shape, y_predict.shape)     # (41629, 6, 13) (41629,)
 
 
 #2. 모델 구성
-model = Sequential()
-model.add(Conv1D(1, 2, input_shape=(6, 13)))
-model.add(Flatten())
-model.add(Dense(10, activation='relu'))
-model.add(Dense(12, activation='relu'))
-model.add(Dense(1, activation='relu'))
+input1 = Input(shape=(6, 13))
+Conv1 = Conv1D(64, 2)(input1)
+Conv2 = Conv1D(26, 2, activation='relu')(Conv1)
+Flat1 = Flatten()(Conv2)
+dense1 = Dense(16, activation='relu')(Flat1)
+dense2 = Dense(12, activation='relu')(dense1)
+output1 = Dense(1, activation = 'relu')(dense2)
+model = Model(inputs=input1, outputs=output1)
 # model.summary()
 
 
@@ -108,7 +112,7 @@ es = EarlyStopping(monitor = 'val_loss', patience = 100, mode = 'auto',
 #         save_best_only= True,
 #         filepath="".join([filepath, 'k27_', date, '_', filename]))
 
-model.fit(x_train, y_train, epochs = 500, batch_size = 2500,
+model.fit(x_train, y_train, epochs = 2000, batch_size = 500,
           validation_split = 0.2,
           verbose = 1,
           callbacks = [es])
@@ -116,10 +120,10 @@ model.fit(x_train, y_train, epochs = 500, batch_size = 2500,
 end = time.time()
 
 #4. 평가, 예측
-loss = model.evaluate(x_test, y_test)
+loss = model.evaluate(x_test_split, y_test_split)
 print('loss : ', loss)
 
-y_predict = model.predict(x_test)
+predict = model.predict(x_predict_split)
 
 r2 = r2_score(y_test, y_predict)
 print('r2 스코어 : ', r2)
