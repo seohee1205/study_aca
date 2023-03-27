@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.models import Sequential, Model
-from tensorflow.keras.layers import Dense, Conv1D, Input, Flatten
+from tensorflow.keras.layers import Dense, Conv1D, Input, Flatten, LSTM
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_absolute_error, r2_score, mean_squared_error
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
@@ -87,13 +87,18 @@ print(x_predict.shape, y_predict.shape)     # (41629, 6, 13) (41629,)
 
 
 #2. 모델 구성
-model = Sequential()
-model.add(Conv1D(1, 2, input_shape=(6, 13)))
-model.add(Flatten())
-model.add(Dense(10, activation='relu'))
-model.add(Dense(12, activation='relu'))
-model.add(Dense(1, activation='relu'))
+input1 = Input(shape = (6, 13))
+lstm1 = LSTM(50, activation = 'swish')(input1)
+dense1 = Dense(20, activation = 'swish')(lstm1)
+dense2 = Dense(24, activation = 'swish')(dense1)
+dense3 = Dense(36, activation = 'swish')(dense2)
+dense4 = Dense(16, activation = 'swish')(dense3)
+output1 = Dense(1)(dense4)
+
+model = Model(inputs = input1, outputs = output1)
+
 # model.summary()
+
 
 
 #3. 컴파일, 훈련
@@ -106,9 +111,10 @@ es = EarlyStopping(monitor = 'val_loss', patience = 100, mode = 'auto',
 # mcp = ModelCheckpoint(monitor='val_loss', mode = 'auto',
 #         verbose = 1, 
 #         save_best_only= True,
-#         filepath="".join([filepath, 'k27_', date, '_', filename]))
+#         filepath= './_save/MCP/keras51_ModelCheckPoint1.hdf5'
+#                       )
 
-model.fit(x_train, y_train, epochs = 500, batch_size = 50,
+model.fit(x_train, y_train, epochs = 100, batch_size = 50,
           validation_split = 0.2,
           verbose = 1,
           callbacks = [es])
@@ -138,3 +144,9 @@ print('걸린 시간 : ', np.round(end-start, 2))
 # r2 스코어 :  0.9772983751916163
 # RMSE :  1.1533349392465
 # 걸린 시간 :  349.55
+
+
+# loss :  [1.0515938997268677, 0.34739404916763306]
+# r2 스코어 :  0.9820529117070602
+# RMSE :  1.025472403580491
+# 걸린 시간 :  2509.9
