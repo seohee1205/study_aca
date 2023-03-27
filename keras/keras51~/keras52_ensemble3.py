@@ -21,6 +21,9 @@ print(x3.shape)    # (100, 3)
 y1 = np.array(range(2001, 2101))  # 환율
 y2 = np.array(range(1001, 1101))  # 금리
 
+# 실습1.
+# concaatenate -> Concatenate로 바꿔라
+
 
 #1-2. train, test 분리  ( \: 줄이 너무 길 때 씀, 한 줄이다라는 뜻)
 from sklearn.model_selection import train_test_split
@@ -67,7 +70,7 @@ output3 = Dense(11, name = 'output3')(dense24)
 
 #2-4. 모델 합침(머지)
 from tensorflow.keras.layers import concatenate, Concatenate     # 사슬처럼 잇다 / # 소문자: 함수, 대문자: class
-merge1 = concatenate([output1, output2, output3], name = 'mg1')    # 리스트 형태로 받아들임
+merge1 = Concatenate()([output1, output2, output3])    # 리스트 형태로 받아들임
 merge2 = Dense(32, activation= 'swish', name = 'mg2')(merge1)
 merge3 = Dense(23, activation= 'swish', name = 'mg3')(merge2)
 output4= Dense(18, name = 'hidden_output')(merge3)
@@ -146,3 +149,43 @@ print('걸린 시간 : ', np.round(end-start, 2))
 # r2 스코어 :  0.9999839658432799
 # RMSE :  0.09081907042644355
 # 걸린 시간 :  16.29
+
+
+# Concatenate 일 때
+# r2 스코어 :  0.9996018571084913
+# RMSE :  0.47518896881761696
+# 걸린 시간 :  18.37
+
+
+
+# 1. concatenate와 Concatenate 비교
+
+# "concatenate"와 "Concatenate"는 모두 케라스(Keras)에서 제공하는 함수로, 
+# 두 개 이상의 텐서를 결합하는 역할을 합니다.
+
+# 그러나 "concatenate"는 이전 버전의 케라스에서 사용되던 함수로, 소문자로 작성되어 있습니다. 
+# 이 함수는 두 개 이상의 텐서를 결합할 때 사용되며,
+# axis 매개변수를 사용하여 결합할 축을 지정할 수 있습니다.
+
+# 반면에 "Concatenate"는 케라스의 최신 버전에서 추가된 함수로, 대문자로 시작합니다.
+# 이 함수는 "concatenate"와 동일한 역할을 수행하지만, 클래스 형태로 작성되어 있으며, 객체를 만들어 사용합니다.
+# "Concatenate"는 concatenate와 달리 axis 매개변수를 사용하지 않고, axis를 지정하는 방법이 약간 다릅니다.
+
+# 따라서, "concatenate"와 "Concatenate"는 기능적으로 동일하지만, 
+# "Concatenate"는 최신 버전의 케라스에서 추가된 함수이며, 
+# 보다 객체 지향적인 방식으로 사용할 수 있습니다.
+
+
+# 2. 클래스 뒤에 () 왜 들어감?
+
+# 클래스(class) 뒤에 괄호()는 해당 클래스의 인스턴스(instance)를 생성하기 위한 문법입니다. 
+# 클래스는 객체(object)를 만들기 위한 청사진(blueprint)과 같은 역할을 하며, 
+# 실제로 사용하기 위해서는 인스턴스를 생성해야 합니다.
+
+# 인스턴스는 클래스를 기반으로 생성된 개별 객체를 말하며, 
+# 이 객체는 클래스에서 정의한 속성(attribute)과 메서드(method)를 가지고 있습니다. 
+# 이를 통해 프로그래머는 클래스에서 정의한 기능을 구현할 수 있습니다.
+
+# 클래스 인스턴스를 생성할 때, 괄호 안에는 생성자(constructor)에 전달될 인수(arguments)를 넣을 수 있습니다.
+# 생성자는 클래스에서 정의된 메서드 중 하나로, 인스턴스가 생성될 때 자동으로 호출되며, 
+# 인스턴스를 초기화하는 역할을 합니다.

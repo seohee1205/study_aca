@@ -12,6 +12,7 @@ print(x1.shape)    # (100, 2)
 y1 = np.array(range(2001, 2101))  # 환율
 y2 = np.array(range(1001, 1101))  # 금리
 
+
 #1-2. train, test 분리  ( \: 줄이 너무 길 때 씀, 한 줄이다라는 뜻)
 from sklearn.model_selection import train_test_split
 x1_train, x1_test, y1_train, y1_test, y2_train, y2_test = train_test_split(
@@ -101,3 +102,6 @@ print("RMSE : ", (rmse1 + rmse2) / 2)
 print('걸린 시간 : ', np.round(end-start, 2))
 
 
+# r2 스코어 :  0.999992327627258
+# RMSE :  0.061283421942335964
+# 걸린 시간 :  21.14
