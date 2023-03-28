@@ -1,6 +1,25 @@
 # 가중치는 컴파일 후에 저장해줘야 함
 # model.load_weights('./_save/keras26_5_save_weights1.h5')  
 
+# 삼성전자와 현대자동차 주가로 삼성전자 주가 맞히기
+
+# 각각 데이터에서 컬럼 7개 이상 추출(그 중 거래량은 반드시 들어갈 것)
+# timesteps와 feature는 알아서 잘라라
+
+# 제공된 데이터 외 추가 데이터 사용금지
+
+# 1. 삼성전자 28일(화) 종가 맞히기 (점수 배점 0.3)
+# 2. 삼성전자 29일(수) 아침 시가 맞히기 (점수 배점 0.7)
+
+
+#마감시간 : 27일 월 23시 59분 59초        /    28일 화 23시 59분 59초
+#윤서희 [삼성 1차] 60,350,07원   (np.round 소수 둘째자리까지)
+#윤서희 [삼성]
+#첨부파일 : keras53_samsung2_ysh_submit.py       데이터 및 가중치 불러오는 로드가 있어야함
+#          keras53_samsung4_ysh_submit.py
+#가중치 :  _save/samsung/keras53_samsung2_ysh.h5 / hdf5
+#         _save/samsung/keras53_samsung4_ysh.h5 / hdf5
+
 
 '''
 메일 제목:  윤서희 [삼성 1차] 60,350.07원
@@ -28,8 +47,8 @@ mcpname = '{epoch:04d}-{val_loss:.2f}.hdf5'
 date = datetime.datetime.now()
 date = date.strftime("%m%d_%H%M")
 
-datasets1 = pd.read_csv(path + '삼성전자 주가2.csv', index_col=0, encoding='cp949')
-datasets2 = pd.read_csv(path + '현대자동차.csv', index_col=0, encoding='cp949')
+datasets1 = pd.read_csv(path + '삼성전자 주가3.csv', index_col=0, encoding='cp949')
+datasets2 = pd.read_csv(path + '현대자동차2.csv', index_col=0, encoding='cp949')
 
 print(datasets1, datasets2)   # (3260, 16) (3140, 16)
 
@@ -98,7 +117,7 @@ print(x2_train_split.shape)      #  (165, 10, 10)
 #2-1. 모델1
 input1 = Input(shape = (10, 10))
 dense1 = LSTM(35, activation = 'swish', name = 'stock1')(input1)
-dense2 = Dense(24, activation = 'swish', name = 'stock2')(dense1)
+dense2 = Dense(20, activation = 'swish', name = 'stock2')(dense1)
 dense3 = Dense(12, activation = 'swish', name = 'stock3')(dense2)
 output1 = Dense(11, activation = 'swish', name = 'output1')(dense3)
 
@@ -106,13 +125,13 @@ output1 = Dense(11, activation = 'swish', name = 'output1')(dense3)
 input2 = Input(shape = (10, 10))
 dense11 = LSTM(30, name = 'weather1')(input2)
 dense12 = Dense(16, activation = 'swish', name = 'weather2')(dense11)
-dense13 = Dense(52, activation = 'swish', name = 'weather3')(dense12)
+dense13 = Dense(22, activation = 'swish', name = 'weather3')(dense12)
 dense14 = Dense(32, name = 'weather4')(dense13)
 output2 = Dense(11, name = 'output2')(dense14)
 
 #2-3. 머지
 merge1 = Concatenate()([output1, output2])    # 리스트 형태로 받아들임
-merge2 = Dense(32, activation= 'swish', name = 'mg2')(merge1)
+merge2 = Dense(24, activation= 'swish', name = 'mg2')(merge1)
 merge3 = Dense(23, activation= 'swish', name = 'mg3')(merge2)
 output3= Dense(1, name = 'hidden_output')(merge3)
 
