@@ -1,6 +1,7 @@
 # 가중치는 컴파일 후에 저장해줘야 함
 # model.load_weights('./_save/keras26_5_save_weights1.h5')  
 
+
 # 삼성전자와 현대자동차 주가로 삼성전자 주가 맞히기
 
 # 각각 데이터에서 컬럼 7개 이상 추출(그 중 거래량은 반드시 들어갈 것)
@@ -21,6 +22,7 @@
 #         _save/samsung/keras53_samsung4_ysh.h5 / hdf5
 
 
+
 '''
 메일 제목:  윤서희 [삼성 1차] 60,350.07원
 첨부파일:  keras53_samsung2_ysh_submit.py
@@ -30,8 +32,8 @@
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from tensorflow.keras.models import Sequential, Model
-from tensorflow.keras.layers import Dense, Input, LSTM
+from tensorflow.keras.models import Sequential, Model, load_model
+from tensorflow.keras.layers import Dense, Input, LSTM, Dropout, Conv1D
 from sklearn.preprocessing import MinMaxScaler
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
 import datetime
@@ -50,7 +52,7 @@ date = date.strftime("%m%d_%H%M")
 datasets1 = pd.read_csv(path + '삼성전자 주가3.csv', index_col=0, encoding='cp949')
 datasets2 = pd.read_csv(path + '현대자동차2.csv', index_col=0, encoding='cp949')
 
-print(datasets1, datasets2)   # (3260, 16) (3140, 16)
+print(datasets1, datasets2)   # [2100 rows x 16 columns]
 
 feature_cols = ['시가', '고가', '저가', 'Unnamed: 6', '등락률', '거래량', '기관', '개인', '외국계', '종가']
 
@@ -83,7 +85,7 @@ y = np.char.replace(y.astype(str), ',', '').astype(np.float64)
 # train, test 분리
 x1_train, x1_test, x2_train, x2_test, \
 y_train, y_test = train_test_split(
-    x1, x2, y, train_size=0.7, shuffle=False)
+    x1, x2, y, train_size=0.9, shuffle=False)
 
 # scaler
 scaler = MinMaxScaler()
@@ -110,47 +112,74 @@ x2_test_split = split_x(x2_test, timesteps)
 y_train_split = y_train[timesteps:]
 y_test_split = y_test[timesteps:]
 
+x1_pred = x1_test[-timesteps:].reshape(1, timesteps, 10)
+x2_pred = x2_test[-timesteps:].reshape(1, timesteps, 10)
+
+
 print(x1_train_split.shape)      # (165, 10, 10)
 print(x2_train_split.shape)      #  (165, 10, 10)
 
 
-#2-1. 모델1
-input1 = Input(shape = (10, 10))
-dense1 = LSTM(35, activation = 'swish', name = 'stock1')(input1)
-dense2 = Dense(20, activation = 'swish', name = 'stock2')(dense1)
-dense3 = Dense(12, activation = 'swish', name = 'stock3')(dense2)
-output1 = Dense(11, activation = 'swish', name = 'output1')(dense3)
 
-#2-2. 모델 2
-input2 = Input(shape = (10, 10))
-dense11 = LSTM(30, name = 'weather1')(input2)
-dense12 = Dense(16, activation = 'swish', name = 'weather2')(dense11)
-dense13 = Dense(22, activation = 'swish', name = 'weather3')(dense12)
-dense14 = Dense(32, name = 'weather4')(dense13)
-output2 = Dense(11, name = 'output2')(dense14)
 
-#2-3. 머지
-merge1 = Concatenate()([output1, output2])    # 리스트 형태로 받아들임
-merge2 = Dense(24, activation= 'swish', name = 'mg2')(merge1)
-merge3 = Dense(23, activation= 'swish', name = 'mg3')(merge2)
-output3= Dense(1, name = 'hidden_output')(merge3)
-
-model = Model(inputs=[input1, input2], outputs=output3)
+# 모델 불러오기
+model = load_model('./_save/samsung/keras53_samsung2_ysh.h5')
 
 
 #3. 컴파일, 훈련
-model.compile(loss = 'mse', optimizer = 'adam', metrics = ['mae'])
+# model.compile(loss = 'mse', optimizer = 'adam', metrics = ['mae'])
 
-model.load_weights('_save/samsung/keras53_samsung2_ysh1.h5')
+# es = EarlyStopping(monitor = 'val_loss', patience = 100, mode = 'auto',
+#                    verbose = 1, restore_best_weights= True)
+
+# mcp = ModelCheckpoint(monitor='val_loss', mode = 'auto',
+#          verbose = 1, 
+#          save_best_only= True,
+#          filepath="".join(['_save/samsung/keras53_samsung2_ysh.h5']))
+
+# model.fit([x1_train_split, x2_train_split], 
+#           y_train_split, 
+#           epochs = 80, batch_size = 18,
+#           validation_split = 0.2,
+#           verbose = 1,
+#           callbacks = [es])
 
 
 #4. 평가, 예측
-loss = model.evaluate([x1_test_split, x2_test_split], y_test_split)
-print('loss : ', loss)
 
-result = model.predict([x1_test_split, x2_test_split])
+result= model.evaluate([x1_test_split,x2_test_split], y_test_split)
+print('mse_loss :', result)
 
-print('내일의 종가는 바로바로 : ' , result[0])
+pred = model.predict([x1_pred, x2_pred])
+
+print(f'마지막 날 종가 : {y[-1]} \ny_pred : {np.round(pred[0],2)}')
 
 
-# model.save("./_save/samsung/keras53_samsung2_ysh1.h5")
+# model.save("./_save/samsung/keras53_samsung2_5_ysh1.h5")
+
+
+# _1_ysh
+# loss :  [50500100.0, 6224.962890625]
+# 내일의 종가는 바로바로 :  [63758.82]
+
+# _2_ysh
+# loss :  [38813588.0, 5473.0517578125]
+# 내일의 종가는 바로바로 :  [62913.72]
+
+#_3_ysh
+# mse_loss : [5113579.0, 1630.5916748046875]
+# 마지막 날 종가 : 62900.0 
+# y_pred : [62882.85]
+
+#_4_ysh
+# mse_loss : [4236747.5, 1835.8570556640625]
+# 마지막 날 종가 : 62900.0 
+# y_pred : [63459.94]
+
+#_5_ysh
+# mse_loss : [3968248.0, 1756.2916259765625]
+# 마지막 날 종가 : 62900.0 
+# y_pred : [63236.7]
+
+
+

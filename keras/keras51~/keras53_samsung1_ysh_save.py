@@ -85,7 +85,7 @@ y = np.char.replace(y.astype(str), ',', '').astype(np.float64)
 # train, test 분리
 x1_train, x1_test, x2_train, x2_test, \
 y_train, y_test = train_test_split(
-    x1, x2, y, train_size=0.7, shuffle=False)
+    x1, x2, y, train_size=0.9, shuffle=False)
 
 # scaler
 scaler = MinMaxScaler()
@@ -111,6 +111,10 @@ x2_test_split = split_x(x2_test, timesteps)
 
 y_train_split = y_train[timesteps:]
 y_test_split = y_test[timesteps:]
+
+x1_pred = x1_test[-timesteps:].reshape(1, timesteps, 10)
+x2_pred = x2_test[-timesteps:].reshape(1, timesteps, 10)
+
 
 print(x1_train_split.shape)      # (165, 10, 10)
 print(x2_train_split.shape)      #  (165, 10, 10)
@@ -165,24 +169,47 @@ es = EarlyStopping(monitor = 'val_loss', patience = 100, mode = 'auto',
 
 model.fit([x1_train_split, x2_train_split], 
           y_train_split, 
-          epochs = 100, batch_size = 14,
+          epochs = 80, batch_size = 18,
           validation_split = 0.2,
           verbose = 1,
           callbacks = [es])
 
 
 #4. 평가, 예측
-loss = model.evaluate([x1_test_split, x2_test_split], y_test_split)
-print('loss : ', loss)
 
-result = np.round(model.predict([x1_test_split, x2_test_split]), 2)
+result= model.evaluate([x1_test_split,x2_test_split], y_test_split)
+print('mse_loss :', result)
 
-print('내일의 종가는 바로바로 : ' , result[0])
+pred = model.predict([x1_pred, x2_pred])
+
+print(f'마지막 날 종가 : {y[-1]} \ny_pred : {np.round(pred[0],2)}')
 
 
-model.save("./_save/samsung/keras53_samsung2_2_ysh1.h5")
+model.save("./_save/samsung/keras53_samsung2_5_ysh1.h5")
 
 
 # _1_ysh
 # loss :  [50500100.0, 6224.962890625]
 # 내일의 종가는 바로바로 :  [63758.82]
+
+# _2_ysh
+# loss :  [38813588.0, 5473.0517578125]
+# 내일의 종가는 바로바로 :  [62913.72]
+
+#_3_ysh
+# mse_loss : [5113579.0, 1630.5916748046875]
+# 마지막 날 종가 : 62900.0 
+# y_pred : [62882.85]
+
+#_4_ysh
+# mse_loss : [4236747.5, 1835.8570556640625]
+# 마지막 날 종가 : 62900.0 
+# y_pred : [63459.94]
+
+#_5_ysh
+# mse_loss : [3968248.0, 1756.2916259765625]
+# 마지막 날 종가 : 62900.0 
+# y_pred : [63236.7]
+
+
+
