@@ -11,12 +11,25 @@
 #          keras53_samsung4_ysh_submit.py
 #가중치 :  _save/samsung/keras53_samsung2_ysh.h5 / hdf5
 #         _save/samsung/keras53_samsung4_ysh.h5 / hdf5
+# 삼성전자와 현대자동차 주가로 삼성전자 주가 맞히기
+
+# 각각 데이터에서 컬럼 7개 이상 추출(그 중 거래량은 반드시 들어갈 것)
+# timesteps와 feature는 알아서 잘라라
+
+# 제공된 데이터 외 추가 데이터 사용금지
+
+#마감시간 : 27일 월 23시 59분 59초        /    28일 화 23시 59분 59초
+#윤서희 [현대 2차] ?원
+#첨부파일 : keras53_samsung2_ysh_submit.py       데이터 및 가중치 불러오는 로드가 있어야함
+#          keras53_samsung4_ysh_submit.py
+#가중치 :  _save/samsung/keras53_samsung2_ysh.h5 / hdf5
+#         _save/samsung/keras53_samsung4_ysh.h5 / hdf5
 
 
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from tensorflow.keras.models import Sequential, Model
+from tensorflow.keras.models import Sequential, Model, load_model
 from tensorflow.keras.layers import Dense, Input, LSTM, Dropout, Conv1D, concatenate, LeakyReLU
 from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
@@ -104,59 +117,28 @@ x2_pred = x2_test[-timesteps:].reshape(1, timesteps, 10)
 print(x1_train_split.shape)    # (165, 15, 10)
 print(x2_train_split.shape)    # (165, 15, 10)
 
-#2. 모델구성
-# 2-1. 모델1
-input1 = Input(shape=(timesteps,10))
-conv1d1 = Conv1D(80,5, activation=LeakyReLU(0.9))(input1)
-lstm1 = LSTM(40, activation='swish', return_sequences=True, name='lstm32')(conv1d1)
-lstm31 = LSTM(70, activation='swish', name = 'lstm3')(lstm1)
-dense1 = Dense(68, activation='swish', name='dense1')(lstm31)
-dense2 = Dense(64, activation='swish', name='dense2')(dense1)
-dense3 = Dense(32, activation='swish', name='dense3')(dense2)
-dense4 = Dense(64, activation='swish', name='dense4')(dense3)
-output1 = Dense(32, name='output1')(dense4)
 
-
-# 2-2. 모델2
-input2 = Input(shape=(timesteps, 10))
-conv1d2 =Conv1D(80,5, activation=LeakyReLU(0.9))(input2)
-lstm2 = LSTM(40, activation='swish', return_sequences=True,  name='lstm2')(conv1d2)
-lstm3 = LSTM(70, activation='swish', name = 'lstm33')(lstm2)
-dense11 = Dense(108, activation='swish', name='dense11')(lstm3)
-dense12 = Dense(64, activation='swish', name='dense12')(dense11)
-dense13 = Dense(32, activation='swish', name='dense13')(dense12)
-dense14 = Dense(34, activation='swish', name='dense14')(dense13)
-output2 = Dense(32, name='output2')(dense14)
-
-
-merge1 = concatenate([output1, output2], name='merge1')
-merge2 = Dense(68, activation='swish', name='merge2')(merge1)
-merge3 = Dense(54, activation='swish', name='merge3')(merge2)
-merge4 = Dense(32, activation='swish', name='merge4')(merge3)
-merge5 = Dense(16, activation='swish', name='merge5')(merge4)
-merge6 = Dense(8, activation='swish', name='merge6')(merge5)
-last_output = Dense(1, name='last')(merge6)
-
-model = Model(inputs=[input1, input2], outputs=[last_output])
+# 모델 불러오기
+model = load_model('./_save/samsung/keras53_samsung4_ysh.h5')
 
 
 #3. 컴파일, 훈련
-model.compile(loss = 'mse', optimizer = 'adam', metrics = ['mae'])
+# model.compile(loss = 'mse', optimizer = 'adam', metrics = ['mae'])
 
-es = EarlyStopping(monitor = 'val_loss', patience = 200, mode = 'auto',
-                   verbose = 1, restore_best_weights= True)
+# es = EarlyStopping(monitor = 'val_loss', patience = 200, mode = 'auto',
+#                    verbose = 1, restore_best_weights= True)
 
-# mcp = ModelCheckpoint(monitor='val_loss', mode = 'auto',
-#          verbose = 1, 
-#          save_best_only= True,
-#          filepath="".join(['_save/samsung/keras53_samsung2_ysh.h5']))
+# # mcp = ModelCheckpoint(monitor='val_loss', mode = 'auto',
+# #          verbose = 1, 
+# #          save_best_only= True,
+# #          filepath="".join(['_save/samsung/keras53_samsung2_ysh.h5']))
 
-model.fit([x1_train_split, x2_train_split], 
-          y_train_split, 
-          epochs = 2000, batch_size = 24,
-          validation_split = 0.2,
-          verbose = 1,
-          callbacks = [es])
+# model.fit([x1_train_split, x2_train_split], 
+#           y_train_split, 
+#           epochs = 2000, batch_size = 22,
+#           validation_split = 0.2,
+#           verbose = 1,
+#           callbacks = [es])
 
 
 #4. 평가, 예측
@@ -169,7 +151,7 @@ predict_result = model.predict([x1_pred, x2_pred])
 print(f'어제 시가는 : {y[-1]} \n이틀 뒤의 시가는 바로 : {np.round(predict_result[0],2)}')
 
 
-model.save("_save/samsung/keras53_samsung4_15_ysh.h5")
+# model.save("_save/samsung/keras53_samsung4_12_ysh.h5")
 
 
 # 1
@@ -232,12 +214,3 @@ model.save("_save/samsung/keras53_samsung4_15_ysh.h5")
 # 어제 시가는 : 177100.0 
 # 이틀 뒤의 시가는 바로 : [179253.]
 
-#13
-# loss : [88201312.0, 8199.6875]
-# 어제 시가는 : 177100.0 
-# 이틀 뒤의 시가는 바로 : [179383.62]
-
-#14
-# loss : [59319248.0, 6559.98828125]
-# 어제 시가는 : 177100.0 
-# 이틀 뒤의 시가는 바로 : [180058.73]
