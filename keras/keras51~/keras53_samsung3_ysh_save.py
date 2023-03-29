@@ -109,7 +109,7 @@ input1 = Input(shape=(timesteps,10))
 conv1d1 = Conv1D(250,2)(input1)
 drop1 = Dropout(0.5)(conv1d1)
 lstm1 = LSTM(100, activation='swish', name='lstm1')(drop1)
-drop2 = Dropout(0.5)(lstm1)
+drop2 = Dropout(0.4)(lstm1)
 dense1 = Dense(68, activation='swish', name='dense1')(drop2)
 dense2 = Dense(64, activation='swish', name='dense2')(dense1)
 dense3 = Dense(32, activation='swish', name='dense3')(dense2)
@@ -119,8 +119,8 @@ output1 = Dense(32, name='output1')(dense4)
 
 # 2-2. 모델2
 input2 = Input(shape=(timesteps, 10))
-conv1d2 =Conv1D(120,2)(input2)
-lstm2 = LSTM(80, activation='swish', return_sequences = True, name='lstm2')(conv1d2)
+conv1d2 =Conv1D(80,2)(input2)
+lstm2 = LSTM(40, activation='swish', return_sequences = True, name='lstm2')(conv1d2)
 lstm3 = LSTM(70, activation='swish', name = 'lstm3')(lstm2)
 dense11 = Dense(108, activation='swish', name='dense11')(lstm3)
 dense12 = Dense(64, activation='swish', name='dense12')(lstm3)
@@ -153,7 +153,7 @@ es = EarlyStopping(monitor = 'val_loss', patience = 30, mode = 'auto',
 
 model.fit([x1_train_split, x2_train_split], 
           y_train_split, 
-          epochs = 300, batch_size = 20,
+          epochs = 300, batch_size = 16,
           validation_split = 0.2,
           verbose = 1,
           callbacks = [es])
@@ -169,7 +169,7 @@ predict_result = model.predict([x1_pred, x2_pred])
 print(f'어제 시가는 : {y[-1]} \n이틀 뒤의 시가는 바로 : {np.round(predict_result[0],2)}')
 
 
-model.save("_save/samsung/keras53_samsung4_4_ysh.h5")
+model.save("_save/samsung/keras53_samsung4_6_ysh.h5")
 
 
 # 1
@@ -186,4 +186,15 @@ model.save("_save/samsung/keras53_samsung4_4_ysh.h5")
 # loss : [391196960.0, 18545.671875]
 # 어제 시가는 : 177100.0 
 # 이틀 뒤의 시가는 바로 : [174059.4]
+
+#4
+# loss : [264029056.0, 14686.81640625]
+# 어제 시가는 : 177100.0 
+# 이틀 뒤의 시가는 바로 : [173540.12]
+
+#5
+# loss : [124958512.0, 9755.2734375]
+# 어제 시가는 : 177100.0 
+# 이틀 뒤의 시가는 바로 : [174194.52]
+
 
