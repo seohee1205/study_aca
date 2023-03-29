@@ -17,7 +17,7 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.models import Sequential, Model
-from tensorflow.keras.layers import Dense, Input, LSTM, Dropout, Conv1D, concatenate
+from tensorflow.keras.layers import Dense, Input, LSTM, Dropout, Conv1D, concatenate, LeakyReLU
 from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 import datetime
@@ -104,13 +104,13 @@ x2_pred = x2_test[-timesteps:].reshape(1, timesteps, 10)
 print(x1_train_split.shape)    # (165, 15, 10)
 print(x2_train_split.shape)    # (165, 15, 10)
 
+#2. 모델구성
 # 2-1. 모델1
 input1 = Input(shape=(timesteps,10))
-conv1d1 = Conv1D(250,2)(input1)
-drop1 = Dropout(0.5)(conv1d1)
-lstm1 = LSTM(100, activation='swish', name='lstm1')(drop1)
-drop2 = Dropout(0.4)(lstm1)
-dense1 = Dense(68, activation='swish', name='dense1')(drop2)
+conv1d1 = Conv1D(80,5, activation=LeakyReLU(0.9))(input1)
+lstm1 = LSTM(40, activation='swish', return_sequences=True, name='lstm32')(conv1d1)
+lstm31 = LSTM(70, activation='swish', name = 'lstm3')(lstm1)
+dense1 = Dense(68, activation='swish', name='dense1')(lstm31)
 dense2 = Dense(64, activation='swish', name='dense2')(dense1)
 dense3 = Dense(32, activation='swish', name='dense3')(dense2)
 dense4 = Dense(64, activation='swish', name='dense4')(dense3)
@@ -119,11 +119,11 @@ output1 = Dense(32, name='output1')(dense4)
 
 # 2-2. 모델2
 input2 = Input(shape=(timesteps, 10))
-conv1d2 =Conv1D(80,2)(input2)
-lstm2 = LSTM(40, activation='swish', return_sequences = True, name='lstm2')(conv1d2)
-lstm3 = LSTM(70, activation='swish', name = 'lstm3')(lstm2)
+conv1d2 =Conv1D(80,5, activation=LeakyReLU(0.9))(input2)
+lstm2 = LSTM(40, activation='swish', return_sequences=True,  name='lstm2')(conv1d2)
+lstm3 = LSTM(70, activation='swish', name = 'lstm33')(lstm2)
 dense11 = Dense(108, activation='swish', name='dense11')(lstm3)
-dense12 = Dense(64, activation='swish', name='dense12')(lstm3)
+dense12 = Dense(64, activation='swish', name='dense12')(dense11)
 dense13 = Dense(32, activation='swish', name='dense13')(dense12)
 dense14 = Dense(34, activation='swish', name='dense14')(dense13)
 output2 = Dense(32, name='output2')(dense14)
@@ -143,7 +143,7 @@ model = Model(inputs=[input1, input2], outputs=[last_output])
 #3. 컴파일, 훈련
 model.compile(loss = 'mse', optimizer = 'adam', metrics = ['mae'])
 
-es = EarlyStopping(monitor = 'val_loss', patience = 30, mode = 'auto',
+es = EarlyStopping(monitor = 'val_loss', patience = 200, mode = 'auto',
                    verbose = 1, restore_best_weights= True)
 
 # mcp = ModelCheckpoint(monitor='val_loss', mode = 'auto',
@@ -153,7 +153,7 @@ es = EarlyStopping(monitor = 'val_loss', patience = 30, mode = 'auto',
 
 model.fit([x1_train_split, x2_train_split], 
           y_train_split, 
-          epochs = 300, batch_size = 16,
+          epochs = 2000, batch_size = 32,
           validation_split = 0.2,
           verbose = 1,
           callbacks = [es])
@@ -169,7 +169,7 @@ predict_result = model.predict([x1_pred, x2_pred])
 print(f'어제 시가는 : {y[-1]} \n이틀 뒤의 시가는 바로 : {np.round(predict_result[0],2)}')
 
 
-model.save("_save/samsung/keras53_samsung4_6_ysh.h5")
+model.save("_save/samsung/keras53_samsung4_7_ysh.h5")
 
 
 # 1
@@ -197,4 +197,8 @@ model.save("_save/samsung/keras53_samsung4_6_ysh.h5")
 # 어제 시가는 : 177100.0 
 # 이틀 뒤의 시가는 바로 : [174194.52]
 
+#6
+# loss : [274485088.0, 16182.97265625]
+# 어제 시가는 : 177100.0 
+# 이틀 뒤의 시가는 바로 : [175027.3]
 
