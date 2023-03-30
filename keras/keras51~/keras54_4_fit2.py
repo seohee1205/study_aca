@@ -81,12 +81,24 @@ model.add(Dense(1, activation= 'sigmoid'))
 model.compile(loss = 'binary_crossentropy', optimizer = 'adam', metrics = ['acc'])
 
 # model.fit(xy_train[:][0], xy_train[:][1], epochs = 10)  # 에러
-# model.fit(xy_train[0][0], xy_train[0][1], epochs = 10)  # 통배치 넣으면 가능
-hist = model.fit_generator(xy_train, epochs = 30,   # x데이터, y데이터, batch
-                    steps_per_epoch = 32,   # 전체데이터크기/batch 사이즈 = 160/5 = 32
+# hist = model.fit(xy_train[0][0], xy_train[0][1], epochs = 10,   # 통배치 넣으면 가능
+#           batch_size = 16, 
+#           validation_data= (xy_test[0][0], xy_test[0][1]))
+  
+# hist = model.fit_generator(xy_train, epochs = 30,   # x데이터, y데이터, batch
+#                     steps_per_epoch = 32,   # 전체데이터크기/batch 사이즈 = 160/5 = 32
+#                     validation_data= xy_test,
+#                     validation_steps= 24,   # 발리데이터/batch = 120/5 = 24
+# )
+
+hist = model.fit(xy_train, epochs = 30,   # x데이터, y데이터, batch
+                    # steps_per_epoch = 32,   # 전체데이터크기/batch 사이즈 = 160/5 = 32
                     validation_data= xy_test,
                     validation_steps= 24,   # 발리데이터/batch = 120/5 = 24
 )
+
+
+
 
 loss = hist.history['loss']
 val_loss = hist.history['val_loss']
@@ -116,10 +128,6 @@ plt.show()
 
 #2. 튜닝 0.95 이상
 
-# val_acc: 0.9667
-# loss :  0.20503728091716766
-# val_loss :  0.255054771900177
-# acc :  1.0
-# val_acc :  0.9666666388511658
+
 
 

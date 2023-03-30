@@ -1,13 +1,14 @@
 import numpy as np
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
+# 이미지 전처리
 train_datagen = ImageDataGenerator(
     rescale = 1./255,           # MimMax 스케일링(정규화) 하겠다는 의미, .을 붙인 이유는 부동소수점으로 연산하라 라는 뜻
-    horizontal_flip= True,      # 가로 뒤집기 (수평방향 뒤집기)
-    vertical_flip= True,        # 세로 뒤집기 (수직방향 뒤집기)
-    width_shift_range = 0.1,    # 10%만큼
-    height_shift_range= 0.1,    # 상하로 10% 움직일 수 있다는 뜻
-    rotation_range= 5,          # 돌릴 수 있는 범위
+    horizontal_flip= True,      # 상하반전 (수평방향 뒤집기)
+    vertical_flip= True,        # 좌우반전 (수직방향 뒤집기)
+    width_shift_range = 0.1,    # 10%만큼 좌우로 이동 가능
+    height_shift_range= 0.1,    # 데이터 증폭: 상하로 10% 이동
+    rotation_range= 5,          # 지정된 각도 범위 내에서 돌릴 수 있는 범위
     zoom_range= 1.2,            # 20%까지 확대
     shear_range= 0.7,           # 찌그러트릴 수 있는 범위
     fill_mode = 'nearest',      # 이미지를 움직일 때, 움직여서 없어진 범위에 근접값을 입력해주는 기능
@@ -16,16 +17,16 @@ train_datagen = ImageDataGenerator(
 
 test_datagen = ImageDataGenerator(
     rescale = 1./255,
-                # 테스트 데이터는 평가하는 데이터이기 때문에 데이터를 증폭한다는 건 결과를 조작하는 것, 때문에 스케일을 제외한 옵션은 삭제
-                # 통상적으로 테스트 데이터는 증폭하지 않음
+# 테스트 데이터는 평가하는 데이터이기 때문에 데이터를 증폭한다는 건 결과를 조작하는 것, 때문에 스케일을 제외한 옵션은 삭제
+# 통상적으로 테스트 데이터는 증폭(전처리)하지 않음
 )
 
-xy_train = train_datagen.flow_from_directory(
+xy_train = train_datagen.flow_from_directory(   # 이미지제너레이터는 폴더별로 라벨값 부여
     
-    'd:/study_data/_data/brain/train/',
-    target_size=(200, 200),          # 이미지 데이터를 200 * 200으로 확대 혹은 축소해라. 사이즈를 동일하게 만들어줌
+    'd:/study_data/_data/brain/train/',     # 분류된 폴더의 상위폴더까지 지정  # directory= 폴더
+    target_size=(200, 200),           # 수집한 데이터마다 이미지 사진크기 다르므로 이미지크기 동일하게 고정
     batch_size = 5,                  # 5장씩 잘라라
-    class_mode = 'binary',           # 0과 1을 찾는 mode, int형 수치화해서 만들어줌
+    class_mode = 'binary',           # 0,1로 구별(nomal,ad) / 0,1,2(가위,바위,보)// # 원핫사용한 경우 => 'categorical'
     color_mode = 'grayscale',
     shuffle= True,
 )       # Found 160 images belonging to 2 classes.      0과 1의 클래스로 분로되었다.    # x = 160, 200. 200. 1로 변환됨, y= 160,
