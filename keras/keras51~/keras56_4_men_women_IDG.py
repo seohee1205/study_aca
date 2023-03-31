@@ -67,9 +67,9 @@ print(len(xy_train[0]))     # 2
 print(xy_train[0][0])       # x 5개 들어가있다. 
 print(xy_train[0][1])       # [1. 0. 0. 1. 0.]
 
-print(xy_train[0][0].shape)     # (2520, 150, 150, 3)
+print(xy_train[0][0].shape)     # (6618, 150, 150, 3)
 # print(xy_test[0][0].shape)      # (120, 30, 30, 1)
-print(xy_train[0][1].shape)     # (2520, 3)
+print(xy_train[0][1].shape)     # (6618,)
 # print(xy_test[0][1].shape)      # (120,)
 
 end1 = time.time()
@@ -86,6 +86,8 @@ end2 = time.time()
 print('넘파이 변경 소요 시간 : ', np.round(end2-start, 2))
 
 
+# 이미지 수치화 소요 시간 :  698.91
+# 넘파이 변경 소요 시간 :  895.91
 
 
 
