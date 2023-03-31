@@ -1,3 +1,5 @@
+# 150 * 150 * 3
+
 # https://www.kaggle.com/competitions/dogs-vs-cats-redux-kernels-edition/data
 
 # 넘파이까지 저장
@@ -5,7 +7,7 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import numpy as np
 import time
 
-path = 'd:/study_data/_data/cat_dog/Petimages/'
+path = 'd:/study_data/_data/horse-or-human/'
 
 
 # np.save(path + '파일명', arr = ???)
@@ -37,9 +39,9 @@ test_datagen = ImageDataGenerator(
 
 xy_train = train_datagen.flow_from_directory(   # 이미지제너레이터는 폴더별로 라벨값 부여
     
-    'd:/study_data/_data/cat_dog/Petimages/',     # 분류된 폴더의 상위폴더까지 지정  # directory= 폴더
-    target_size=(300, 300),           # 수집한 데이터마다 이미지 사진크기 다르므로 이미지크기 동일하게 고정
-    batch_size = 25000,  # 전체 데이터 쓰려면 160(전체 데이터 개수) 이상 넣기 / # 5장씩 잘라라
+    'd:/study_data/_data/horse-or-human/',     # 분류된 폴더의 상위폴더까지 지정  # directory= 폴더
+    target_size=(150, 150),           # 수집한 데이터마다 이미지 사진크기 다르므로 이미지크기 동일하게 고정
+    batch_size = 15000,  # 전체 데이터 쓰려면 160(전체 데이터 개수) 이상 넣기 / # 5장씩 잘라라
     class_mode = 'binary',           # 0,1로 구별(nomal,ad) / 0,1,2(가위,바위,보)// # 원핫사용한 경우 => 'categorical'
     # color_mode = 'grayscale',
     color_mode = 'rgb',
@@ -65,15 +67,15 @@ print(len(xy_train[0]))     # 2
 print(xy_train[0][0])       # x 5개 들어가있다. 
 print(xy_train[0][1])       # [1. 0. 0. 1. 0.]
 
-print(xy_train[0][0].shape)     # (5000, 30, 30, 3)
+print(xy_train[0][0].shape)     # (1027, 150, 150, 3)
 # print(xy_test[0][0].shape)      # (120, 30, 30, 1)
-print(xy_train[0][1].shape)     # (5000,)
+print(xy_train[0][1].shape)     # (1027,)
 # print(xy_test[0][1].shape)      # (120,)
 
 end1 = time.time()
 print('이미지 수치화 소요 시간 : ', np.round(end1-start, 2))
 
-save_path = 'd:/study_data/_save/cat_dog/'
+save_path = 'd:/study_data/_save/horse-or-human/'
 np.save(save_path + 'keras56_x_train.npy', arr=xy_train[0][0])
 # np.save(save_path + 'keras56_x_test.npy', arr=xy_test[0][0])
 np.save(save_path + 'keras56_y_train.npy', arr=xy_train[0][1])
@@ -84,5 +86,7 @@ end2 = time.time()
 print('넘파이 변경 소요 시간 : ', np.round(end2-start, 2))
 
 
-# 이미지 수치화 소요 시간 :  2900.14
-# 넘파이 변경 소요 시간 :  5205.66
+# 이미지 수치화 소요 시간 :  32.06
+# 넘파이 변경 소요 시간 :  42.09
+
+
