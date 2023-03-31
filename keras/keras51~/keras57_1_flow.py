@@ -50,4 +50,5 @@ plt.figure(figsize = (7, 7))
 for i in range(49):
     plt.subplot(7, 7, i+1)  # 7 바이 7의 서브플롯을 만든다.
     plt.axis('off')
-    plt.imshow(x_data[0][0][i], cmap = 'gray')
+    plt.imshow(x_data[0][0][i], cmap = 'gray')  
+plt.show()
