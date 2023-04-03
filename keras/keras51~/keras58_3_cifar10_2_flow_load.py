@@ -37,7 +37,7 @@ model.compile(loss = 'categorical_crossentropy',
 es = EarlyStopping(monitor = 'val_loss', patience = 10, mode = 'auto',
                    verbose = 1, restore_best_weights= True)
 
-model.fit(x_train, y_train, epochs = 1,   # x데이터, y데이터, batch
+model.fit(x_train, y_train, epochs = 10,   # x데이터, y데이터, batch
                     validation_split = 0.2,
                     batch_size = 130,
                     callbacks = [es])
@@ -54,3 +54,5 @@ acc = accuracy_score(y_test_acc, y_predict)
 
 print('acc : ', acc)
 
+# loss :  [1.232837438583374, 0.5652999877929688]
+# acc :  0.5653

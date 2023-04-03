@@ -7,13 +7,12 @@ from tensorflow.keras.callbacks import EarlyStopping
 from sklearn.metrics import accuracy_score
 from tensorflow.keras.utils import to_categorical
 
+save_path = path = 'd:/study_data/_save/men_women/'
 
-save_path = path = 'd:/study_data/_save/cat_dog/'
-
-x_train = np.load(save_path + 'keras58_8_cat_dog1_x_train.npy')
-x_test = np.load(save_path + 'keras58_8_cat_dog1_x_test.npy')
-y_train = np.load(save_path + 'keras58_8_cat_dog1_y_train.npy')
-y_test = np.load(save_path + 'keras58_8_cat_dog1_y_test.npy')
+x_train = np.load(save_path + 'keras58_99_men_women_x_train.npy')
+x_test = np.load(save_path + 'keras58_99_men_women_x_test.npy')
+y_train = np.load(save_path + 'keras58_99_men_women_y_train.npy')
+y_test = np.load(save_path + 'keras58_99_men_women_y_test.npy')
 
 
 #2. 모델구성
@@ -51,5 +50,5 @@ acc = accuracy_score(y_test, y_predict)
 
 print('acc : ', acc)
 
-# loss :  [91.12712097167969, 0.5]
-# acc :  0.5
+# loss :  [-1866391.125, 0.0]
+# acc :  0.0

@@ -31,12 +31,12 @@ test_datagen = ImageDataGenerator(
 
 xy_train = train_datagen.flow_from_directory(   # 이미지제너레이터는 폴더별로 라벨값 부여
     
-   'd:/study_data/_data/dogs_breed/',     # 분류된 폴더의 상위폴더까지 지정  # directory= 폴더
+   'd:/study_data/_data/rps/',     # 분류된 폴더의 상위폴더까지 지정  # directory= 폴더
     target_size=(100, 100),           # 수집한 데이터마다 이미지 사진크기 다르므로 이미지크기 동일하게 고정
     batch_size = 5,  # 전체 데이터 쓰려면 160(전체 데이터 개수) 이상 넣기 / # 5장씩 잘라라
-    class_mode = 'categorical',           # 0,1로 구별(nomal,ad) / 0,1,2(가위,바위,보)// # 원핫사용한 경우 => 'categorical'
+    class_mode = 'binary',           # 0,1로 구별(nomal,ad) / 0,1,2(가위,바위,보)// # 원핫사용한 경우 => 'categorical'
     # color_mode = 'grayscale',
-    color_mode = 'rgba',
+    color_mode = 'rgb',
     shuffle= True,
 )       # Found 160 images belonging to 2 classes.      0과 1의 클래스로 분로되었다.    # x = 160, 200. 200. 1로 변환됨, y= 160,
 
@@ -69,10 +69,10 @@ x_test = x_test/255.
 print(x_train.shape, y_train.shape)    # (100000, 28, 28, 1) (100000,)
 
 
-save_path = path = 'd:/study_data/_save/dogs_breed/'
+save_path = path = 'd:/study_data/_save/men_women/'
 
-np.save(save_path + 'keras58_9_dogs_breed_x_train.npy', arr = x_train)
-np.save(save_path + 'keras58_9_dogs_breed_x_test.npy', arr = x_test)
-np.save(save_path + 'keras58_9_dogs_breed_y_train.npy', arr = y_train)
-np.save(save_path + 'keras58_9_dogs_breed_y_test.npy', arr = y_test)
+np.save(save_path + 'keras58_99_men_women_x_train.npy', arr = x_train)
+np.save(save_path + 'keras58_99_men_women_x_test.npy', arr = x_test)
+np.save(save_path + 'keras58_99_men_women_y_train.npy', arr = y_train)
+np.save(save_path + 'keras58_99_men_women_y_test.npy', arr = y_test)
 
