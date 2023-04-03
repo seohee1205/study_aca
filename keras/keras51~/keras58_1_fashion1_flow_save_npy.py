@@ -44,14 +44,6 @@ x_augmented = x_augmented.reshape(x_augmented.shape[0],
                                   x_augmented.shape[1],
                                   x_augmented.shape[2], 1)
 
-
-# (1)
-# x_augmented = train_datagen.flow(
-#     x_augmented, y_augmented, batch_size= augment_size, shuffle= False
-# )
-# print(x_augmented)  # <keras.preprocessing.image.NumpyArrayIterator object at 0x0000013F3E81CB20>
-# print(x_augmented[0][0].shape)  # (40000, 28, 28, 1)
-
 # (2) = (1)     # 증폭하는 부분
 x_augmented = train_datagen.flow(
     x_augmented, y_augmented, batch_size= augment_size, shuffle= False
@@ -59,10 +51,6 @@ x_augmented = train_datagen.flow(
 
 print(x_augmented) 
 print(x_augmented.shape)  # (40000, 28, 28, 1)
-
-# x_train = x_train + x_augmented
-# print(x_train.shape)
-# 오류남
 
 print(np.max(x_train), np.min(x_train))     # 255.0 0.0
 print(np.max(x_augmented), np.min(x_augmented)) # 1.0 0.0
@@ -77,47 +65,10 @@ print(x_train.shape, y_train.shape)    # (100000, 28, 28, 1) (100000,)
 y_train = to_categorical(y_train) 
 y_test = to_categorical(y_test) 
 
-# 모델 만들기
-# 증폭과 증폭 x 성능비교
+save_path = 'd:/study_data/_save/fashion/'
 
-#2. 모델구성
-model = Sequential()
-model.add(Conv2D(256, (2,2), input_shape= (28, 28, 1), activation= 'relu'))
-model.add(MaxPooling2D())
-model.add(Conv2D(128, (2,2), activation= LeakyReLU(0.8)))
-model.add(MaxPooling2D())
-model.add(Conv2D(64, (2,2), activation= LeakyReLU(0.8)))
-model.add(Flatten())
-model.add(Dense(32, activation= 'relu'))
-model.add(Dense(64, activation= 'relu'))
-model.add(Dense(32, activation= 'relu'))
-model.add(Dense(10, activation= 'softmax'))
-# model.summary()
+np.save(save_path + 'keras58_1_fashion_x_train.npy', arr = x_train)
+np.save(save_path + 'keras58_1_fashion_x_test.npy', arr = x_test)
+np.save(save_path + 'keras58_1_fashion_y_train.npy', arr = y_train)
+np.save(save_path + 'keras58_1_fashion_y_test.npy', arr = y_test)
 
-
-#3. 컴파일, 훈련
-model.compile(loss = 'categorical_crossentropy',
-              optimizer = 'adam', metrics = ['acc'])
-
-es = EarlyStopping(monitor = 'val_loss', patience = 10, mode = 'auto',
-                   verbose = 1, restore_best_weights= True)
-
-hist = model.fit(x_train, y_train, epochs = 10,   # x데이터, y데이터, batch
-                    validation_split = 0.2,
-                    batch_size = 130,
-                    callbacks = [es])
-
-#4. 평가, 예측
-loss = model.evaluate(x_test, y_test)
-print('loss : ', loss)
-
-
-y_predict = model.predict(x_test)
-y_predict = np.argmax(y_predict, axis=1)
-y_test_acc = np.argmax(y_test, axis=1)
-acc = accuracy_score(y_test_acc, y_predict)
-
-print('acc : ', acc)
-
-# loss :  [0.26582071185112, 0.9039999842643738]
-# acc :  0.904

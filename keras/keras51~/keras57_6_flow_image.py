@@ -51,7 +51,7 @@ x_augmented = x_augmented.reshape(x_augmented.shape[0],
 # print(x_augmented)  # <keras.preprocessing.image.NumpyArrayIterator object at 0x0000013F3E81CB20>
 # print(x_augmented[0][0].shape)  # (40000, 28, 28, 1)
 
-# (2) = (1)
+# (2) = (1)     증폭하는 부분
 x_augmented = train_datagen.flow(
     x_augmented, y_augmented, batch_size= augment_size, shuffle= False
 ).next()[0]
@@ -130,3 +130,4 @@ for i in range(10):
     plt.axis('off')
     plt.imshow(x_augmented[i], cmap='gray')
 plt.show()
+
