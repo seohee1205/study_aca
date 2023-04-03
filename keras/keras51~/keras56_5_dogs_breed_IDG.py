@@ -54,31 +54,31 @@ xy_train = train_datagen.flow_from_directory(   # 이미지제너레이터는 �
 #     batch_size = 120,                
 #     class_mode = 'binary',          # y의 클래스 , binary: 수치로 빼라 / categorical: 원핫인코딩 됨
 #     # color_mode = 'grayscale',
-#     color_mode = 'rgb',
+#     color_mode = 'rgba',
 #     shuffle= True,
-# )       # Found 25000 images belonging to 2 classes.       0과 1의 클래스로 분로되었다.    # 160, 200, 200, 1로 변환됨, y = 120,
+# )       # Found 1030 images belonging to 5 classes.       0과 1의 클래스로 분로되었다.    # 160, 200, 200, 1로 변환됨, y = 120,
 
 # print(xy_train)     # <keras.preprocessing.image.DirectoryIterator object at 0x000001BDB18D8490>
 
-print(xy_train[0])
-# print(xy_train.shape)     # error
-print(len(xy_train))        # 1
-print(len(xy_train[0]))     # 2
-print(xy_train[0][0])       # x 5개 들어가있다. 
-print(xy_train[0][1])       # [1. 0. 0. 1. 0.]
+# print(xy_train[0])
+# # print(xy_train.shape)     # error
+# print(len(xy_train))        # 1
+# print(len(xy_train[0]))     # 2
+# print(xy_train[0][0])       # x 5개 들어가있다. 
+# print(xy_train[0][1])       # [1. 0. 0. 1. 0.]
 
-print(xy_train[0][0].shape)     # (6618, 150, 150, 3)
-# print(xy_test[0][0].shape)      # (120, 30, 30, 1)
-print(xy_train[0][1].shape)     # (6618,)
-# print(xy_test[0][1].shape)      # (120,)
+# print(xy_train[0][0].shape)     # (1030, 150, 150, 4)
+# # print(xy_test[0][0].shape)      # (120, 30, 30, 1)
+# print(xy_train[0][1].shape)     # (6618,)
+# # print(xy_test[0][1].shape)      # (120,)
 
 end1 = time.time()
 print('이미지 수치화 소요 시간 : ', np.round(end1-start, 2))
 
 save_path = 'd:/study_data/_save/dogs_breed/'
-np.save(save_path + 'keras56_x_train.npy', arr=xy_train[0][0])
+np.save(save_path + 'keras56_x_train500.npy', arr=xy_train[0][0])
 # np.save(save_path + 'keras56_x_test.npy', arr=xy_test[0][0])
-np.save(save_path + 'keras56_y_train.npy', arr=xy_train[0][1])
+np.save(save_path + 'keras56_y_train500.npy', arr=xy_train[0][1])
 # np.save(save_path + 'keras56_y_test.npy', arr=xy_test[0][1])
 
 end2 = time.time()
@@ -86,6 +86,8 @@ end2 = time.time()
 print('넘파이 변경 소요 시간 : ', np.round(end2-start, 2))
 
 
+# 이미지 수치화 소요 시간 :  0.99
+# 넘파이 변경 소요 시간 :  132.48
 
 
 

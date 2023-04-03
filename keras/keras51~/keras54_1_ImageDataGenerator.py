@@ -45,7 +45,7 @@ print(xy_train)     # <keras.preprocessing.image.DirectoryIterator object at 0x0
 
 print(xy_train[0])
 # print(xy_train.shape)     # error
-print(len(xy_train))        # 32
+print(len(xy_train))        # 32    (batch 5로 자름)
 print(len(xy_train[0]))     # 2
 print(xy_train[0][0])       # x 5개 들어가있다. 
 print(xy_train[0][1])       # [1. 0. 0. 1. 0.]
