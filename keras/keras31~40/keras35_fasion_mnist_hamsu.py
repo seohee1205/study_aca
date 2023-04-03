@@ -75,10 +75,10 @@ model.compile(loss = 'categorical_crossentropy', optimizer = 'adam',
 es = EarlyStopping(monitor = 'loss', patience = 100, mode = 'auto',
                    verbose = 1, restore_best_weights = True)
 
-mcp = ModelCheckpoint(monitor='val_loss', mode = 'auto',
-        verbose = 1, 
-        save_best_only= True,
-        filepath= './_save/MCP/keras27_3_MCP.hdf5')
+# mcp = ModelCheckpoint(monitor='val_loss', mode = 'auto',
+#         verbose = 1, 
+#         save_best_only= True,
+#         filepath= './_save/MCP/keras27_3_MCP.hdf5')
 
 model.fit(x_train, y_train, epochs = 5000, batch_size = 32,
           validation_split = 0.2,
