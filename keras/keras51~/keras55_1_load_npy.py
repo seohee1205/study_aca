@@ -16,7 +16,7 @@ x_test = np.load(path + 'keras55_1_x_test.npy')
 y_train = np.load(path +'keras55_1_y_train.npy')
 y_test = np.load(path + 'keras55_1_y_test.npy')
 
-# pritn
+# print
 print(x_train.shape, x_test.shape)   # (160, 100, 100, 1) (120, 100, 100, 1) /  minmax로 전처리까지 돼있음
 print(y_train.shape, y_test.shape)   # (160,) (120,)
 

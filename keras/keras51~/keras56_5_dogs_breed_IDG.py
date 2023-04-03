@@ -42,7 +42,7 @@ xy_train = train_datagen.flow_from_directory(   # 이미지제너레이터는 �
     'd:/study_data/_data/dogs_breed/',     # 분류된 폴더의 상위폴더까지 지정  # directory= 폴더
     target_size=(150, 150),           # 수집한 데이터마다 이미지 사진크기 다르므로 이미지크기 동일하게 고정
     batch_size = 15000,  # 전체 데이터 쓰려면 160(전체 데이터 개수) 이상 넣기 / # 5장씩 잘라라
-    class_mode = 'binary',           # 0,1로 구별(nomal,ad) / 0,1,2(가위,바위,보)// # 원핫사용한 경우 => 'categorical'
+    class_mode = 'categorical',           # 0,1로 구별(nomal,ad) / 0,1,2(가위,바위,보)// # 원핫사용한 경우 => 'categorical'
     # color_mode = 'grayscale',
     color_mode = 'rgba',
     shuffle= True,
@@ -86,8 +86,8 @@ end2 = time.time()
 print('넘파이 변경 소요 시간 : ', np.round(end2-start, 2))
 
 
-# 이미지 수치화 소요 시간 :  0.99
-# 넘파이 변경 소요 시간 :  132.48
+# 이미지 수치화 소요 시간 :  0.06
+# 넘파이 변경 소요 시간 :  136.5
 
 
 

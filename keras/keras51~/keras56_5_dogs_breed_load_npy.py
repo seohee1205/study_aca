@@ -42,7 +42,7 @@ model.add(Conv2D(32, (2,2), input_shape= (150, 150, 4), activation= 'relu'))
 model.add(Conv2D(64, (3,3), activation= 'relu'))
 model.add(Flatten())
 model.add(Dense(16, activation= 'relu'))
-model.add(Dense(1, activation= 'softmax'))
+model.add(Dense(5, activation= 'softmax'))
 model.summary()
 
 
@@ -73,10 +73,10 @@ hist = model.fit(x_train, y_train, epochs = 1000,   # x데이터, y데이터, ba
 )
 
 
-loss = hist.history['loss']
-val_loss = hist.history['val_loss']
-acc = hist.history['acc']
-val_acc = hist.history['val_acc']
+# loss = hist.history['loss']
+# val_loss = hist.history['val_loss']
+# acc = hist.history['acc']
+# val_acc = hist.history['val_acc']
 
 # print(acc)
 # print('loss : ', loss[-1])  
@@ -88,12 +88,10 @@ end2 = time.time()
 
 #4. 평가, 예측
 loss = model.evaluate(x_test, y_test)
-print('loss : ', loss)
+print('loss :', loss)
 
-pred = np.argmax(model.predict(x_test), axis=1)
-y_test = np.argmax(y_test,axis=1)
-acc = accuracy_score(y_test, pred)
-print('acc:',acc)
+y_pred = model.predict(x_test)
+print('acc : ', accuracy_score(np.argmax(y_test, axis=1), np.argmax(y_pred, axis=1)))
 
 
 
