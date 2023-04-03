@@ -1,4 +1,4 @@
-# 수치형으로 제공된 데이터를 증폭
+# 57_5 카피해서 복붙함
 
 from tensorflow.keras.datasets import fashion_mnist
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
@@ -21,6 +21,11 @@ train_datagen = ImageDataGenerator(
     zoom_range= 0.1,
     shear_range= 0.7,
     fill_mode= 'nearest'
+)
+
+# 변환되니까 2 만들기
+train_datagen2 = ImageDataGenerator(
+    rescale= 1./1,
 )
 
 augment_size = 40000
@@ -77,23 +82,20 @@ print(x_train.shape, y_train.shape)    # (100000, 28, 28, 1) (100000,)
 y_train = to_categorical(y_train) 
 y_test = to_categorical(y_test) 
 
-# 모델 만들기
-# 증폭과 증폭 x 성능비교
+####################### x, y 합치기 ######################
+batch_size = 64
+xy_train = train_datagen2.flow(x_train, y_train, 
+                               batch_size= batch_size, 
+                               shuffle= True)
 
 #2. 모델구성
 model = Sequential()
-model.add(Conv2D(256, (2,2), input_shape= (28, 28, 1), activation= 'relu'))
-model.add(MaxPooling2D())
-model.add(Conv2D(128, (2,2), activation= LeakyReLU(0.8)))
-model.add(MaxPooling2D())
-model.add(Conv2D(64, (2,2), activation= LeakyReLU(0.8)))
+model.add(Conv2D(64, (2, 2), input_shape= (28, 28, 1)))
+model.add(Conv2D(64, (2, 2)))
 model.add(Flatten())
-model.add(Dense(32, activation= 'relu'))
-model.add(Dense(64, activation= 'relu'))
-model.add(Dense(32, activation= 'relu'))
-model.add(Dense(10, activation= 'softmax'))
+model.add(Dense(32))
+model.add(Dense(10, activation = 'softmax'))
 # model.summary()
-
 
 #3. 컴파일, 훈련
 model.compile(loss = 'categorical_crossentropy',
@@ -102,10 +104,9 @@ model.compile(loss = 'categorical_crossentropy',
 es = EarlyStopping(monitor = 'val_loss', patience = 10, mode = 'auto',
                    verbose = 1, restore_best_weights= True)
 
-hist = model.fit(x_train, y_train, epochs = 10,   # x데이터, y데이터, batch
-                    validation_split = 0.2,
-                    batch_size = 130,
-                    callbacks = [es])
+model.fit_generator(xy_train, epochs = 10,   # x데이터, y데이터, batch
+                    steps_per_epoch= len(xy_train)/batch_size,
+                    callbacks =[es])
 
 #4. 평가, 예측
 loss = model.evaluate(x_test, y_test)
@@ -119,5 +120,5 @@ acc = accuracy_score(y_test_acc, y_predict)
 
 print('acc : ', acc)
 
-# loss :  [0.26582071185112, 0.9039999842643738]
-# acc :  0.904
+# loss :  [0.6704933047294617, 0.7717999815940857]
+# acc :  0.7718

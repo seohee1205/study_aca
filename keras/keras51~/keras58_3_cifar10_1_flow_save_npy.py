@@ -1,10 +1,15 @@
 # 수치형으로 제공된 데이터를 증폭
 
-from tensorflow.keras.datasets import fashion_mnist
+from tensorflow.keras.datasets import cifar10
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import numpy as np
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, LeakyReLU
+from tensorflow.keras.callbacks import EarlyStopping
+from sklearn.metrics import accuracy_score
+from tensorflow.keras.utils import to_categorical
 np.random.seed(0)
-(x_train, y_train), (x_test, y_test) = fashion_mnist.load_data()
+(x_train, y_train), (x_test, y_test) = cifar10.load_data()
 
 train_datagen = ImageDataGenerator(
     rescale= 1./255,
@@ -18,7 +23,7 @@ train_datagen = ImageDataGenerator(
     fill_mode= 'nearest'
 )
 
-augment_size = 1000
+augment_size = 10000
 
 # randidx = np.random.randint(60000, size = 40000)
 randidx = np.random.randint(x_train.shape[0], size = augment_size)
@@ -31,40 +36,14 @@ y_augmented = y_train[randidx].copy()
 print(x_augmented)
 print(x_augmented.shape, y_augmented.shape)  # (40000, 28, 28) (40000,)
 
-x_train = x_train.reshape(60000, 28, 28, 1)
-x_test = x_test.reshape(x_test.shape[0],
-                        x_test.shape[1], 
-                        x_test.shape[2], 1)
-x_augmented = x_augmented.reshape(x_augmented.shape[0], 
-                                  x_augmented.shape[1],
-                                  x_augmented.shape[2], 1)
 
-import time
-start_time = time.time()
-print("시작~")
-# (1)
-# x_augmented = train_datagen.flow(
-#     x_augmented, y_augmented, batch_size= augment_size, shuffle= False
-# )
-# print(x_augmented)  # <keras.preprocessing.image.NumpyArrayIterator object at 0x0000013F3E81CB20>
-# print(x_augmented[0][0].shape)  # (40000, 28, 28, 1)
-
-# (2) = (1)         증폭하는 부분
+# (2) = (1)     # 증폭하는 부분
 x_augmented = train_datagen.flow(
-    x_augmented, y_augmented, batch_size= augment_size, shuffle= False,
-    save_to_dir= 'd:/temp/'
+    x_augmented, y_augmented, batch_size= augment_size, shuffle= False
 ).next()[0]
-end_time = time.time() - start_time
 
-print(augment_size, "개 증폭에 걸린 시간 : ", round(end_time, 2), '초')
-
-# print(x_augmented) 
-# print(x_augmented.shape)  # (40000, 28, 28, 1)
-
-'''
-# x_train = x_train + x_augmented
-# print(x_train.shape)
-# 오류남
+print(x_augmented) 
+print(x_augmented.shape)  # (40000, 28, 28, 1)
 
 print(np.max(x_train), np.min(x_train))     # 255.0 0.0
 print(np.max(x_augmented), np.min(x_augmented)) # 1.0 0.0
@@ -75,5 +54,14 @@ x_test = x_test/255.
 
 print(x_train.shape, y_train.shape)    # (100000, 28, 28, 1) (100000,)
 
-'''
+# 원핫
+y_train = to_categorical(y_train) 
+y_test = to_categorical(y_test) 
+
+save_path = 'd:/study_data/_save/cifar10/'
+
+np.save(save_path + 'keras58_3_cifar10_x_train.npy', arr = x_train)
+np.save(save_path + 'keras58_3_cifar10_x_test.npy', arr = x_test)
+np.save(save_path + 'keras58_3_cifar10_y_train.npy', arr = y_train)
+np.save(save_path + 'keras58_3_cifar10_y_test.npy', arr = y_test)
 
