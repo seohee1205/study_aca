@@ -24,15 +24,11 @@ print(type(x))  # <class 'list'>
 
 ##### 2. get_dummies #####
 import pandas as pd
-x = pd.get_dummies(x)
-# print(x)
 # 리스트를 넘파이로 바꾸기
 import numpy as np
-my_series = pd.Series(x)
-dummies = pd.get_dummies(my_series, prefix='x')
-numpy_array = dummies.values
-
-print(numpy_array)
+# x = pd.get_dummies(np.array(x).reshape(11,))
+x = pd.get_dummies(np.array(x).ravel())     # 윗줄이랑 똑같음 
+print(x)
 
 # 왜 리스트는 안 되는지
 # 
