@@ -32,7 +32,7 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 pad_x = pad_sequences(x, padding= 'pre', maxlen= 5)
 print(pad_x)
 print(pad_x.shape)  # (14, 5)
-pad_x = pad_x.reshape(14, 5, 1)
+# pad_x = pad_x.reshape(14, 5, 1)       5: timesteps (maxlen)
 
 word_size = len(token.word_index)
 print("단어사전의 갯수 : ", word_size)     # 단어사전의 갯수 :  28
@@ -40,13 +40,20 @@ print("단어사전의 갯수 : ", word_size)     # 단어사전의 갯수 :  28
 
 #2. 모델 
 model = Sequential()
-# model.add(Embedding(28, 32))
-model.add(Embedding(28, 32, input_length= 5))
+# model.add(Embedding(28, 10))
+model.add(Embedding(input_dim = 28, output_dim = 10))
+# model.add(Embedding(28, 10, 5))         # error
+# model.add(Embedding(28, 33, input_length= 5))
+# model.add(Embedding(input_dim = 28, output_dim = 10, input_length= 5))        # input_length 명시하지 않으면 알아서 최대값으로 됨
 model.add(LSTM(32))
 model.add(Dense(32, activation = 'relu' ))
 model.add(Dense(10, activation = 'relu'))
 model.add(Dense(1, activation = 'sigmoid'))
 
+model.summary()
+
+
+'''
 #3. 컴파일, 훈련
 
 model.compile(loss = 'binary_crossentropy', optimizer = 'adam', metrics = ['acc'])
@@ -63,5 +70,5 @@ print('acc : ', acc)
 # acc : 1.0
 
 
-
+'''
 
