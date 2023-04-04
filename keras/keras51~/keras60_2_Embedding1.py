@@ -53,7 +53,7 @@ model.compile(loss = 'binary_crossentropy', optimizer = 'adam', metrics = ['acc'
 
 model.fit(pad_x, labels, epochs = 30, batch_size = 8,
           validation_split = 0.2,
-          verbose = 1)0
+          verbose = 1)
 
 
 #4. 평가, 예측

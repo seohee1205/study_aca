@@ -2,7 +2,7 @@ from keras.preprocessing.text import Tokenizer
 import numpy as np
 import pandas as pd
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Dense, LSTM, Reshape
 
 #1. 데이터
 docs = ['너무 재밌어요', '참 최고예요', ' 참 잘 만든 영화예요',
@@ -32,12 +32,37 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 pad_x = pad_sequences(x, padding= 'pre', maxlen= 5)
 print(pad_x)
 print(pad_x.shape)  # (14, 5)
+pad_x = pad_x.reshape(14, 5, 1)
 
 word_size = len(token.word_index)
 print("단어사전의 갯수 : ", word_size)     # 단어사전의 갯수 :  28
 
 
 #2. 모델 
+model = Sequential()
+# model.add(Dense(64, input_shape = (5,)))
+model.add(Reshape(target_shape = (5, 1), input_shape=(5,)))
+model.add(LSTM(32))
+model.add(Dense(32, activation = 'relu' ))
+model.add(Dense(20, activation = 'relu'))
+model.add(Dense(10, activation = 'relu'))
+model.add(Dense(1, activation = 'sigmoid'))
+
+#3. 컴파일, 훈련
+
+model.compile(loss = 'binary_crossentropy', optimizer = 'adam', metrics = ['acc'])
+
+model.fit(pad_x, labels, epochs = 30, batch_size = 8,
+          validation_split = 0.2,
+          verbose = 1)
+
+
+#4. 평가, 예측
+acc = model.evaluate(pad_x, labels)[1]
+print('acc : ', acc)
+
+# acc :  0.9285714030265808
+
 
 
 

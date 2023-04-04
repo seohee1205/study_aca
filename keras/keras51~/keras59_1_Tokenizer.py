@@ -22,18 +22,13 @@ print(type(x))  # <class 'list'>
 # print(x)
 # print(x.shape)      # (1, 11, 9)
 
-<<<<<<< HEAD
 ##### 2. get_dummies #####          1차원으로 받아들임
-=======
-##### 2. get_dummies #####
->>>>>>> e48ce4326dfa7624cf9655ab66a605fa948c519d
 import pandas as pd
 # 리스트를 넘파이로 바꾸기
 import numpy as np
 # x = pd.get_dummies(np.array(x).reshape(11,))
 x = pd.get_dummies(np.array(x).ravel())     # 윗줄이랑 똑같음 
 print(x)
-<<<<<<< HEAD
 print(x.shape)
 
 ##### 3. 사이킷런 onehot #####      2차원으로 받아들임
@@ -42,8 +37,3 @@ print(x.shape)
 # x = ohe.fit_transform(np.array(x).reshape(-1, 1)).toarray()
 # print(x)
 # print(x.shape)      # (11, 8)
-=======
-
-# 왜 리스트는 안 되는지
-# 
->>>>>>> e48ce4326dfa7624cf9655ab66a605fa948c519d
