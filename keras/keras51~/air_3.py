@@ -32,7 +32,7 @@ test_data['type']=type_to_HP(test_data['type'])
 features = ['air_inflow','air_end_temp','motor_current','motor_rpm','motor_temp','motor_vibe']
 
 # Split data into train and validation sets
-x_train, x_val = train_test_split(data[features], train_size=0.8, random_state=640)
+x_train, x_val = train_test_split(data[features], train_size= 0.9, random_state= 500)
 
 # Normalize data
 scaler = MaxAbsScaler()
@@ -49,8 +49,8 @@ autoencoder = Model(inputs=input_layer, outputs=decoder)
 autoencoder.compile(optimizer='adam', loss='mean_squared_error')
 
 # Train Autoencoder model
-es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=50)
-autoencoder.fit(x_train, x_train, epochs=30, batch_size=8, validation_data=(x_val, x_val), callbacks=[es])
+es = EarlyStopping(monitor='val_loss', mode='auto', verbose= 1, patience= 45)
+autoencoder.fit(x_train, x_train, epochs= 500, batch_size= 24, validation_data=(x_val, x_val), callbacks=[es])
 
 # Predict anomalies in test data
 test_data = scaler.transform(test_data[features])
@@ -68,4 +68,4 @@ import datetime
 date = datetime.datetime.now()  
 date = date.strftime("%m%d_%H%M")  
 
-submission.to_csv(save_path+'submit_air_'+date+ '.csv', index=False)
+submission.to_csv(save_path + date + 'submission.csv', index=False)
