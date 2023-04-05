@@ -41,9 +41,9 @@ print("단어사전의 갯수 : ", word_size)     # 단어사전의 갯수 :  28
 #2. 모델 
 model = Sequential()
 # model.add(Embedding(28, 10))
-model.add(Embedding(input_dim = 28, output_dim = 10))
-# model.add(Embedding(28, 10, 5))         # error
-# model.add(Embedding(28, 33, input_length= 5))
+model.add(Embedding(input_dim = 28, output_dim = 10))   # input_dim = 단어사전의 개수
+# model.add(Embedding(28, 10, 5))       # error
+# model.add(Embedding(28, 10, input_length= 5))
 # model.add(Embedding(input_dim = 28, output_dim = 10, input_length= 5))        # input_length 명시하지 않으면 알아서 최대값으로 됨
 model.add(LSTM(32))
 model.add(Dense(32, activation = 'relu' ))
@@ -68,7 +68,6 @@ acc = model.evaluate(pad_x, labels)[1]
 print('acc : ', acc)
 
 # acc : 1.0
-
 
 '''
 

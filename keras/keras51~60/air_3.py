@@ -32,7 +32,7 @@ test_data['type']=type_to_HP(test_data['type'])
 features = ['air_inflow','air_end_temp','motor_current','motor_rpm','motor_temp','motor_vibe']
 
 # Split data into train and validation sets
-x_train, x_val = train_test_split(data[features], train_size= 0.9, random_state= 500)
+x_train, x_val = train_test_split(data[features], train_size= 0.9, random_state= 555)
 
 # Normalize data
 scaler = MaxAbsScaler()
@@ -49,8 +49,8 @@ autoencoder = Model(inputs=input_layer, outputs=decoder)
 autoencoder.compile(optimizer='adam', loss='mean_squared_error')
 
 # Train Autoencoder model
-es = EarlyStopping(monitor='val_loss', mode='auto', verbose= 1, patience= 45)
-autoencoder.fit(x_train, x_train, epochs= 500, batch_size= 24, validation_data=(x_val, x_val), callbacks=[es])
+es = EarlyStopping(monitor='val_loss', mode='auto', verbose= 1, patience= 60)
+autoencoder.fit(x_train, x_train, epochs= 2000, batch_size= 20, validation_data=(x_val, x_val), callbacks=[es])
 
 # Predict anomalies in test data
 test_data = scaler.transform(test_data[features])
