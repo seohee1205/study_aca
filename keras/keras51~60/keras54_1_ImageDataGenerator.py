@@ -1,7 +1,7 @@
 import numpy as np
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
-# 이미지 전처리
+# 함수 정의
 train_datagen = ImageDataGenerator(
     rescale = 1./255,           # MimMax 스케일링(정규화) 하겠다는 의미, .을 붙인 이유는 부동소수점으로 연산하라 라는 뜻
     horizontal_flip= True,      # 상하반전 (수평방향 뒤집기)
