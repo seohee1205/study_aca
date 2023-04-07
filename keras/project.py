@@ -39,11 +39,11 @@ xy_test = test_datagen.flow_from_directory(
 
 
 # sigmoid는 0부터 1까지인데 감정을 0부터 3까지 정의했으니까 사용자 정의 함수를 사용해야함
-# import keras.backend as K
-# def custom_activation(x):
-#     return K.clip(x, 0, 3)
+import keras.backend as K
+def custom_activation(x):
+    return K.clip(x, 0, 3)
 
-# custom_activation.__name__ = 'custom_activation' # Add a __name__ attribute
+custom_activation.__name__ = 'custom_activation'    # Add a __name__ attribute
 
 # print(xy_train[0][1])     # [1. 1. 3. 2. 3. 3. 2. 3. 2. 3. 0. 2. 0. 3. 1. 0. 3. 2. 3. 0.]
 
@@ -57,11 +57,11 @@ model.add(Conv2D(8, (2, 2), input_shape= (100, 100, 1), activation= 'relu'))
 model.add(Conv2D(8, (3, 3), activation= 'relu'))
 model.add(Flatten())
 model.add(Dense(8, activation= 'relu'))
-model.add(Dense(1, activation= 'sigmoid'))
+model.add(Dense(1, activation= 'custom_activation'))
 model.summary()
 
 
-model.compile(loss = 'mse', optimizer = 'adam')
+model.compile(loss = 'mse', optimizer = 'adam', custom_objects={'custom_activation': custom_activation})
 model.fit_generator(xy_train, epochs = 10,  steps_per_epoch = 1, verbose = 1 )
 
 
