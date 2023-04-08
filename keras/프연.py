@@ -9,3 +9,7 @@ model.add(Flatten())
 model.add(Dense(8, activation= 'relu'))
 model.add(Dense(1, activation= 'sigmoid'))
 model.summary()
+
+
+##############################33
+import
