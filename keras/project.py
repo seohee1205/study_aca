@@ -4,7 +4,7 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from PIL import Image
 import keras.backend as K
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Conv2D, Flatten, Dense
+from tensorflow.keras.layers import Conv2D, Flatten, Dense, BatchNormalization, MaxPooling2D, Dropout
 from tensorflow.keras.callbacks import EarlyStopping
 
 
@@ -21,11 +21,11 @@ test_datagen = ImageDataGenerator(rescale=1./255)
 
 
 # 폴더별로 라벨값 부여
-batch_size = 30
+batch_size = 16
 
 xy_train = train_datagen.flow_from_directory(
  'd:/study_data/_data/project/train/',
-target_size=(100, 100),
+target_size=(48, 48),
 batch_size= batch_size,
 class_mode='sparse',        # 1차원 정수 넘파이 배열
 color_mode='grayscale',
@@ -35,7 +35,7 @@ shuffle=True
 
 xy_test = test_datagen.flow_from_directory(
  'd:/study_data/_data/project/test/',
-target_size=(100, 100),
+target_size=(48, 48),
 batch_size=batch_size,
 class_mode='sparse',
 color_mode='grayscale',
@@ -44,24 +44,36 @@ shuffle=True
 # Found 5085 images belonging to 4 classes.
 
 # 모델 구성
-model = Sequential()
-model.add(Conv2D(20, (2, 2), input_shape=(100, 100, 1), activation='relu'))
-model.add(Conv2D(16, (3, 3), activation='relu'))
-model.add(Flatten())
-model.add(Dense(16, activation='relu'))
-model.add(Dense(10, activation='relu'))
-model.add(Dense(8, activation='relu'))
-model.add(Dense(1, activation=lambda x: custom_activation(x)))
-model.summary()
 
-# 컴파일 및 훈련
+num_classes = 4
+num_detectors = 32
+width, height = 48, 48
+
+model = Sequential()
+model.add(Conv2D(filters=num_detectors, kernel_size=3, activation='swish', padding='same', input_shape=(width, height, 3)))
+model.add(BatchNormalization())
+model.add(Dropout(0.2))
+model.add(Conv2D(2*num_detectors, 3, activation='swish', padding='same'))
+model.add(BatchNormalization())
+model.add(Conv2D(2*num_detectors, 3, activation='swish', padding='same'))
+model.add(BatchNormalization())
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.2))
+model.add(Conv2D(2*2*num_detectors, 3, activation='swish', padding='same'))
+model.add(Flatten())
+model.add(Dense(2*2*num_detectors, activation='swish'))
+model.add(Dense(1, activation=lambda x: custom_activation(x)))
+# model.summary()
+
+
+# 컴파일, 훈련
 model.compile(loss= 'mse', optimizer= 'adam', metrics= ['acc'])
 
 es = EarlyStopping(monitor = 'acc', patience = 60, mode = 'auto',
                    verbose = 1, restore_best_weights= True)
 
-model.fit_generator(xy_train, epochs= 100,
-                    steps_per_epoch= 10,
+model.fit_generator(xy_train, epochs= 70,
+                    # steps_per_epoch= 10,
                     # validation_data = xy_test,
                     # validation_steps = 5085/batch_size,
                     callbacks = [es])
