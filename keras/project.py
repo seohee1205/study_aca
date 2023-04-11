@@ -8,12 +8,9 @@ from tensorflow.keras.layers import Conv2D, LeakyReLU, Flatten, Dense, BatchNorm
 from tensorflow.keras.callbacks import EarlyStopping
 
 
-# sigmoid는 0부터 1까지인데 감정을 0부터 3까지 정의했으니까 사용자 정의 함수를 사용해야함
-def custom_activation(x):
-    return K.clip(x, 0, 3,)      # x를 0부터 3까지 사이의 값을 반환하겠다
 
-
-custom_activation.name = 'custom_activation'
+savepath = 'd:/study_data/_save/project/',
+# mcpname = '{epoch:04d}-{val_loss:.2f}.hdf5'
 
 # 데이터 함수 정의
 train_datagen = ImageDataGenerator(rescale=1./255)
@@ -43,8 +40,16 @@ shuffle= False
 )
 # Found 5085 images belonging to 4 classes.
 
-# 모델 구성
 
+# sigmoid는 0부터 1까지인데 감정을 0부터 3까지 정의했으니까 사용자 정의 함수를 사용해야함
+def custom_activation(x):
+    return K.clip(x, 0, 3,)      # x를 0부터 3까지 사이의 값을 반환하겠다
+
+
+custom_activation.name = 'custom_activation'
+
+
+# 모델 구성
 model = Sequential()
 model.add(Conv2D(128, (2, 2), padding='same', input_shape=(48, 48, 1), activation= 'relu'))
 model.add(BatchNormalization())
@@ -64,7 +69,7 @@ model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Flatten())
 model.add(Dense(64, activation= 'relu'))
 model.add(Dense(32, activation= 'relu'))
-model.add(Dropout(0.2))
+model.add(Dropout(0.1))
 model.add(Dense(64, activation= 'relu'))
 model.add(Dense(50, activation= 'relu'))
 model.add(Dropout(0.2))
@@ -76,10 +81,10 @@ model.summary()
 # 컴파일, 훈련
 model.compile(loss= 'mse', optimizer= 'adam')
 
-es = EarlyStopping(monitor = 'val_loss', patience = 50, mode = 'min',
+es = EarlyStopping(monitor = 'val_loss', patience = 70, mode = 'min',
                    verbose = 1, restore_best_weights= True)
 
-model.fit(xy_train, epochs= 100,
+model.fit(xy_train, epochs= 200,
                     validation_data= xy_test,
                     shuffle = True,
                     # steps_per_epoch= 10,
@@ -131,7 +136,7 @@ def food(y):
         elif 20/8<=y[i]<21/8:
             print('emotion : default, food recommendation : 짜장면')    
         elif 22/8<=y[i]<23/8:
-            print('emotion : default, food recommendation : d')    
+            print('emotion : default, food recommendation : 간장치킨')    
             
             
  
@@ -159,3 +164,7 @@ food(model.predict(x_pred))
 # 평가, 예측
 loss = model.evaluate(xy_test)
 print('loss : ', loss)
+
+
+model.save('d:/study_data/_save/project/loss_1.h5')
+
