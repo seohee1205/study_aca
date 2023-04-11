@@ -18,7 +18,7 @@ datagen= ImageDataGenerator(rescale=1./255)
 
 
 # 폴더별로 라벨값 부여
-batch_size= 16
+batch_size= 12
 
 xy_train= datagen.flow_from_directory(
  'd:/study_data/_data/project/train/',
@@ -133,7 +133,7 @@ model.compile(loss= 'mse', optimizer= 'adam')
 es = EarlyStopping(monitor = 'val_loss', patience = 70, mode = 'min',
                    verbose = 1, restore_best_weights= True)
 
-model.fit(xy_train, epochs= 50,
+model.fit(xy_train, epochs= 200,
                     validation_data= xy_test,
                     shuffle = True,
                     # steps_per_epoch= 10,
@@ -216,7 +216,7 @@ loss = model.evaluate(xy_test)
 print('loss : ', loss)
 
 
-name = "환희"  # 원하는 이름 추가
+name = "광수"  # 원하는 이름 추가
 name_food = model.predict(x_pred)
 print(food(name_food))
 print(name + '에게 추천하는 음식은? : ', name_food)
