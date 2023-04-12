@@ -18,7 +18,7 @@ datagen= ImageDataGenerator(rescale=1./255)
 
 
 # 폴더별로 라벨값 부여
-batch_size= 16
+batch_size= 20
 
 xy_train= datagen.flow_from_directory(
  'd:/study_data/_data/project/train/',
@@ -143,59 +143,98 @@ model.fit(xy_train, epochs= 10,
                     )
 
 
+# 음식값 정의
+
+# food_frequency_angry= {
+#     "Spicy/Hot food: 26% ",
+#     "Chicken: 5.3% ",
+#     "Snacks: 3.2% ",
+#     "Meat dishes: 2.75% ",
+#     "Noodles: 2.1% ",
+#     "BiBimbab: 2.1% "
+# }
+
+# food_frequency_sad= {
+#     "Spicy/Hot food: 8.1% ",
+#     "Stew $ Soup: 5.7% ",
+#     "Noodles: 5.35% ",
+#     "Rice porridge: 3.7% ",
+#     "Meat dishes: 2.1% ",
+#     "Snacks: 1.6% "
+# }
+
+# food_frequency_default= {
+#     "샐러드"
+#     "라면"
+#     "돈까스"
+#     "육회비빔밥"
+#     "제육덮밥"
+#     "순두부찌개"
+# }
+    
+# food_frequency_happy = {
+#     "Meat dishes: 14.75% ",
+#     "Noodles:14% ",
+#     "Pizza&Spagetti: 8.85% ",
+#     "cake: 5.1% ",
+#     "Stew $ Soup: 4.7% ",
+#     "Rawfish&sushi: 4.05% "
+# }
+
+
 def food(y):
     for i in range(len(y)):
         if y[i]<1/8:
-            print('emotion : angry, food recommendation : 신길동 매운짬뽕')
+            print('emotion : angry, food recommendation : 낚지볶음')
         elif 1/8<=y[i]<2/8:   
-            print('emotion : angry, food recommendation : 디진다 돈까스')
+            print('emotion : angry, food recommendation : 치킨')
         elif 2/8<=y[i]<3/8:
-            print('emotion : angry, food recommendation : 송주불냉면')
+            print('emotion : angry, food recommendation : 과자')
         elif 3/8<=y[i]<4/8:
-            print('emotion : angry, food recommendation : 치킨플러스 - 핵매운치킨') 
+            print('emotion : angry, food recommendation : 소갈비') 
         elif 4/8<=y[i]<5/8:
-            print('emotion : angry, food recommendation : 염라대왕라면') 
+            print('emotion : angry, food recommendation : 칼국수') 
         elif 5/8<=y[i]<6/8:
-            print('emotion : angry, food recommendation : 엽기떡볶이')    
+            print('emotion : angry, food recommendation : 비빔밥')    
 
         elif 3/4<=y[i]<7/8:
-            print('emotion : sad, food recommendation : 닭발')
+            print('emotion : sad, food recommendation : 비빔국수')
         elif 7/8<=y[i]<8/8:
-            print('emotion : sad, food recommendation : 낙지김치죽')    
+            print('emotion : sad, food recommendation : 된장찌개')    
         elif 8/8<=y[i]<9/8:
-            print('emotion : sad, food recommendation : 짬뽕')    
+            print('emotion : sad, food recommendation : 울면')    
         elif 9/8<=y[i]<10/8:
-            print('emotion : sad, food recommendation : 매운돼지갈비찜')    
+            print('emotion : sad, food recommendation : 죽')    
         elif 10/8<=y[i]<11/8:
-            print('emotion : sad, food recommendation : 제육덮밥')    
+            print('emotion : sad, food recommendation : 돼지갈비')    
         elif 11/8<=y[i]<12/8:
-            print('emotion : sad, food recommendation : 안성탕면')    
+            print('emotion : sad, food recommendation : 과자')    
             
         elif 12/8<=y[i]<13/8:
-            print('emotion : default, food recommendation : 비빔냉면')
+            print('emotion : default, food recommendation : 샐러드')
         elif 13/8<=y[i]<14/8:
-            print('emotion : default, food recommendation : 카레')    
+            print('emotion : default, food recommendation : 라면')    
         elif 14/8<=y[i]<15/8:
-            print('emotion : default, food recommendation : 국밥')    
+            print('emotion : default, food recommendation : 돈까스')    
         elif 15/8<=y[i]<16/8:
-            print('emotion : default, food recommendation : 피자')    
+            print('emotion : default, food recommendation : 육회비빔밥')    
         elif 16/8<=y[i]<17/8:
-            print('emotion : default, food recommendation : 짜장면')    
+            print('emotion : default, food recommendation : 제육덮밥')    
         elif 17/8<=y[i]<18/8:
-            print('emotion : default, food recommendation : 간장치킨')    
+            print('emotion : default, food recommendation : 순두부찌개')    
             
         elif 18/8<=y[i]<19/8:
-            print('emotion : happy, food recommendation : 소고기')
+            print('emotion : happy, food recommendation : 소곱창')
         elif 19/8<=y[i]<20/8:
-            print('emotion : happy, food recommendation : 육회비빔밥')    
+            print('emotion : happy, food recommendation : 냉면')    
         elif 20/8<=y[i]<21/8:
-            print('emotion : happy, food recommendation : 돈까스')    
+            print('emotion : happy, food recommendation : 피자&스파게티')    
         elif 21/8<=y[i]<22/8:
-            print('emotion : happy, food recommendation : 쌀국수')    
+            print('emotion : happy, food recommendation : 케이크')    
         elif 22/8<=y[i]<23/8:
-            print('emotion : happy, food recommendation : 김밥')    
+            print('emotion : happy, food recommendation : 김치찌개')    
         elif 23/8<=y[i]:
-            print('emotion : happy, food recommendation : 죽')
+            print('emotion : happy, food recommendation : 회&초밥')
 
 
 # import random
