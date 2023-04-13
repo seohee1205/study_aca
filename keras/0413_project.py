@@ -18,7 +18,7 @@ datagen= ImageDataGenerator(rescale=1./255)
 
 
 # 폴더별로 라벨값 부여
-batch_size= 12
+batch_size= 10
 
 xy_train= datagen.flow_from_directory(
  'd:/study_data/_data/project/train/',
@@ -44,7 +44,7 @@ x_predict= datagen.flow_from_directory(
     'd:/study_data/y_predict/',
     target_size= (48, 48),
     batch_size= batch_size,
-    class_mode= 'categorical',           # 왜냐? 훈련시킨 데이터는 y라벨값이 있음, pred이미지는 감정이 뭔지 모르니까
+    class_mode= 'categorical',          # class_mode를 categorical로 하면서 원핫인코딩도 같이 해줌
     color_mode= 'grayscale',
     shuffle= False
 )
@@ -220,7 +220,7 @@ elif emotion=='happy':
 
 # 평가, 예측
 
-model.save("d:/study_data/y_predict/project_6.h5")
+model.save("d:/study_data/y_predict/project_7.h5")
 
 loss = model.evaluate(xy_test)
 print('loss : ', loss)
