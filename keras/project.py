@@ -18,7 +18,7 @@ datagen= ImageDataGenerator(rescale=1./255)
 
 
 # 폴더별로 라벨값 부여
-batch_size= 20
+batch_size= 16
 
 xy_train= datagen.flow_from_directory(
  'd:/study_data/_data/project/train/',
@@ -133,7 +133,7 @@ model.compile(loss= 'mse', optimizer= 'adam')
 es = EarlyStopping(monitor = 'val_loss', patience = 70, mode = 'min',
                    verbose = 1, restore_best_weights= True)
 
-model.fit(xy_train, epochs= 10,
+model.fit(xy_train, epochs= 200,
                     validation_data= xy_test,
                     shuffle = True,
                     # steps_per_epoch= 10,
