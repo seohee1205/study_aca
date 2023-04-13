@@ -3,12 +3,11 @@ import os
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from PIL import Image
 import keras.backend as K
-from tensorflow.keras.models import Sequential
+from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Conv2D, LeakyReLU, Flatten, Dense, BatchNormalization, MaxPooling2D, Dropout
 from tensorflow.keras.callbacks import EarlyStopping
 
 
-# model = load_model('./_save/samsung/keras53_samsung2_ysh.h5')
 
 savepath= 'd:/study_data/_save/project/',
 # mcpname = '{epoch:04d}-{val_loss:.2f}.hdf5'
@@ -18,7 +17,7 @@ datagen= ImageDataGenerator(rescale=1./255)
 
 
 # 폴더별로 라벨값 부여
-batch_size= 12
+batch_size= 10
 
 xy_train= datagen.flow_from_directory(
  'd:/study_data/_data/project/train/',
@@ -52,98 +51,11 @@ x_pred = x_predict[0][0].reshape(1, 48, 48, 1)
 # print(x_pred)
 # print(x_pred.shape)     # (1, 48, 48, 1)
 
-
-# 모델 구성
-model = Sequential()
-model.add(Conv2D(128, (2, 2), padding='same', input_shape=(48, 48, 1), activation= 'relu'))
-model.add(BatchNormalization())
-model.add(Conv2D(80, (2, 2), padding='same', activation= 'relu'))
-model.add(BatchNormalization())
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.1))
-model.add(Conv2D(60, (2, 2), padding='same', activation= 'relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(BatchNormalization())
-model.add(Conv2D(100, (2, 2), padding='same', activation= 'relu'))
-model.add(BatchNormalization())
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Conv2D(120, (2, 2), padding='same', activation= 'relu'))
-model.add(BatchNormalization())
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.2))
-model.add(Conv2D(90, (3, 3), padding='same', activation= 'relu'))
-model.add(BatchNormalization())
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Flatten())
-model.add(Dense(64, activation= 'relu'))
-model.add(Dense(32, activation= 'relu'))
-model.add(Dropout(0.2))
-model.add(Dense(64, activation= 'relu'))
-model.add(Dense(50, activation= 'relu'))
-model.add(Dropout(0.2))
-model.add(Dense(4, activation= 'softmax'))
-model.summary()
-
-# Model: "sequential"
-# _________________________________________________________________
-#  Layer (type)                Output Shape              Param #
-# =================================================================
-#  conv2d (Conv2D)             (None, 48, 48, 128)       640
-#  batch_normalization (BatchN  (None, 48, 48, 128)      512
-#  ormalization)
-#  conv2d_1 (Conv2D)           (None, 48, 48, 80)        41040
-#  batch_normalization_1 (Batc  (None, 48, 48, 80)       320
-#  hNormalization)
-#  max_pooling2d (MaxPooling2D  (None, 24, 24, 80)       0
-#  )
-#  dropout (Dropout)           (None, 24, 24, 80)        0
-#  conv2d_2 (Conv2D)           (None, 24, 24, 60)        19260
-#  max_pooling2d_1 (MaxPooling  (None, 12, 12, 60)       0
-#  2D)
-#  batch_normalization_2 (Batc  (None, 12, 12, 60)       240
-#  hNormalization)
-#  conv2d_3 (Conv2D)           (None, 12, 12, 100)       24100
-#  batch_normalization_3 (Batc  (None, 12, 12, 100)      400
-#  hNormalization)
-#  max_pooling2d_2 (MaxPooling  (None, 6, 6, 100)        0
-#  2D)
-#  conv2d_4 (Conv2D)           (None, 6, 6, 120)         48120
-#  batch_normalization_4 (Batc  (None, 6, 6, 120)        480
-#  hNormalization)
-#  max_pooling2d_3 (MaxPooling  (None, 3, 3, 120)        0
-#  2D)
-#  dropout_1 (Dropout)         (None, 3, 3, 120)         0
-#  conv2d_5 (Conv2D)           (None, 3, 3, 90)          97290
-#  batch_normalization_5 (Batc  (None, 3, 3, 90)         360
-#  hNormalization)
-#  max_pooling2d_4 (MaxPooling  (None, 1, 1, 90)         0
-#  2D)
-#  flatten (Flatten)           (None, 90)                0
-#  dense (Dense)               (None, 64)                5824
-#  dense_1 (Dense)             (None, 32)                2080
-#  dropout_2 (Dropout)         (None, 32)                0
-#  dense_2 (Dense)             (None, 64)                2112
-#  dense_3 (Dense)             (None, 50)                3250
-#  dropout_3 (Dropout)         (None, 50)                0
-#  dense_4 (Dense)             (None, 4)                 204
-# =================================================================
-# Total params: 246,232
-# Trainable params: 245,076
-# Non-trainable params: 1,156
-# _________________________________________________________________
+#######################################################
+model = load_model("d:/study_data/y_predict/project_6.h5")
 
 # 컴파일, 훈련
 model.compile(loss= 'categorical_crossentropy', optimizer= 'adam')
-
-es = EarlyStopping(monitor = 'val_loss', patience = 30, mode = 'min',
-                   verbose = 1, restore_best_weights= True)
-
-model.fit(xy_train, epochs= 200,
-                    validation_data= xy_test,
-                    shuffle = True,
-                    callbacks = [es])
-
-# print(model.predict(xy_train).shape)    # (20153, 4)
 
 # 음식값 정의
 import random
@@ -220,10 +132,12 @@ elif emotion=='happy':
 
 # 평가, 예측
 
-model.save("d:/study_data/y_predict/project_6.h5")
+# model.save("d:/study_data/y_predict/project_6.h5")
 
 loss = model.evaluate(xy_test)
 print('loss : ', loss)
 
 print(f'감정: {emotion} \n추천 메뉴 : {food}')
 
+# print(f'감정: {emotion}')
+# print(f'추천 메뉴 : {food}')

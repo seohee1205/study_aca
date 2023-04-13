@@ -147,38 +147,60 @@ model.fit(xy_train, epochs= 200,
 
 # food_frequency_angry= {
 #     "Spicy/Hot food: 26% ",
+#     "Alcohol: 16.3% ",
+#     "Chocolate: 10.35% ",
+#     "Drinks: 7.85% ",
 #     "Chicken: 5.3% ",
 #     "Snacks: 3.2% ",
 #     "Meat dishes: 2.75% ",
 #     "Noodles: 2.1% ",
-#     "BiBimbab: 2.1% "
+#     "BiBimbab: 2.1% ",
+#     "Ice cream: 1.9% ",
+#     "Cake: 1.7% ",
+#     "Chinese food: 1.5%"
 # }
 
 # food_frequency_sad= {
+#     "Alcohol: 23.55% ",
+#     "Chocolate: 16.35% ",    
 #     "Spicy/Hot food: 8.1% ",
+#     "Drinks: 6.35% ",
 #     "Stew $ Soup: 5.7% ",
 #     "Noodles: 5.35% ",
 #     "Rice porridge: 3.7% ",
 #     "Meat dishes: 2.1% ",
-#     "Snacks: 1.6% "
+#     "Snacks: 1.6% ",
+#     "Dessert: 1.6% ",
+#     "Chicken: 1.25% "
 # }
 
 # food_frequency_default= {
-#     "샐러드"
-#     "라면"
-#     "돈까스"
-#     "육회비빔밥"
-#     "제육덮밥"
-#     "순두부찌개"
+#      "Chicken: 13.7% ",
+#      "Alcohol: 11.75% ",
+#       "Meat dishes: 10.1% ",
+#       "Pizza&Spaghetti: 9.25% ",
+#       "Ice cream: 8.8% ",
+#       "Drinks: 4.85% ",
+#       "Chocolate: 4.65% ",
+#       "Cake: 3.75%",
+#       "Rawfish&Sushi: 2.65%",
+#       "Dessert: 2.4% ",
+#       "Snacks: 1.85% ",
+#       "Stew&Soup: 1.65%"
 # }
     
 # food_frequency_happy = {
 #     "Meat dishes: 14.75% ",
-#     "Noodles:14% ",
+#     "Chicken: 14% ",
+#     "Alcohol: 9.05% ",
 #     "Pizza&Spagetti: 8.85% ",
 #     "cake: 5.1% ",
+#     "Chocolate: 5.1% ",
 #     "Stew $ Soup: 4.7% ",
-#     "Rawfish&sushi: 4.05% "
+#     "Rawfish&sushi: 4.05% ",
+#     "Steak: 3.75% ",
+#     "Drinks: 2.2% ",
+#     "Fruit&vegetable: 1.75% "
 # }
 
 
