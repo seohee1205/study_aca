@@ -1,25 +1,30 @@
 ### 분류 데이터들 싹 모아서 테스트
 
-
 import numpy as np
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
-from sklearn.datasets import load_iris, load_breast_cancer, load_diabetes, load_digits, fetch_covtype, load_wine
+from sklearn.datasets import load_iris, load_breast_cancer, load_digits, fetch_covtype, load_wine
+from sklearn.preprocessing import MinMaxScaler
 from sklearn.svm import LinearSVC
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+import warnings
+warnings.filterwarnings(action = 'ignore')
 
-index1 = [load_iris(return_X_y=True), load_breast_cancer(return_X_y=True), load_diabetes(return_X_y=True), load_digits(return_X_y=True), fetch_covtype(return_X_y=True), load_wine(return_X_y=True)]
+index1 = [load_iris, load_breast_cancer, load_digits, fetch_covtype, load_wine]
 index2 = [LinearSVC(), LogisticRegression(), DecisionTreeClassifier(), RandomForestClassifier()]
 
-for i in range(len(index1)):
-    x, y = index1[i]
-    for i in range(4):
-        model = index2[i]
+scaler = MinMaxScaler()
+
+for i in index1:
+    x, y = i(return_X_y=True)
+    x = scaler.fit_transform(x)
+    for j in index2:
+        model = j
         model.fit(x, y)
         results = model.score(x, y)
-        print(results)
+        print(i.__name__, type(j).__name__,results)
         
 
 #1. 데이터
@@ -27,8 +32,6 @@ for i in range(len(index1)):
 # x = datasets.data
 # y = datasets['target']
 # x, y = load_iris(return_X_y= True)
-
-
 
 # print(x.shape, y.shape)         # (150, 4) (150,)
 
@@ -76,6 +79,25 @@ for i in range(len(index1)):
 # 어떤 모델을 사용할 건지 / 모델 돌아가는 구성 방식 보기, 
 
 
-# 아이리스: 0.9733333333333334, 1.0, 1.0
+# load_iris LinearSVC 0.9466666666666667
+# load_iris LogisticRegression 0.94
+# load_iris DecisionTreeClassifier 1.0
+# load_iris RandomForestClassifier 1.0
+# load_breast_cancer LinearSVC 0.9806678383128296
+# load_breast_cancer LogisticRegression 0.9718804920913884
+# load_breast_cancer DecisionTreeClassifier 1.0
+# load_breast_cancer RandomForestClassifier 1.0
+# load_digits LinearSVC 0.9888703394546466
+# load_digits LogisticRegression 0.9844184752365053
+# load_digits DecisionTreeClassifier 1.0
+# load_digits RandomForestClassifier 1.0
+# fetch_covtype LinearSVC 0.7126634217537675
+# fetch_covtype LogisticRegression 0.7200161098221723
+# fetch_covtype DecisionTreeClassifier 1.0
+# fetch_covtype RandomForestClassifier 1.0
+# load_wine LinearSVC 0.9943820224719101
+# load_wine LogisticRegression 0.9887640449438202
+# load_wine DecisionTreeClassifier 1.0
+# load_wine RandomForestClassifier 1.0
           
 

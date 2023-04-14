@@ -1,17 +1,50 @@
 # 회귀 데이터 싹 모아서 모델 만들어서 테스트
 
-
-
 import numpy as np
-from sklearn.datasets import load_breast_cancer, fetch_california_housing,
+from sklearn.datasets import fetch_california_housing, load_diabetes
+import pandas as pd
+
+path_ddarung = './_data/ddarung/'
+path_kaggle_bike = './_data/kaggle_bike/'
+
+ddarung_train = pd.read_csv(path_ddarung + 'train.csv', index_col = 0)
+ddarung_test = pd.read_csv(path_ddarung + 'test.csv', index_col = 0)
+kaggle_train = pd.read_csv(path_kaggle_bike + 'train.csv', index_col = 0)  
+kaggle_test = pd.read_csv(path_kaggle_bike + 'test.csv', index_col = 0)
+
+ddarung_train = ddarung_train.dropna() # 결측치 제거
+ddarung_test = ddarung_test.dropna()
+
+x_d_train = ddarung_train.drop(['count'], axis = 1)
+y_d_train = ddarung_train['count']
+x_d_pred = ddarung_test
+
+x_k_train = kaggle_train.drop(['count', 'casual', 'registered'], axis = 1)
+y_k_train = kaggle_train['count']
+
+data_list= [fetch_california_housing, load_diabetes, ddarung_train, kaggle_train]
+model_list= [DecisionTreeRegressor(), RandomForestRegressor()]
+
+for i in range(len(data_list)):
+    if i<2:
+        x, y= i(return_X_y=True)
+    elif i==2:
+        x= ddarung_train.drop(['count'], axis =1)
+        y = ddarung_train['count']
+    elif i==3:
+        x= kaggle_train.drop(['count', 'casual', 'registered'], axis = 1)
+        y= kaggle_train['count']
+
+
+
 
 #1. 데이터
 # datasets = load_iris()
 # x = datasets.data
 # y = datasets['target']
-x, y = fetch_california_housing(return_X_y= True)
+# x, y = fetch_california_housing(return_X_y= True)
 
-print(x.shape, y.shape)         # (150, 4) (150,)
+# print(x.shape, y.shape)         # (150, 4) (150,)
 
 #2. 모델 구성
 # from tensorflow.keras.models import Sequential
@@ -30,7 +63,7 @@ from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier, Rand
 
 # model = LinearSVC(C= 0.3)
 # model = LogisticRegressor()
-model = LogisticRegression()        # 분류 / sigmoid
+# model = LogisticRegression()        # 분류 / sigmoid
 # model = DecisionTreeRegression()
 # model = DecisionTreeClassifier()
 # model = RandomForestRegressor()
@@ -49,15 +82,15 @@ model = LogisticRegression()        # 분류 / sigmoid
 #               metrics=['acc']) 
 # model.fit(x, y, epochs= 100, validation_split= 0.2)
 
-model.fit(x, y)
+# model.fit(x, y)
 
 
 #4. 평가, 예측
 # results = model.evaluate(x, y)
 
-results = model.score(x, y)
+# results = model.score(x, y)
 
-print(results)      # 0.9666666666666667
+# print(results)      # 0.9666666666666667
 
 # 어떤 모델을 사용할 건지 / 모델 돌아가는 구성 방식 보기, 
      
