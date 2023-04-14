@@ -52,7 +52,7 @@ x_pred = x_predict[0][0].reshape(1, 48, 48, 1)
 # print(x_pred.shape)     # (1, 48, 48, 1)
 
 #######################################################
-model = load_model("d:/study_data/y_predict/project_7.h5")
+model = load_model("d:/study_data/y_predict/project_6.h5")
 
 # 컴파일, 훈련
 model.compile(loss= 'categorical_crossentropy', optimizer= 'adam')
