@@ -9,7 +9,7 @@ from tensorflow.keras.callbacks import EarlyStopping
 
 
 
-savepath= 'd:/study_data/_save/project/',
+# savepath= 'd:/study_data/_save/project/',
 # mcpname = '{epoch:04d}-{val_loss:.2f}.hdf5'
 
 # 데이터 함수 정의
@@ -17,7 +17,7 @@ datagen= ImageDataGenerator(rescale=1./255)
 
 
 # 폴더별로 라벨값 부여
-batch_size= 10
+batch_size= 12
 
 xy_train= datagen.flow_from_directory(
  'd:/study_data/_data/project/train/',
@@ -52,10 +52,10 @@ x_pred = x_predict[0][0].reshape(1, 48, 48, 1)
 # print(x_pred.shape)     # (1, 48, 48, 1)
 
 #######################################################
-model = load_model("d:/study_data/y_predict/project_6.h5")
+model = load_model("d:/study_data/y_predict/project_0416_0256.h5")
 
 # 컴파일, 훈련
-model.compile(loss= 'categorical_crossentropy', optimizer= 'adam')
+# model.compile(loss= 'categorical_crossentropy', optimizer= 'adam')
 
 # 음식값 정의
 import random
@@ -124,12 +124,15 @@ elif emotion=='happy':
 
 # 평가, 예측
 
-# model.save("d:/study_data/y_predict/project_6.h5")
+# model.save("d:/study_data/y_predict/project_0416_0256.h5")
 
-loss = model.evaluate(xy_test)
-print('loss : ', loss)
+results = model.evaluate(xy_test)
+print(results)
+print('loss : ', results[0])
+print('acc : ', results[1])
 
 print(f'감정: {emotion} \n추천 메뉴 : {food}')
+
 
 # print(f'감정: {emotion}')
 # print(f'추천 메뉴 : {food}')

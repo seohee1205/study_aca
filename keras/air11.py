@@ -27,7 +27,7 @@ features = ['air_inflow', 'air_end_temp', 'out_pressure', 'motor_current', 'moto
 X = train_data[features]
 
 # 학습 데이터를 훈련 세트와 검증 세트로 나누기
-X_train, X_val = train_test_split(X, train_size= 0.9, random_state= 5200)
+X_train, X_val = train_test_split(X, train_size= 0.9, random_state= 5222)
 
 # 데이터 정규화
 scaler = MinMaxScaler()
@@ -36,8 +36,8 @@ test_data_normalized = scaler.transform(test_data.iloc[:, :-1])
 
 # lof사용하여 이상치 탐지
 n_neighbors = 37
-contamination = 0.045
-lof = LocalOutlierFactor(n_neighbors=n_neighbors, contamination=contamination, leaf_size=20)
+contamination = 0.05
+lof = LocalOutlierFactor(n_neighbors=n_neighbors, contamination=contamination, leaf_size=21)
 y_pred_train_tuned = lof.fit_predict(X_train)
 
 # 이상치 탐지
