@@ -18,7 +18,7 @@ datagen= ImageDataGenerator(rescale=1./255)
 
 
 # 폴더별로 라벨값 부여
-batch_size= 10
+batch_size= 12
 
 xy_train= datagen.flow_from_directory(
  'd:/study_data/_data/project/train/',
@@ -133,9 +133,9 @@ model.summary()
 # _________________________________________________________________
 
 # 컴파일, 훈련
-model.compile(loss= 'categorical_crossentropy', optimizer= 'adam')
+model.compile(loss= 'categorical_crossentropy', optimizer= 'adam', metrics= 'acc')
 
-es = EarlyStopping(monitor = 'val_loss', patience = 30, mode = 'min',
+es = EarlyStopping(monitor = 'val_acc', patience = 30, mode = 'max',
                    verbose = 1, restore_best_weights= True)
 
 model.fit(xy_train, epochs= 200,
@@ -212,10 +212,15 @@ elif emotion=='happy':
 
 # 평가, 예측
 
-# model.save("d:/study_data/y_predict/project_7.h5")
+model.save("d:/study_data/y_predict/project_0416_0256.h5")
 
-loss = model.evaluate(xy_test)
-print('loss : ', loss)
+results = model.evaluate(xy_test)
+print(results)
+print('loss : ', results[0])
+print('acc : ', results[1])
 
 print(f'감정: {emotion} \n추천 메뉴 : {food}')
 
+
+# loss :  0.9760058522224426
+# acc :  0.6888889074325562
