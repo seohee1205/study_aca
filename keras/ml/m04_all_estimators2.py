@@ -8,7 +8,7 @@ from sklearn.metrics import r2_score
 import warnings
 warnings.filterwarnings("ignore")
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.utils import all_estimators
+from sklearn.utils import all_estimators        # all_estimators : 모든 모델에 대한 평가 (분류 41개 모델)
 import sklearn as sk
 print(sk.__version__)       # 1.0.2
 

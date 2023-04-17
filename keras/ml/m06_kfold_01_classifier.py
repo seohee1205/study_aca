@@ -7,7 +7,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import RobustScaler, MinMaxScaler, StandardScaler, MaxAbsScaler
 import warnings
 warnings.filterwarnings("ignore")
-from sklearn.utils import all_estimators
+from sklearn.utils import all_estimators    # all_estimators : 모든 모델에 대한 평가 (분류 41개 모델)
 import sklearn as sk
 
 

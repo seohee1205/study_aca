@@ -7,8 +7,8 @@ from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import RobustScaler, MinMaxScaler, StandardScaler, MaxAbsScaler
 import warnings
 warnings.filterwarnings("ignore")
-from sklearn.utils import all_estimators
-import sklearn as sk
+from sklearn.utils import all_estimators    # all_estimators : 모든 모델에 대한 평가 (분류 41개 모델)
+import sklearn as sk    
 
 
 
@@ -34,35 +34,52 @@ for index, value in enumerate(datasets):
     
     
     #2. 모델구성
-    allAlgorithms= all_estimators(type_filter= 'classifier')
-
+    allAlgorithms = all_estimators(type_filter='classifier')
     max_score = 0
-    max_name = '바보'
-    max_acc = 0
-    max_acc_name = '바보'
-
+    max_name = 'max_model'
+    
     for (name, algorithm) in allAlgorithms:
-        try:
-            model= algorithm()
-            
-            scores = cross_val_score(model, x_train, y_train, cv=kfold)  #n_jobs= -1
-            results = cross_val_score(model, x_train, y_train, cv=kfold)
-            if max_score < results:
-                max_score = results
-                max_name = name  
-            y_predict = cross_val_predict(model, x_test, y_test, cv=kfold)
-            acc = accuracy_score(y_test, y_predict)
-            print(name, 'acc : ', acc)
-            if max_acc < acc:
-                max_acc = acc
-                max_acc_name = name
-            y_predict = cross_val_predict(model, x_test, y_test, cv=kfold)
-            acc = accuracy_score(y_test, y_predict)
-            print(name, 'acc : ', acc)    
-        except:
-            continue
-    print("=============", data_name[index], "================")
-    print('최고모델 : ', max_name, max_score)
-    print("=============================")
+        try: #예외처리
+            model = algorithm()
 
+            scores = cross_val_score(model, x_train, y_train, cv=kfold)
+            mean = round(np.mean(scores),4)
+            # print('acc:', scores, '\ncross_val_score 평균:', mean)
+            y_predict = cross_val_predict(model, x_test, y_test, cv=kfold)
+            acc = round(accuracy_score(y_test, y_predict),4)
+            
+            if max_score < mean: 
+               max_score = mean
+               max_name = name
+        except:
+            continue #continue: error 무시하고 계속 for문 돌리기 #break = for문 중단해라
+
+    #dataset name , 최고모델, 성능
+    print('========', data_name[index],'========')        
+    print('최고모델:', max_name, '\nmean_acc:', max_score, '\nprd_acc:',acc)
+    print('================================')  
+
+
+'''
+======== 아이리스 ========
+최고모델: LinearDiscriminantAnalysis
+mean_acc: 0.9917
+prd_acc: 0.8
+================================
+======== 캔서 ========
+최고모델: AdaBoostClassifier
+mean_acc: 0.9714
+prd_acc: 0.9123
+================================
+======== 와인 ========
+최고모델: ExtraTreesClassifier
+mean_acc: 0.9929
+prd_acc: 0.6944
+================================
+======== 디지트 ========
+최고모델: ExtraTreesClassifier
+mean_acc: 0.9854
+prd_acc: 0.9528
+================================
+'''
 
