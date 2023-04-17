@@ -28,3 +28,7 @@ print('cross_val_score : ', score,
 y_predict = cross_val_predict(model, x_test, y_test, cv=kfold)
 print('cross_val_predict ACC : ', accuracy_score(y_test, y_predict))
 
+
+# cross_val_score :  [0.95833333 0.95833333 0.95833333 0.95833333 0.91666667] 
+#  교차검증평균점수 :  0.95
+# cross_val_predict ACC :  1.0
