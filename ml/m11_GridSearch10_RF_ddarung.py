@@ -50,10 +50,10 @@ test_csv = pd.read_csv(path + 'test.csv',
                        index_col = 0)
 
 # 결측치
-# print(train_csv.isnull().sum()) # 결측치 없음
+train_csv = train_csv.dropna()      # 결측지 제거
 
 x = train_csv.drop(['count'], axis = 1) 
-y = test_csv['count']
+y = train_csv['count']
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, shuffle=True, random_state=337, test_size= 0.2, 
@@ -87,12 +87,17 @@ print("best_score_ : ", model.best_score_)
 print("model.score : ", model.score(x_test, y_test))
 
 y_predict = model.predict(x_test)
-r2 = r2_score(y_predict, y_test)
-print('accuracy_score : ', r2(y_test, y_predict))
+print('r2_score : ', r2_score(y_test, y_predict))
 
 y_pred_best = model.best_estimator_.predict(x_test)
-print("최적 튠 r2 : ", r2(y_test, y_pred_best))
+print("최적 튠 r2 : ", r2_score(y_test, y_pred_best))
 
 print("걸린시간 : ", round(end_time - start_time, 2), '초')
 
-
+# 최적의 매개변수 :  RandomForestRegressor(n_jobs=4)
+# 최적의 파라미터 :  {'n_jobs': 4}
+# best_score_ :  0.7545757422645423
+# model.score :  0.7919869133579591
+# r2_score :  0.7919869133579591
+# 최적 튠 r2 :  0.7919869133579591
+# 걸린시간 :  21.35 초

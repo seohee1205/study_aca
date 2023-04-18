@@ -82,5 +82,11 @@ print("최적 튠 r2 : ", r2_score(y_test, y_pred_best))
 
 print("걸린시간 : ", round(end_time - start_time, 2), '초')
 
-
+# 최적의 매개변수 :  RandomForestRegressor(n_jobs=2)
+# 최적의 파라미터 :  {'n_jobs': 2}
+# best_score_ :  0.8061718756605696
+# model.score :  0.8009155576390544
+# r2_score :  0.8009155576390544
+# 최적 튠 r2 :  0.8009155576390544
+# 걸린시간 :  322.41 초
 

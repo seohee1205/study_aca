@@ -21,7 +21,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold, GridSearchCV, StratifiedKFold, RandomizedSearchCV
 from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 from sklearn.preprocessing import RobustScaler, MinMaxScaler, StandardScaler, MaxAbsScaler
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, r2_score
 from sklearn.svm import SVC
 import pandas as pd
 import time
@@ -32,7 +32,7 @@ x, y = fetch_california_housing(return_X_y=True)
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, shuffle=True, random_state=337, test_size= 0.2, 
-    stratify=y
+    # stratify=y
 )
 
 n_splits= 5
@@ -44,7 +44,7 @@ x_test = scaler.fit_transform(x_test)
 
 
 #2. 모델
-model = RandomizedSearchCV(RandomForestClassifier(), parameters, 
+model = RandomizedSearchCV(RandomForestRegressor(), parameters, 
                     cv=kfold, 
                     # cv=5,      # 분류의 디폴트는 StratifiedKFold야
                      verbose=1, 
@@ -64,11 +64,18 @@ print("best_score_ : ", model.best_score_)
 print("model.score : ", model.score(x_test, y_test))
 
 y_predict = model.predict(x_test)
-print('accuracy_score : ', accuracy_score(y_test, y_predict))
+print('r2_score : ', r2_score(y_test, y_predict))
 
 y_pred_best = model.best_estimator_.predict(x_test)
-print("최적 튠 ACC : ", accuracy_score(y_test, y_pred_best))
+print("최적 튠 r2 : ", r2_score(y_test, y_pred_best))
 
 print("걸린시간 : ", round(end_time - start_time, 2), '초')
 
 
+# 최적의 매개변수 :  RandomForestRegressor(min_samples_leaf=3)
+# 최적의 파라미터 :  {'min_samples_split': 2, 'min_samples_leaf': 3}
+# best_score_ :  0.8050325934488693
+# model.score :  0.6385865313312117
+# r2_score :  0.6385865313312117
+# 최적 튠 r2 :  0.6385865313312117
+# 걸린시간 :  37.14 초

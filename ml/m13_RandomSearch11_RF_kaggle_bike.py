@@ -21,15 +21,15 @@ from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold, GridSearchCV, StratifiedKFold, RandomizedSearchCV
 from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 from sklearn.preprocessing import RobustScaler, MinMaxScaler, StandardScaler, MaxAbsScaler
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, r2_score
 from sklearn.svm import SVC
 import pandas as pd
 import time
 
 
 #1. 데이터
-path = './_data/ddarung/'
-path_save = './_save/ddarung/'
+path = './_data/kaggle_bike/'
+path_save = './_save/kaggle_bike/'
 
 train_csv = pd.read_csv(path + 'train.csv',
                         index_col = 0)   
@@ -41,8 +41,9 @@ test_csv = pd.read_csv(path + 'test.csv',
 # 결측치
 # print(train_csv.isnull().sum()) # 결측치 없음
 
-x = train_csv.drop(['count'], axis = 1) 
-y = test_csv['count']
+# x, y 분리
+x = train_csv.drop(['count', 'casual', 'registered'], axis = 1)
+y = train_csv['count']
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, shuffle=True, random_state=337, test_size= 0.2, 
@@ -78,11 +79,17 @@ print("best_score_ : ", model.best_score_)
 print("model.score : ", model.score(x_test, y_test))
 
 y_predict = model.predict(x_test)
-print('accuracy_score : ', accuracy_score(y_test, y_predict))
+print('r2_score : ', r2_score(y_test, y_predict))
 
 y_pred_best = model.best_estimator_.predict(x_test)
-print("최적 튠 ACC : ", accuracy_score(y_test, y_pred_best))
+print("최적 튠 r2 : ", r2_score(y_test, y_pred_best))
 
 print("걸린시간 : ", round(end_time - start_time, 2), '초')
 
-
+# 최적의 매개변수 :  RandomForestRegressor(max_depth=10, min_samples_leaf=5)
+# 최적의 파라미터 :  {'min_samples_leaf': 5, 'max_depth': 10}
+# best_score_ :  0.3537630893400667
+# model.score :  0.3474457716667143
+# r2_score :  0.3474457716667143
+# 최적 튠 r2 :  0.3474457716667143
+# 걸린시간 :  9.25 초
