@@ -54,7 +54,7 @@ kfold = KFold(n_splits=n_splits, shuffle=True, random_state=337)
 
 scaler = MinMaxScaler()
 x_train = scaler.fit_transform(x_train)
-x_test = scaler.fit_transform(x_test)
+x_test = scaler.transform(x_test)
 
 
 #2. 모델
