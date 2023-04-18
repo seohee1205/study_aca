@@ -32,6 +32,9 @@ allAlgorithms= all_estimators(type_filter= 'classifier')  # 분류일 때
 
 print('allAlgorithms : ', allAlgorithms)
 print('모델의 개수: ', len(allAlgorithms))      # 55
+# regressor 55개 
+# classifier 41개
+
 
 max_r2 = 0
 max_name = '바보'

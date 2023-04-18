@@ -37,7 +37,15 @@ for index, value in enumerate(datasets):
     x_train, x_test, y_train, y_test = train_test_split(
         x, y, train_size = 0.8, shuffle= True, random_state=123
     )
-    
+    for i in range(len(datasets)):
+        if i < 2:
+            x, y = datasets[i]
+        elif i ==2:
+            x = ddarung_data.drop(['count'], axis = 1) 
+            y = ddarung_data['count']
+        else:
+            x = kaggle_data.drop(['count', 'casual', 'registered'], axis = 1)
+            y = kaggle_data['count']
     
     #2. 모델구성
     allAlgorithms= all_estimators(type_filter= 'regressor')
@@ -69,5 +77,5 @@ for index, value in enumerate(datasets):
 # ============= 디아벳 ================
 # 최고모델: max_model
 # mean_acc: 0
-# prd_acc: 0.0
+# prd_acc: 0.0225
 # =============================

@@ -14,7 +14,7 @@ x, y = load_iris(return_X_y=True)
 # )
 
 n_splits = 5
-kfold = KFold(n_splits = n_splits, shuffle = True, random_state = 123)   # 데이터를 일정 비율 섞은 후 20%
+kfold = KFold(n_splits = n_splits, shuffle = True, random_state = 123)   # 데이터를 일정 비율 섞은 후 20% / shuffle 기본값: False
 
 #2. 모델 구성
 model = LinearSVC()

@@ -20,7 +20,7 @@ kfold = KFold(n_splits = n_splits, shuffle = True, random_state = 123)   # 데�
 model = RandomForestRegressor()
 
 #3, 4. 컴파일, 훈련, 평가, 예측
-scores = cross_val_score(model, x, y, cv=kfold, n_jobs= -1)
+scores = cross_val_score(model, x, y, cv=kfold, n_jobs= -1)       # n_jobs= -1: 사용가능한 모든 CPU 코어 수
 
 
 print('ACC: ', scores,
