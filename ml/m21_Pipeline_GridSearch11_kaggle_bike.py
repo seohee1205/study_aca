@@ -67,4 +67,5 @@ y_pred_best = model.best_estimator_.predict(x_test)
 print("최적 튠 r2 : ", r2_score(y_test, y_pred_best))
 
 
-
+# r2_score :  0.3690674739671599
+# 최적 튠 r2 :  0.3690674739671599
