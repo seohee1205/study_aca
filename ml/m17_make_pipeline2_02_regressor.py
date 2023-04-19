@@ -13,7 +13,7 @@ data_list = [load_diabetes, fetch_california_housing]
 data_name_list = ['디아벳', '캘리포니아']
 
 model_list = [RandomForestRegressor(), DecisionTreeRegressor()]
-model_name_list = [RandomForestRegressor(), DecisionTreeRegressor()]
+model_name_list = ['RandomForestRegressor', 'DecisionTreeRegressor']
 
 scaler_list = [MinMaxScaler(), StandardScaler(), RobustScaler(), MaxAbsScaler()]
 scaler_name_list = ['민맥스', '스탠다드', '로버스트', '맥스앱스']
@@ -23,7 +23,7 @@ max_scaler_name = '바보'
 max_model_name = '바보'
 for i in range(len(data_list)):
     x, y = data_list[i](return_X_y=True)
-    x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.8, random_state= 337, stratify=y)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.8, random_state= 337)
     max_score = 0
     
     for j, value2 in enumerate(scaler_list):

@@ -21,7 +21,7 @@ from sklearn.svm import SVC
 data_list = [load_iris, load_breast_cancer, load_digits, load_wine]
 data_name_list = ['아이리스', '캔서', '디지트', '와인']
 model_list = [SVC(), RandomForestClassifier(), DecisionTreeClassifier()]
-model_name_list = [SVC(), RandomForestClassifier(), DecisionTreeClassifier()]
+model_name_list = ['SVC', 'RandomForestClassifier', 'DecisionTreeClassifier']
 scaler_list = [MinMaxScaler(), StandardScaler(), RobustScaler(), MaxAbsScaler()]
 scaler_name_list = ['민맥스', '스탠다드', '로버스트', '맥스앱스']
 

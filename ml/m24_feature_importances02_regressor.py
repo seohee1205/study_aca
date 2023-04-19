@@ -1,3 +1,5 @@
+# 회귀로 만들어봐
+
 import numpy as np
 from sklearn.datasets import load_iris, load_breast_cancer, load_digits, load_wine
 from sklearn.preprocessing import MinMaxScaler, StandardScaler, RobustScaler, MaxAbsScaler
@@ -8,17 +10,6 @@ from xgboost import XGBClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.svm import SVC
 
-
-#1. 데이터
-# x, y = load_iris(return_X_y=True)
-
-# x_train, x_test, y_train, y_test = train_test_split(
-#     x, y, train_size = 0.8, shuffle=True, random_state= 337 
-# )
-
-# scaler = MinMaxScaler()
-# x_train = scaler.fit_transform(x_train)
-# x_test = scaler.transform(x_test)
 
 # [실습] for문 써서 4개 돌리기
 data_list = [load_iris, load_breast_cancer, load_digits, load_wine]
