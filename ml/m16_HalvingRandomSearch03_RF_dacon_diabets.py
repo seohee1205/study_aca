@@ -70,10 +70,10 @@ print("최적 튠 ACC : ", accuracy_score(y_test, y_pred_best))
 print("걸린시간 : ", round(end_time - start_time, 2), '초')
 
 
-# 최적의 매개변수 :  RandomForestClassifier(max_depth=6, min_samples_leaf=3, n_estimators=200)
-# 최적의 파라미터 :  {'n_estimators': 200, 'min_samples_leaf': 3, 'max_depth': 6}
-# best_score_ :  0.9764705882352942
-# model.score :  0.9444444444444444
-# accuracy_score :  0.9444444444444444
-# 최적 튠 ACC :  0.9444444444444444
-# 걸린시간 :  4.35 초
+# 최적의 매개변수 :  RandomForestClassifier(max_depth=6, min_samples_leaf=3)
+# 최적의 파라미터 :  {'n_estimators': 100, 'min_samples_leaf': 3, 'max_depth': 6}
+# best_score_ :  0.7161904761904762
+# model.score :  0.7633587786259542
+# accuracy_score :  0.7633587786259542
+# 최적 튠 ACC :  0.7633587786259542
+# 걸린시간 :  10.6 초

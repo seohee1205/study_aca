@@ -42,7 +42,7 @@ model = HalvingGridSearchCV(SVC(), parameters,
                      refit= True,      # 디폴트값은 True, False하게 되면 최종 파라미터로 출력
                     # refit=False,       # True는 최상의 파라미터로 출력 
                     #  n_iter=5,      # 랜덤서치의 파라미터라 안 됨
-                     factor=3.32,      # 디폴트= 3임 
+                     factor=3.2,      # 디폴트= 3임 
                      n_jobs= -1)
 
 #3. 컴파일, 훈련

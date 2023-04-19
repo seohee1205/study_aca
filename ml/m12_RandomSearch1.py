@@ -38,7 +38,7 @@ model = RandomizedSearchCV(SVC(), parameters,
                      verbose=1, 
                      refit= True,      # 디폴트값은 True, False하게 되면 최종 파라미터로 출력
                     # refit=False,       # True는 최상의 파라미터로 출력 
-                     n_iter=5,      # 디폴트는 10/ 10번 * cv만큼 훈련
+                     n_iter=10,      # 디폴트는 10/ 10번 * cv만큼 훈련
                      n_jobs= -1)
 
 #3. 컴파일, 훈련
