@@ -42,5 +42,5 @@ y_predict = model.predict(x_test)
 acc = accuracy_score(y_test, y_predict)
 print('accuracy_score : ', acc)
 
-# model.score :  0.9736842105263158
-# accuracy_score :  0.9736842105263158
+# model.score :  0.9649122807017544
+# accuracy_score :  0.9649122807017544

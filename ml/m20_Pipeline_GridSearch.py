@@ -29,9 +29,6 @@ pipe = Pipeline([("std", StandardScaler()), ("rf", RandomForestClassifier())])
 model = GridSearchCV(pipe, parameters, cv=5, verbose=1, n_jobs= -1)
 
 
-
-
-
 #3. 훈련
 model.fit(x_train, y_train)
 
@@ -43,5 +40,4 @@ y_predict = model.predict(x_test)
 acc = accuracy_score(y_test, y_predict)
 print('accuracy_score : ', acc)
 
-# model.score :  0.9666666666666667
-# accuracy_score :  0.9666666666666667  
+ 
