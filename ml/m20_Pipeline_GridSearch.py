@@ -24,7 +24,7 @@ parameters = [
 
 #2. 모델
 pipe = Pipeline([("std", StandardScaler()), ("rf", RandomForestClassifier())]) 
-# ->  RandomFore 파라미터가 아니라 pipe 파라미터가 필요함. -> 파라미터 안에 rf__ 추가
+# 오류났을 때 ->  RandomFore 파라미터가 아니라 pipe 파라미터가 필요함. -> 파라미터 안에 rf__ 추가
 
 model = GridSearchCV(pipe, parameters, cv=5, verbose=1, n_jobs= -1)
 
