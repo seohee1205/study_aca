@@ -8,6 +8,7 @@ from sklearn.metrics import accuracy_score
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.callbacks import EarlyStopping
+from sklearn.decomposition import PCA
 import time
 
 # 훈련 데이터 및 테스트 데이터 로드
@@ -27,10 +28,13 @@ test_data['type']=type_to_HP(test_data['type'])
 # print(train_data.columns)
 
 # lof모델 적용 피처
-features = ['air_inflow', 'air_end_temp', 'out_pressure', 'motor_current', 'motor_rpm', 'motor_temp', 'motor_vibe']
+# features = ['air_inflow', 'air_end_temp', 'out_pressure', 'motor_current', 'motor_rpm', 'motor_temp', 'motor_vibe']
+features = ['air_inflow', 'air_end_temp', 'out_pressure']
+
 
 # Prepare train and test data
 X = train_data[features]
+# print(X.shape)
 
 
 # 학습 데이터를 훈련 세트와 검증 세트로 나누기
@@ -42,12 +46,19 @@ X_train_norm = scaler.fit_transform(X_train)
 X_val_norm = scaler.transform(X_val)
 test_data_norm = scaler.transform(test_data[features])
 
-# lof사용하여 이상치 탐지
-n_neighbors = 37
-contamination = 0.045
-lof = LocalOutlierFactor(n_neighbors=n_neighbors, contamination=contamination, leaf_size=20)
-y_pred_train_tuned = lof.fit_predict(X_train)
 
+n_neighbors = 42
+contamination = 0.0459999
+lof = LocalOutlierFactor(n_neighbors=n_neighbors,
+                         contamination=contamination,
+                         leaf_size=99,
+                         algorithm='auto',
+                         metric='chebyshev',
+                         metric_params= None,
+                         novelty=False,
+                         p=300
+                         )
+y_pred_train_tuned = lof.fit_predict(X_val)
 
 # 이상치 탐지
 test_data_lof = scaler.transform(test_data[features])
@@ -56,12 +67,8 @@ lof_predictions = [1 if x == -1 else 0 for x in y_pred_test_lof]
 
 # 모델
 model = Sequential()
-model.add(Dense(512, activation='selu', input_dim=X_train_norm.shape[1]))
+model.add(Dense(128, activation='selu', input_dim=X_train_norm.shape[1]))
 model.add(Dense(64, activation='selu'))
-model.add(Dense(128, activation='relu'))
-model.add(Dropout(0.1))
-model.add(Dense(128, activation='selu'))
-model.add(Dense(64, activation='relu'))
 model.add(Dense(64, activation='selu'))
 model.add(Dense(64, activation='selu'))
 model.add(Dense(64, activation='selu'))
@@ -88,3 +95,5 @@ date = date.strftime("%m%d_%H%M")
 
 submission.to_csv(save_path + date + 'submission.csv', index=False)
 
+
+#1227
