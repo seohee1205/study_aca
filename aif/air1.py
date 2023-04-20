@@ -44,7 +44,7 @@ test_data_norm = scaler.transform(test_data[features])
 
 # lof사용하여 이상치 탐지
 n_neighbors = 37
-contamination = 0.045
+contamination = 0.048
 lof = LocalOutlierFactor(n_neighbors=n_neighbors, contamination=contamination, leaf_size=20)
 y_pred_train_tuned = lof.fit_predict(X_train)
 
@@ -58,11 +58,9 @@ lof_predictions = [1 if x == -1 else 0 for x in y_pred_test_lof]
 model = Sequential()
 model.add(Dense(512, activation='selu', input_dim=X_train_norm.shape[1]))
 model.add(Dense(64, activation='selu'))
-model.add(Dense(128, activation='relu'))
-model.add(Dropout(0.1))
-model.add(Dense(128, activation='selu'))
-model.add(Dense(64, activation='relu'))
 model.add(Dense(64, activation='selu'))
+model.add(Dense(128, activation='selu'))
+model.add(Dense(80, activation='selu'))
 model.add(Dense(64, activation='selu'))
 model.add(Dense(64, activation='selu'))
 model.add(Dense(X_train_norm.shape[1], activation='linear'))
@@ -70,9 +68,11 @@ model.add(Dense(X_train_norm.shape[1], activation='linear'))
 # 컴파일, 훈련
 model.compile(loss='mse', optimizer='adam', metrics = ['acc'])
 
-es = EarlyStopping(monitor='val_acc', mode='max', patience=30)
+es = EarlyStopping(monitor='val_acc', mode='max', patience=40)
 
-history = model.fit(X_train_norm, X_train_norm, epochs=1000, batch_size=32, validation_data=(X_val_norm, X_val_norm), callbacks=[es])
+history = model.fit(X_train_norm, X_train_norm, epochs=1000, 
+                    batch_size=25, 
+                    validation_data=(X_val_norm, X_val_norm), callbacks=[es])
 
 # 평가
 test_preds = model.predict(test_data_norm)
@@ -88,3 +88,14 @@ date = date.strftime("%m%d_%H%M")
 
 submission.to_csv(save_path + date + 'submission.csv', index=False)
 
+
+
+######################## 상관관계 ##########################
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+print(test_data.corr())
+plt.figure(figsize=(10, 8))
+sns.set(font_scale=1.2)
+sns.heatmap(train_data.corr(), square=True, annot=True, cbar=True)
+plt.show()
