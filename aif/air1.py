@@ -1,8 +1,14 @@
 import pandas as pd
+import numpy as np
 import datetime
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.preprocessing import MinMaxScaler
 from sklearn.neighbors import LocalOutlierFactor
+from sklearn.metrics import accuracy_score
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout
+from tensorflow.keras.callbacks import EarlyStopping
+import time
 
 # 훈련 데이터 및 테스트 데이터 로드
 path='d:/study_data/_data/air/dataset/'
@@ -26,13 +32,15 @@ features = ['air_inflow', 'air_end_temp', 'out_pressure', 'motor_current', 'moto
 # Prepare train and test data
 X = train_data[features]
 
+
 # 학습 데이터를 훈련 세트와 검증 세트로 나누기
 X_train, X_val = train_test_split(X, train_size= 0.9, random_state= 5050)
 
 # 데이터 정규화
 scaler = MinMaxScaler()
-train_data_normalized = scaler.fit_transform(train_data.iloc[:, :-1])
-test_data_normalized = scaler.transform(test_data.iloc[:, :-1])
+X_train_norm = scaler.fit_transform(X_train)
+X_val_norm = scaler.transform(X_val)
+test_data_norm = scaler.transform(test_data[features])
 
 # lof사용하여 이상치 탐지
 n_neighbors = 37
@@ -45,13 +53,26 @@ test_data_lof = scaler.transform(test_data[features])
 y_pred_test_lof = lof.fit_predict(test_data_lof)
 lof_predictions = [1 if x == -1 else 0 for x in y_pred_test_lof]
 
-
 # 모델
+model = Sequential()
+model.add(Dense(128, activation='selu', input_dim=X_train_norm.shape[1]))
+model.add(Dense(64, activation='selu'))
+model.add(Dense(64, activation='selu'))
+model.add(Dense(64, activation='selu'))
+model.add(Dense(64, activation='selu'))
+model.add(Dense(X_train_norm.shape[1], activation='linear'))
 
+# 컴파일, 훈련
+model.compile(loss='mse', optimizer='adam')
 
+es = EarlyStopping(monitor='val_loss', patience=10)
 
+history = model.fit(X_train_norm, X_train_norm, epochs=1000, batch_size=32, validation_data=(X_val_norm, X_val_norm), callbacks=[es])
 
-
+# 평가
+test_preds = model.predict(test_data_norm)
+errors = np.mean(np.power(test_data_norm - test_preds, 2), axis=1)
+y_pred = np.where(errors >= np.percentile(errors, 95), 1, 0)
 
 
 submission['label'] = pd.DataFrame({'Prediction': lof_predictions})
