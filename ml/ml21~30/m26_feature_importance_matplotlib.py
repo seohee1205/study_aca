@@ -9,7 +9,6 @@ from sklearn.metrics import accuracy_score
 from sklearn.svm import SVC
 
 
-# [실습] for문 써서 4개 돌리기
 # datasets = load_iris()
 datasets = load_breast_cancer()
 x = datasets.data
