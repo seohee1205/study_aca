@@ -8,7 +8,7 @@ from sklearn.metrics import mean_squared_error
 from tensorflow.keras.callbacks import EarlyStopping
 import datetime
 
-#
+
 #1. 데이터
 path = 'd:/study_data/_data/dacon/'
 path_save = 'd:/study_data/_save/dacon/'
