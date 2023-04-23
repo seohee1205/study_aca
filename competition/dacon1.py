@@ -42,7 +42,7 @@ print(y)
 
 #1-5. x, y 분리
 x_train, x_test, y_train, y_test = train_test_split(
-    x, y, shuffle= True, train_size= 0.9, random_state= 337
+    x, y, shuffle= True, train_size= 0.8, random_state= 3370
 )
 
 # print(x_train.shape, x_test.shape)  # (6000, 9) (1500, 9)
@@ -53,7 +53,7 @@ scaler = MinMaxScaler()
 x_train = scaler.fit_transform(x_train)
 x_test = scaler.transform(x_test)
 
-test_csv = scaler.transform(test_csv)
+# test_csv = scaler.transform(test_csv)
 
 #2. 모델 구성
 model = Sequential()
@@ -78,8 +78,8 @@ model.compile(loss = 'mse', optimizer = 'adam')
 es = EarlyStopping(monitor = 'val_loss', patience = 80, mode = 'min',
                    verbose = 1)
 
-model.fit(x_train, y_train, epochs = 2000, batch_size = 20,
-          validation_split= 0.2,
+model.fit(x_train, y_train, epochs = 2000, batch_size = 25,
+          validation_split= 0.3,
           verbose = 1,
           callbacks = [es])
 
