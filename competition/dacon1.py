@@ -8,7 +8,7 @@ from sklearn.metrics import mean_squared_error
 from tensorflow.keras.callbacks import EarlyStopping
 import datetime
 
-
+#
 #1. 데이터
 path = 'd:/study_data/_data/dacon/'
 path_save = 'd:/study_data/_save/dacon/'
@@ -42,7 +42,7 @@ print(y)
 
 #1-5. x, y 분리
 x_train, x_test, y_train, y_test = train_test_split(
-    x, y, shuffle= True, train_size= 0.8, random_state= 3370
+    x, y, shuffle= True, train_size= 0.8, random_state= 337
 )
 
 # print(x_train.shape, x_test.shape)  # (6000, 9) (1500, 9)
