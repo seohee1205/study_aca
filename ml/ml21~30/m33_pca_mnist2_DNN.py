@@ -1,10 +1,3 @@
-from tensorflow.keras.datasets import mnist
-import numpy as np
-from sklearn.decomposition import PCA
-from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Dense, LSTM, Conv1D,Conv2D, Flatten, Dropout
-from sklearn.metrics import accuracy_score 
-
 
 '''
 #y값 가져오기 싫을때, '빈칸 명시'하는 법 : 파이썬 기초문법 '_' 언더바 명시 
@@ -55,153 +48,74 @@ x = pca.fit_transform(x)
 #3. PCA 1.0       :
 ########################################################################################
 
-
 import numpy as np
-from keras.models import Sequential
-from keras.layers import Dense
-from tensorflow.keras.utils import to_categorical
-from keras.datasets import mnist
+from tensorflow.keras.datasets import mnist
 from sklearn.decomposition import PCA
+from tensorflow.python.keras.models import Sequential
+from tensorflow.python.keras.layers import Dense, Conv2D, Flatten
+import pandas as pd
+from sklearn.metrics import accuracy_score
 
-# 데이터 불러오기
+# 1. 데이터 전처리
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
+x_train = x_train.reshape(60000, -1)
+x_test = x_test.reshape(10000, -1)
 
-# 입력 데이터를 2차원에서 1차원으로 변경
-x_train = x_train.reshape(x_train.shape[0], -1)
-x_test = x_test.reshape(x_test.shape[0], -1)
+y_train = np.array(pd.get_dummies(y_train))
+y_test = np.array(pd.get_dummies(y_test))
 
-# 클래스 레이블을 one-hot 인코딩
-num_classes = 10
-y_train = to_categorical(y_train, num_classes)
-y_test = to_categorical(y_test, num_classes)
+cum_list = ['154', '331', '486', '713']
+cum_name_list = ['pca 0.95', 'pca 0.99', 'pca 0.999', 'pca 1.0']
 
-# 데이터 축소
-n_components = [154, 331, 486, 784]
-x_train_pca = []
-x_test_pca = []
+result_list = []
+acc_list = []
+for i in range(len(cum_list)):
+    pca = PCA(n_components=int(cum_list[i]))
+    x_train_pca = pca.fit_transform(x_train)
+    x_test_pca = pca.transform(x_test)
 
-for i in n_components:
-    pca = PCA(n_components=i)
-    pca.fit(x_train)
-    x_train_pca.append(pca.transform(x_train))
-    x_test_pca.append(pca.transform(x_test))
-
-# DNN 모델 학습 및 평가
-for i in range(len(n_components)):
+    # 모델 구성
     model = Sequential()
-    model.add(Dense(512, input_dim=n_components[i], activation='relu'))
-    model.add(Dense(256, activation='relu'))
-    model.add(Dense(128, activation='relu'))
-    model.add(Dense(num_classes, activation='softmax'))
+    model.add(Dense(64, input_shape=(int(cum_list[i]),)))
+    model.add(Dense(64, activation='relu'))
+    model.add(Dense(32, activation='relu'))
+    model.add(Dense(16, activation='relu'))
+    model.add(Dense(10, activation='softmax'))
 
-    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-    model.fit(x_train_pca[i], y_train, epochs=10, batch_size=256, validation_data=(x_test_pca[i], y_test))
-    _, accuracy = model.evaluate(x_test_pca[i], y_test, verbose=0)
+    # 모델 컴파일
+    model.compile(optimizer='adam', loss='categorical_crossentropy')
+
+    # 모델 훈련
+    hist = model.fit(x_train_pca, y_train, 
+                     epochs=50, 
+                     batch_size=5000, 
+                     verbose=1,
+                     validation_split=0.2)
+
+    # 모델 평가
+    result = model.evaluate(x_test_pca, y_test)
+    y_predict = model.predict(x_test_pca)
+    acc = accuracy_score(np.argmax(y_test, axis=1), np.argmax(y_predict, axis=1))
     
+    result_list.append(result)
+    acc_list.append(acc)
+
+for i in range(len(cum_list)):
+    print(f"{cum_name_list[i]}: loss={result_list[i]:.4f}, acc={acc_list[i]:.4f}")
     print("나의 최고의 CNN : 0.9816")
     print("나의 최고의 DNN : 0.954")
-    print(f"PCA {n_components[i]/784.0:.3f} test accuracy: {accuracy:.4f}")
-
     
-# Epoch 1/10
-# 2023-04-24 19:29:40.977457: I tensorflow/stream_executor/cuda/cuda_blas.cc:1774] TensorFloat-32 will be used for the matrix multiplication. This will only be logged once.
-# 235/235 [==============================] - 3s 6ms/step - loss: 2.2545 - accuracy: 0.8640 - val_loss: 0.4300 - val_accuracy: 0.8979
-# Epoch 2/10
-# 235/235 [==============================] - 1s 5ms/step - loss: 0.2411 - accuracy: 0.9402 - val_loss: 0.2922 - val_accuracy: 0.9337
-# Epoch 3/10
-# 235/235 [==============================] - 1s 5ms/step - loss: 0.1268 - accuracy: 0.9657 - val_loss: 0.2775 - val_accuracy: 0.9450
-# Epoch 4/10
-# 235/235 [==============================] - 1s 5ms/step - loss: 0.0767 - accuracy: 0.9768 - val_loss: 0.3141 - val_accuracy: 0.9482
-# Epoch 5/10
-# 235/235 [==============================] - 1s 6ms/step - loss: 0.0626 - accuracy: 0.9809 - val_loss: 0.2489 - val_accuracy: 0.9566
-# Epoch 6/10
-# 235/235 [==============================] - 1s 6ms/step - loss: 0.0464 - accuracy: 0.9852 - val_loss: 0.2470 - val_accuracy: 0.9585
-# Epoch 7/10
-# 235/235 [==============================] - 1s 6ms/step - loss: 0.0482 - accuracy: 0.9854 - val_loss: 0.2574 - val_accuracy: 0.9575
-# Epoch 8/10
-# 235/235 [==============================] - 1s 6ms/step - loss: 0.0448 - accuracy: 0.9874 - val_loss: 0.2677 - val_accuracy: 0.9596
-# Epoch 9/10
-# 235/235 [==============================] - 1s 6ms/step - loss: 0.0586 - accuracy: 0.9838 - val_loss: 0.2841 - val_accuracy: 0.9553
-# Epoch 10/10
-# 235/235 [==============================] - 1s 6ms/step - loss: 0.0661 - accuracy: 0.9835 - val_loss: 0.2612 - val_accuracy: 0.9616
-############################################################
+
+
+# pca 0.95: loss=0.7444, acc=0.8519
 # 나의 최고의 CNN : 0.9816
 # 나의 최고의 DNN : 0.954
-# PCA 0.196 test accuracy: 0.9616
-#############################################################
-# Epoch 1/10
-# 235/235 [==============================] - 2s 7ms/step - loss: 2.5124 - accuracy: 0.8769 - val_loss: 0.5618 - val_accuracy: 0.9275
-# Epoch 2/10
-# 235/235 [==============================] - 2s 6ms/step - loss: 0.2445 - accuracy: 0.9571 - val_loss: 0.3934 - val_accuracy: 0.9432
-# Epoch 3/10
-# 235/235 [==============================] - 1s 6ms/step - loss: 0.0974 - accuracy: 0.9777 - val_loss: 0.3928 - val_accuracy: 0.9460
-# Epoch 4/10
-# 235/235 [==============================] - 1s 6ms/step - loss: 0.0475 - accuracy: 0.9875 - val_loss: 0.4035 - val_accuracy: 0.9477
-# Epoch 5/10
-# 235/235 [==============================] - 1s 6ms/step - loss: 0.0361 - accuracy: 0.9900 - val_loss: 0.3656 - val_accuracy: 0.9556
-# Epoch 6/10
-# 235/235 [==============================] - 1s 6ms/step - loss: 0.0474 - accuracy: 0.9881 - val_loss: 0.4071 - val_accuracy: 0.9541
-# Epoch 7/10
-# 235/235 [==============================] - 1s 6ms/step - loss: 0.0599 - accuracy: 0.9865 - val_loss: 0.4024 - val_accuracy: 0.9527
-# Epoch 8/10
-# 235/235 [==============================] - 1s 6ms/step - loss: 0.0863 - accuracy: 0.9837 - val_loss: 0.3959 - val_accuracy: 0.9552
-# Epoch 9/10
-# 235/235 [==============================] - 1s 6ms/step - loss: 0.0963 - accuracy: 0.9819 - val_loss: 0.4007 - val_accuracy: 0.9567
-# Epoch 10/10
-# 235/235 [==============================] - 1s 6ms/step - loss: 0.0574 - accuracy: 0.9877 - val_loss: 0.3771 - val_accuracy: 0.9593
-#############################################################
+# pca 0.99: loss=0.7678, acc=0.8533
 # 나의 최고의 CNN : 0.9816
 # 나의 최고의 DNN : 0.954
-# PCA 0.422 test accuracy: 0.9593
-#############################################################
-# Epoch 1/10
-# 235/235 [==============================] - 2s 7ms/step - loss: 2.0712 - accuracy: 0.8902 - val_loss: 0.5481 - val_accuracy: 0.9343
-# Epoch 2/10
-# 235/235 [==============================] - 1s 6ms/step - loss: 0.2380 - accuracy: 0.9614 - val_loss: 0.4584 - val_accuracy: 0.9442
-# Epoch 3/10
-# 235/235 [==============================] - 1s 5ms/step - loss: 0.1017 - accuracy: 0.9803 - val_loss: 0.4028 - val_accuracy: 0.9529
-# Epoch 4/10
-# 235/235 [==============================] - 1s 6ms/step - loss: 0.0622 - accuracy: 0.9863 - val_loss: 0.4034 - val_accuracy: 0.9553
-# Epoch 5/10
-# 235/235 [==============================] - 1s 5ms/step - loss: 0.0536 - accuracy: 0.9883 - val_loss: 0.4137 - val_accuracy: 0.9565
-# Epoch 6/10
-# 235/235 [==============================] - 1s 6ms/step - loss: 0.0567 - accuracy: 0.9883 - val_loss: 0.4721 - val_accuracy: 0.9556
-# Epoch 7/10
-# 235/235 [==============================] - 1s 6ms/step - loss: 0.0873 - accuracy: 0.9845 - val_loss: 0.4961 - val_accuracy: 0.9564
-# Epoch 8/10
-# 235/235 [==============================] - 1s 6ms/step - loss: 0.0926 - accuracy: 0.9842 - val_loss: 0.4875 - val_accuracy: 0.9560
-# Epoch 9/10
-# 235/235 [==============================] - 1s 6ms/step - loss: 0.0872 - accuracy: 0.9843 - val_loss: 0.3875 - val_accuracy: 0.9621
-# Epoch 10/10
-# 235/235 [==============================] - 1s 6ms/step - loss: 0.0568 - accuracy: 0.9891 - val_loss: 0.3697 - val_accuracy: 0.9648
-#############################################################
+# pca 0.999: loss=0.9679, acc=0.8013
 # 나의 최고의 CNN : 0.9816
 # 나의 최고의 DNN : 0.954
-# PCA 0.620 test accuracy: 0.9648
-#############################################################
-# Epoch 1/10
-# 235/235 [==============================] - 2s 7ms/step - loss: 1.6039 - accuracy: 0.8855 - val_loss: 0.4081 - val_accuracy: 0.9283
-# Epoch 2/10
-# 235/235 [==============================] - 1s 6ms/step - loss: 0.1705 - accuracy: 0.9629 - val_loss: 0.3187 - val_accuracy: 0.9443
-# Epoch 3/10
-# 235/235 [==============================] - 1s 5ms/step - loss: 0.0667 - accuracy: 0.9819 - val_loss: 0.3029 - val_accuracy: 0.9519
-# Epoch 4/10
-# 235/235 [==============================] - 1s 6ms/step - loss: 0.0369 - accuracy: 0.9891 - val_loss: 0.2859 - val_accuracy: 0.9562
-# Epoch 5/10
-# 235/235 [==============================] - 1s 6ms/step - loss: 0.0308 - accuracy: 0.9909 - val_loss: 0.2957 - val_accuracy: 0.9581
-# Epoch 6/10
-# 235/235 [==============================] - 1s 6ms/step - loss: 0.0493 - accuracy: 0.9874 - val_loss: 0.3515 - val_accuracy: 0.9542
-# Epoch 7/10
-# 235/235 [==============================] - 1s 5ms/step - loss: 0.0694 - accuracy: 0.9834 - val_loss: 0.3257 - val_accuracy: 0.9577
-# Epoch 8/10
-# 235/235 [==============================] - 1s 6ms/step - loss: 0.0703 - accuracy: 0.9847 - val_loss: 0.3740 - val_accuracy: 0.9521
-# Epoch 9/10
-# 235/235 [==============================] - 1s 6ms/step - loss: 0.0598 - accuracy: 0.9866 - val_loss: 0.3295 - val_accuracy: 0.9618
-# Epoch 10/10
-# 235/235 [==============================] - 1s 5ms/step - loss: 0.0494 - accuracy: 0.9884 - val_loss: 0.3183 - val_accuracy: 0.9623
-#############################################################
+# pca 1.0: loss=0.7280, acc=0.8822
 # 나의 최고의 CNN : 0.9816
 # 나의 최고의 DNN : 0.954
-# PCA 1.000 test accuracy: 0.9624
-#############################################################
-              
