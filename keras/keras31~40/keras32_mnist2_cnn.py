@@ -92,3 +92,6 @@ y_test_acc = np.argmax(y_test, axis=1)
 
 acc = accuracy_score(y_test_acc, y_predict)
 print('acc : ', acc)
+
+# result :  [0.06868881732225418, 0.9815999865531921]
+# acc :  0.9816
