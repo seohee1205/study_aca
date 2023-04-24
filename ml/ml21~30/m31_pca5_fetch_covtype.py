@@ -1,20 +1,25 @@
-# PCA : 차원(컬럼) 축소(압축)
-# target(Y)는 축소 안함 -> X컬럼들만 차원 축소시킴  
-# 즉, 타겟값이 없음, 타겟값 생성함(비지도학습 unsupervised learning) : 스케일링 개념
-#1. y값을 찾는 비지도학습
-#2. 전처리개념 스케일링
-# 컬럼 간의 좌표를 찍었을때, 그려지는 직선위로 데이터들의 좌표를 맵핑한다. 
+# PCA = 차원 축소의 개념. (컬런 압축의 개념)
+# 일반적으로 x만 PCA를 적용한다.
+# x만 사용하기 때문에 비지도 학습으로 분류된다. (차원축소한 결과를 y로 볼 수 있기 때문)
+# 스케일링(전처리) 개념으로 볼 수도 있다.
+
+# [실습]
+# for문 써서 한번에 돌려
+# 기본결과 : 0.23131244
+# 차원 1개 축소: 0.3341432
+# 차원 2개 축소: 0.423414
+# ...
 
 import numpy as np
 import pandas as pd
-from sklearn.datasets import fetch_california_housing
+from sklearn.datasets import fetch_covtype
 from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 
 #1. DATA
 datasets = [
-    fetch_california_housing()
+    fetch_covtype()
 ]
 after = True
 for i, v in enumerate(datasets):
@@ -67,5 +72,3 @@ for i, v in enumerate(datasets):
             print('model_name: ', model)
             print("RESULTS :", results)
 
-# model_name:  RandomForestRegressor(n_jobs=-1, random_state=123)
-# RESULTS : 0.7786727671384369

@@ -102,8 +102,9 @@ for i in range(len(cum_list)):
 
 for i in range(len(cum_list)):
     print(f"{cum_name_list[i]}: loss={result_list[i]:.4f}, acc={acc_list[i]:.4f}")
-    print("나의 최고의 CNN : 0.9816")
-    print("나의 최고의 DNN : 0.954")
+
+print("나의 최고의 CNN : 0.9816")
+print("나의 최고의 DNN : 0.954")
     
 
 
