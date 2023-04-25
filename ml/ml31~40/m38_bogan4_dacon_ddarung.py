@@ -39,7 +39,9 @@ test_csv = pd.read_csv(path + 'test.csv',
 # print(train_csv.isnull().sum())  
 
 # 결측치 처리
-imputer = IterativeImputer(estimator = XGBRegressor())
+# imputer = IterativeImputer(estimator = XGBRegressor())
+# imputer = SimpleImputer()
+imputer = SimpleImputer(strategy='median')
 train_csv = imputer.fit_transform(train_csv)
 test_csv = imputer.fit_transform(test_csv)
 
@@ -124,9 +126,19 @@ r2 = r2_score(y_test, y_predict)
 print('r2 스코어 : ', r2)
 
 
-# ===== 결측치 처리 =====   => 향상
+# ===== 결측치 처리 =====   
+# XGB => 향상
 # result :  1851.16162109375
 # r2 스코어 :  0.7016246520108527
+# SimpleImputer => 향상!
+# result :  1668.357177734375
+# r2 스코어 :  0.731089569810133
+# SimpleImputer(strategy='median') => 향상!!
+# result :  1753.7955322265625
+# r2 스코어 :  0.7173183912664878
+
+
+
 
 
 # ===== 원래 =====

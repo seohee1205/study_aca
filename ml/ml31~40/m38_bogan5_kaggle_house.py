@@ -147,3 +147,7 @@ y_submit = pd.DataFrame(y_submit)
 # y_submit = y_submit.fillna(y_submit.mode()[0])
 y_submit = np.array(y_submit)
 
+
+# loss :  [633469888.0, 0.0]
+# r2 :  0.8961816084836202
+# RMSE :  25168.82700534887
