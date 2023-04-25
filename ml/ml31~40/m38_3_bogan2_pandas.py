@@ -75,10 +75,3 @@ print(data)
 data['x4'] = data['x4'].fillna(method='ffill').fillna(value= 7777777)
 print(data)
 
-
-
-
-
-
-
-

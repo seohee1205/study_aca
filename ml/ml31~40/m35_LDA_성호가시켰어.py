@@ -31,7 +31,11 @@ x_train = pca.fit_transform(x_train)
 
 
 # lda = LinearDiscriminantAnalysis(n_components = 101)
-lda = LinearDiscriminantAnalysis()
+lda = LinearDiscriminantAnalysis()  # # 클래스의 위치 표시 / 디폴트 => 클래스 -1 or n_feature에서 최소값이 나옴 ( 즉 여기선 디폴트 99보다 줄여준 98이 더 작으니까 98로 나옴)
+
+x = lda.fit_transform(x_train,y_train) 
+print(x.shape) #(50000, 98)
+
 # n_components는 클래스의 개수 빼기 하나 이하로 가능하다    
 
 x_lda = lda.fit_transform(x_train, y_train)
