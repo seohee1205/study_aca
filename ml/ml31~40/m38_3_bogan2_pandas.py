@@ -59,6 +59,22 @@ data6 = data.fillna(value=7777777)  # 위와 동일
 print(data6)
 
 
+######################### 특정 컬럼만 !!! #########################
+
+#1. x1 컬럼에 평균값을 넣고
+means = data['x1'].mean()
+data['x1'] = data['x1'].fillna(means)
+print(data)
+
+#2. x2 컬럼에 중위값을 넣고
+medians = data['x2'].median()
+data['x2'] = data['x2'].fillna(medians)
+print(data)
+
+#3. x4 컬럼에 ffill한 후 / 제일 위에 남은 행에 777777로 채우기
+data['x4'] = data['x4'].fillna(method='ffill').fillna(value= 7777777)
+print(data)
+
 
 
 
