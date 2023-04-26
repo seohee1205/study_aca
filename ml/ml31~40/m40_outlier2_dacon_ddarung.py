@@ -39,6 +39,8 @@ def outliers_to_nan(data_out):
 
 x = outliers_to_nan(x)
 
+
+
 # 결측치 처리
 imputer = IterativeImputer(estimator=XGBRegressor())
 train_csv = imputer.fit_transform(train_csv)

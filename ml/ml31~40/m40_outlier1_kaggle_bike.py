@@ -29,6 +29,9 @@ y = train_csv['count']
 imputer = IterativeImputer(estimator=XGBRegressor())
 x = imputer.fit_transform(x)
 
+import matplotlib.pyplot as plt
+plt.boxplot(x)
+plt.show()
 def outliers(data_out):
     quartile_1, q2, quartile_3 = np.percentile(data_out, [25, 50, 75], axis=0)
     print('1사분위 : ', quartile_1) 
@@ -42,11 +45,11 @@ def outliers(data_out):
 outliers_loc = outliers(x)
 print('이상치의 위치 : ', list((outliers_loc)))
 
-x[outliers_loc] = 999999999
+x[outliers_loc] = np.nan
 
-# import matplotlib.pyplot as plt
-# plt.boxplot(x)
-# plt.show()
+import matplotlib.pyplot as plt
+plt.boxplot(x)
+plt.show()
 
 
 ############################### train_csv 데이터에서 x와 y 분리
