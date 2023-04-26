@@ -33,7 +33,7 @@ from xgboost import XGBRegressor
 # imputer = SimpleImputer(strategy='constant', fill_value= 7777)       # 7777 들어감
 # imputer = KNNImputer()
 
-# imputer = IterativeImputer()
+# imputer = IterativeImputer()      # 아직 미완성
 # imputer = IterativeImputer(estimator = DecisionTreeRegressor())
 imputer = IterativeImputer(estimator = XGBRegressor())    
 
