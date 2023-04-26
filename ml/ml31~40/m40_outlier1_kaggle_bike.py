@@ -40,7 +40,7 @@ def outliers(data_out):
     upper_bound = quartile_3 + (iqr * 1.5) 
     return np.where((data_out>upper_bound) | (data_out<lower_bound))
 outliers_loc = outliers(x)
-print('이상치의 위치 : ', list((outliers_loc[0], outliers_loc[1])))
+print('이상치의 위치 : ', list((outliers_loc)))
 
 x[outliers_loc] = 999999999
 
