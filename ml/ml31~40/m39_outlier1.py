@@ -10,13 +10,18 @@ def outliers(data_out):
     print("3사분위 : ", quartile_3)                  # 10
     iqr = quartile_3 - quartile_1           
     print("iqr : ", iqr)                            # 10 - 4 = 6
-    lower_bound = quartile_1 - (iqr * 1.5)          # = 4 - (6 * 1.5)
-    upper_bound = quartile_3 + (iqr * 1.5)          # = 10 + (6 * 1.5)
+    lower_bound = quartile_1 - (iqr * 1.5)          # -5 = 4 - (6 * 1.5)
+    upper_bound = quartile_3 + (iqr * 1.5)          # 19 = 10 + (6 * 1.5)
     return np.where((data_out > upper_bound) |      # | = or , (이거이면 이 값을 넘겨라)
-                    (data_out < lower_bound))
+                    (data_out < lower_bound))       # 19보다 크거나, -5보다 작으면 반환
 
 outliers_loc = outliers(aaa)
 print("이상치의 위치 : ", outliers_loc)
+
+
+import matplotlib.pyplot as plt
+plt.boxplot(aaa)
+plt.show()
 
 
 # 이 코드는 주어진 데이터에서 이상치(outlier)를 찾는 함수를 구현한 것
