@@ -26,17 +26,18 @@ for csv_dir in csv_dirs:
     combined_df = pd.concat(df_list)
     
     # Save combined dataframe to CSV file
-    if csv_dir == './_data/AIFac_pollution/TRAIN':
-        combined_df.to_csv('./_data/AIFac_pollution/train_all.csv', index=False)
-    elif csv_dir == './_data/AIFac_pollution/TEST_INPUT':
-        combined_df.to_csv('./_data/AIFac_pollution/test_all.csv', index=False)
-    elif csv_dir == './_data/AIFac_pollution/TRAIN_AWS':
-        combined_df.to_csv('./_data/AIFac_pollution/train_aws_all.csv', index=False)
-    elif csv_dir == './_data/AIFac_pollution/TEST_AWS':
-        combined_df.to_csv('./_data/AIFac_pollution/test_aws_all.csv', index=False)
-    elif csv_dir == './_data/AIFac_pollution/META':
-        combined_df.to_csv('./_data/AIFac_pollution/meta_all.csv', index=False)            
+    if csv_dir == 'd:/study_data/_data/aif/초미세먼지/META':
+        combined_df.to_csv('d:/study_data/_data/aif/초미세먼지/META_all.csv', index=False)
+    elif csv_dir == 'd:/study_data/_data/aif/초미세먼지/TEST_AWS':
+        combined_df.to_csv('d:/study_data/_data/aif/초미세먼지/TEST_AWS.csv', index=False)
+    elif csv_dir == 'd:/study_data/_data/aif/초미세먼지/TEST_INPUT':
+        combined_df.to_csv('d:/study_data/_data/aif/초미세먼지/TEST_INPUT_all.csv', index=False)
+    elif csv_dir == 'd:/study_data/_data/aif/초미세먼지/TRAIN':
+        combined_df.to_csv('d:/study_data/_data/aif/초미세먼지/TRAIN_all.csv', index=False)
+    elif csv_dir == 'd:/study_data/_data/aif/초미세먼지/TRAIN_AWS':
+        combined_df.to_csv('d:/study_data/_data/aif/초미세먼지/TRAIN_AWS_all.csv', index=False)            
 
+#############################################################
 
 
 
