@@ -39,3 +39,17 @@ pmmap=pd.read_csv('/'.join([meta,meta_list[1]]))
 pmmap=pmmap.drop(pmmap.columns[-1],axis=1)
 print(awsmap)
 print(pmmap)
+
+
+
+import pandas as pd
+import os
+
+# 데이터 파일이 저장된 디렉토리 경로
+data_path = "/path/to/data/files/"
+
+# 해당 디렉토리 내의 파일 목록을 가져옴
+file_list = glob.glob(os.path.join(data_path, "*.csv"))
+
+# 각 파일의 데이터를 순차적으로 불러와서 하나의 데이터 프레임으로 반환
+df = pd.concat([pd.read_csv(f) for f in file_list])

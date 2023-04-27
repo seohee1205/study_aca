@@ -34,29 +34,39 @@ kfold = StratifiedKFold(n_splits= n_splits, shuffle= True, random_state= 337)
 # 'reg_lambda' : [0, 0.1, 0.01, 0.001, 1, 2, 10] / 디폴트 1 / 0~inf / L2 제곱 가중치 규제 / lambda
  
 
-parameters = {'n_estimators' : [500],               # = epochs
-              'learning_rate' : [0.01],
-              'max_depth' : [None],
-              'gamma' : [1],
-              'min_child_weight' : [1],
-              'subsample' : [1],                     # dropout
-              'colsample_bytree' : [1],
-              'colsample_bylevel' : [1],
-              'colsample_bynode' : [1],
-              'reg_alpha' : [0],                    # 절대값: 레이어에서 양수만들겠다/ 라쏘 / 머신러닝 모델
-              'reg_lambda' : [1]                    # 제곱: 레이어에서 양수만들겠다/ 리지   / 머신러닝 모델
+parameters = {'n_estimators' : 500,               # = epochs
+              'learning_rate' : 0.01,
+              'max_depth' : None,
+              'gamma' : 1,
+              'min_child_weight' : 1,
+              'subsample' : 1,                     # dropout
+              'colsample_bytree' : 1,
+              'colsample_bylevel' : 1,
+              'colsample_bynode' : 1,
+              'reg_alpha' : 0,                    # 절대값: 레이어에서 양수만들겠다/ 라쏘 / 머신러닝 모델
+              'reg_lambda' : 1,                   # 제곱: 레이어에서 양수만들겠다/ 리지   / 머신러닝 모델
+              'random_state' : 337,
+              'vervose' : 0
 }
 
 #2. 모델
-xgb = XGBClassifier(random_state = 337)
-model = GridSearchCV(xgb, parameters, cv = kfold, n_jobs= -1)
+model = XGBClassifier(**parameters)
+model = XGBClassifier()
+
 
 #3. 훈련
-model.fit(x_train, y_train)
+model.set_params(early_stopping_rounds=10, **parameters)
+# model.set_params(early_stopping_rounds=10)
+
+model.fit(x_train, y_train,
+          eval_set = [(x_test, y_test)],
+        #   early_stopping_rounds = 10,
+        #   verbose = 1         
+          )
 
 #4. 평가, 예측
-print("최상의 매개변수 : ", model.best_params_)
-print("최상의 점수 : ", model.best_score_)
+# print("최상의 매개변수 : ", model.best_params_)
+# print("최상의 점수 : ", model.best_score_)
 
 results = model.score(x_test, y_test)
 print("최종점수 : ", results)
