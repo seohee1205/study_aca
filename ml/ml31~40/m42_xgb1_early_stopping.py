@@ -46,11 +46,10 @@ parameters = {'n_estimators' : 500,               # = epochs
               'reg_alpha' : 0,                    # 절대값: 레이어에서 양수만들겠다/ 라쏘 / 머신러닝 모델
               'reg_lambda' : 1,                   # 제곱: 레이어에서 양수만들겠다/ 리지   / 머신러닝 모델
               'random_state' : 337,
-              'vervose' : 0
 }
 
 #2. 모델
-model = XGBClassifier(**parameters)
+# model = XGBClassifier(**parameters)                                                                                                                                                                                                                                                                                                                  
 model = XGBClassifier()
 
 
@@ -59,9 +58,9 @@ model.set_params(early_stopping_rounds=10, **parameters)
 # model.set_params(early_stopping_rounds=10)
 
 model.fit(x_train, y_train,
-          eval_set = [(x_test, y_test)],
+          eval_set = [(x_train, y_train), (x_test, y_test)],
         #   early_stopping_rounds = 10,
-        #   verbose = 1         
+          verbose = 1 
           )
 
 #4. 평가, 예측
