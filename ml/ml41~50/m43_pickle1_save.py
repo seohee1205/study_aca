@@ -1,11 +1,10 @@
-# classifier
-
 import numpy as np
 from sklearn.datasets import load_breast_cancer
 from sklearn.model_selection import KFold, StratifiedKFold
 from sklearn.model_selection import train_test_split, GridSearchCV, RandomizedSearchCV
 from sklearn.preprocessing import StandardScaler, RobustScaler 
 from xgboost import XGBClassifier, XGBRegressor
+from sklearn.metrics import accuracy_score
 
 #1. 데이터
 x, y = load_breast_cancer(return_X_y=True)
@@ -34,16 +33,16 @@ kfold = StratifiedKFold(n_splits= n_splits, shuffle= True, random_state= 337)
 # 'reg_lambda' : [0, 0.1, 0.01, 0.001, 1, 2, 10] / 디폴트 1 / 0~inf / L2 제곱 가중치 규제 / lambda
  
 
-parameters = {'n_estimators' : 500,               # = epochs
-              'learning_rate' : 0.01,
-              'max_depth' : None,
-              'gamma' : 1,
+parameters = {'n_estimators' : 100,               # = epochs
+              'learning_rate' : 0.3,
+              'max_depth' : 3,
+              'gamma' : 0,
               'min_child_weight' : 1,
-              'subsample' : 1,                     # dropout
+              'subsample' : 0.5,                     # dropout
               'colsample_bytree' : 1,
               'colsample_bylevel' : 1,
               'colsample_bynode' : 1,
-              'reg_alpha' : 0,                    # 절대값: 레이어에서 양수만들겠다/ 라쏘 / 머신러닝 모델
+              'reg_alpha' : 1,                    # 절대값: 레이어에서 양수만들겠다/ 라쏘 / 머신러닝 모델
               'reg_lambda' : 1,                   # 제곱: 레이어에서 양수만들겠다/ 리지   / 머신러닝 모델
               'random_state' : 337,
 }
@@ -75,23 +74,15 @@ model.fit(x_train, y_train,
 results = model.score(x_test, y_test)
 print("최종점수 : ", results)
 
-print("=================================")
-hist = model.evals_result()
-print(hist)
+y_predict = model.predict(x_test)
+acc = accuracy_score(y_test, y_predict)
+print("accuracy_score : ", acc)
 
-# [실습]
-# 그래프 그려
 
-import matplotlib.pyplot as plt
-train_error = hist['validation_0']['error']
-test_error = hist['validation_1']['error']
-
-plt.plot(train_error, label='train error')
-plt.plot(test_error, label='test error')
-plt.xlabel('iteration')
-plt.ylabel('error')
-plt.legend()
-plt.show()
+################################################
+import pickle 
+path = './_save/pickle_test/'
+pickle.dump(model, open(path + 'm43_pickle1_save.dat', 'wb'))   # wb: write
 
 
 

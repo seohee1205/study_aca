@@ -1,14 +1,14 @@
-# regressor 회귀
+# classifier
 
 import numpy as np
-from sklearn.datasets import load_breast_cancer, fetch_california_housing
+from sklearn.datasets import load_breast_cancer, fetch_covtype, load_digits
 from sklearn.model_selection import KFold, StratifiedKFold
 from sklearn.model_selection import train_test_split, GridSearchCV, RandomizedSearchCV
 from sklearn.preprocessing import StandardScaler, RobustScaler 
 from xgboost import XGBClassifier, XGBRegressor
 
 #1. 데이터
-x, y = fetch_california_housing(return_X_y=True)
+x, y = load_digits(return_X_y=True)
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, random_state = 337, train_size= 0.8, stratify=y, 
@@ -34,21 +34,21 @@ kfold = StratifiedKFold(n_splits= n_splits, shuffle= True, random_state= 337)
 # 'reg_lambda' : [0, 0.1, 0.01, 0.001, 1, 2, 10] / 디폴트 1 / 0~inf / L2 제곱 가중치 규제 / lambda
  
 
-parameters = {'n_estimators' : [100],
-              'learning_rate' : [0.3],
-              'max_depth' : [3],
-              'gamma' : [0],
-              'min_child_weight' : [5],
-              'subsample' : [1],
-              'colsample_bytree' : [0.2],
-              'colsample_bylevel' : [1],
-              'colsample_bynode' : [1],
-              'reg_alpha' : [0.1],
-              'reg_lambda' : [0.01]    
-}
+parameters = {'n_estimators' : [100], #n_estimators 100
+              'learning_rate' : [0.3], #0.3
+              'max_depth': [3],
+              'gamma': [0],
+              'min_child_weight': [1],
+              'subsample': [0.5],
+              'colsample_bytree': [1],
+              'colsample_bylevel': [1],
+              'colsample_bynode': [1],
+              'reg_alpha': [1],
+              'reg_lambda': [1]
+              }
 
 #2. 모델
-xgb = XGBRegressor(random_state = 337)
+xgb = XGBClassifier(random_state = 337)
 model = GridSearchCV(xgb, parameters, cv = kfold, n_jobs= -1)
 
 #3. 훈련
@@ -62,4 +62,5 @@ results = model.score(x_test, y_test)
 print("최종점수 : ", results)
 
 
-
+# 최상의 점수 :  0.9380662020905923
+# 최종점수 :  0.9305555555555556
