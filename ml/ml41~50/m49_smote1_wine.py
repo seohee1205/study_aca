@@ -1,3 +1,8 @@
+# SMOTE(Synthetic Minority Over-sampling Technique): 데이터 정렬,
+# 소수 클래스 데이터를 합성하여 샘플링하는 방법 중 하나
+# 소수 클래스의 데이터 수를 증감시키고,
+# 불균형한 데이터셋에서 분류 모델의 성능을 향상시킬 수 있음
+
 import numpy as np
 import pandas as pd
 from sklearn.datasets import load_wine
@@ -88,6 +93,12 @@ print('accuracy_score : ', accuracy_score(y_test, y_predict))
 print('f1_score(macro)', f1_score(y_test, y_predict, average= 'macro'))
 
 
-
+# model.score :  0.9487179487179487
+# accuracy_score :  0.9487179487179487
+# f1_score(macro) 0.9157894736842106
+# ============== SMOTE 적용 후 =============
+# model.score :  0.9743589743589743
+# accuracy_score :  0.9743589743589743
+# f1_score(macro) 0.9648351648351648
 
 
