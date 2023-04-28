@@ -41,6 +41,15 @@ print(le.transform(['red', 'white']))       # [0 1]     => red = 0, white = 1
 
 
 
+print(train_csv['quality'].value_counts())
+# 6    2416
+# 5    1788
+# 7     924
+# 4     186
+# 8     152
+# 3      26
+# 9       5
+
 
 
 
