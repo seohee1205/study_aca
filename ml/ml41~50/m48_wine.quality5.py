@@ -63,7 +63,7 @@ print(train_csv['quality'].value_counts())
 x = train_csv.drop(['quality'], axis=1)
 print(x.shape)                       #(5497, 12)
 y = train_csv['quality']
-y = y-3
+# y = y-3
 print(type(y))
 print(y)
 print("y_shape:", y.shape)           #(5497,)
@@ -73,17 +73,17 @@ print('y의 라벨값 :', np.unique(y))  #[3 4 5 6 7 8 9]
 #######################################################
 # [실습] y의 클래스를 7개에서 5~3개로 줄여서 성능을 비교
 #######################################################
-for i in range(len(y)):
-    if y[i] == 9 or y[i] == 8:
-        y[i] = 5
-    elif y[i] == 7 or y[i] == 6:
-        y[i] = 4
-    elif y[i] == 5:
-        y[i] = 3
-    elif y[i] == 4:
-        y[i] = 2
-    elif y[i] == 3:
+
+y=y.copy()
+for i , v in enumerate(y):
+    if v <= 4:
+        y[i] = 0
+    elif v == 6 | v == 7 | v == 5:
         y[i] = 1
+    else:
+        y[i] = 2
+
+print(y.value_counts())
 
 
 x = x.to_numpy()
@@ -153,7 +153,7 @@ acc = accuracy_score(y_test, y_predict)
 print("acc 는", acc)
 
 
-#submission.csv 만들기 
+# submission.csv 만들기 
 # submission = pd.read_csv(path + 'sample_submission.csv', index_col=0)
 
 # y_submit = model.predict(test_csv)
@@ -165,5 +165,11 @@ print("acc 는", acc)
 # date = date.strftime("%m%d_%H%M") 
 # submission.to_csv(path_save + 'submit_wine_' + date + '.csv') 
 
-# # 최종점수 : 0.6881818181818182
-# # acc 는 0.6881818181818182
+# 최종점수 : 0.6881818181818182
+# acc 는 0.6881818181818182
+
+
+
+# ======================
+# 최종점수 : 0.9836363636363636
+# acc 는 0.9836363636363636
