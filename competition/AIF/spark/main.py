@@ -22,16 +22,25 @@ def split_month_day_hour(DataFrame:pd.DataFrame)->pd.DataFrame:
     DataFrame=pd.concat([month,date,time,DataFrame],axis=1)
     return DataFrame
 sta = time.time()
-answer_sample=pd.read_csv('./_data/finedust/answer_sample.csv')
+answer_sample=pd.read_csv('d:/study_data/_data/aif/초미세먼지/answer_sample.csv')
 print(answer_sample)
 train_datas,test_datas,pmname=load_min_distance()
 test_datas=pd.concat(test_datas,axis=0)
 missing_indices = np.where(pd.isnull(test_datas['PM2.5'].values))[0]
 print(len(missing_indices))
 print(test_datas)
+
 test_datas=Imputation(split_month_day_hour(test_datas))
+
 PM25=test_datas['PM2.5']
-answer_sample['PM2.5']=np.round(PM25[missing_indices].values, 3)
-answer_sample.to_csv('./_save/spark/sample_sub1052.csv',index=False)
+answer_sample['PM2.5']=np.round(PM25[missing_indices].values, 6)
+
 end = time.time()
 print('걸린 시간 :', np.round(end-sta,2),'초')
+
+import datetime
+date = datetime.datetime.now()
+date = date.strftime("%m%d_%H%M")
+save_path = 'd:/study_data/_save/aif/초미세먼지/'
+
+answer_sample.to_csv(save_path + date + '_submission.csv', index=False)

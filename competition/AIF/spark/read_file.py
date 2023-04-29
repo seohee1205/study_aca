@@ -5,7 +5,7 @@ from typing import List,Tuple
 
 
 def file_path()->str:
-    return '_data/finedust'
+    return 'd:/study_data/_data/aif/초미세먼지'
 
 
 def sort_data_by_first_element(*args: List[List]) -> Tuple[List]:
