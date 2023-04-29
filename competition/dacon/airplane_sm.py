@@ -75,7 +75,7 @@ train_y = train['Delay_num']
 test_x = test.drop(columns=['ID'])
 
 # Split the training dataset into a training set and a validation set
-train_x, val_x, train_y, val_y = train_test_split(train_x, train_y, test_size=0.2, random_state= 337)
+train_x, val_x, train_y, val_y = train_test_split(train_x, train_y, test_size=0.2, random_state= 60)
 
 # Normalize numerical features
 scaler = StandardScaler()
@@ -84,12 +84,12 @@ val_x = scaler.transform(val_x)
 test_x = scaler.transform(test_x)
 
 # Cross-validation with StratifiedKFold
-cv = StratifiedKFold(n_splits=5, shuffle=True, random_state= 337)
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 # Model and hyperparameter tuning using GridSearchCV
-model = XGBClassifier(random_state=42)
+model = XGBClassifier(random_state= 50)
 
 parameters = {'n_estimators' : [5],  # epochs 역할
-              'learning_rate' : [0.01, 0.2, 0.005,0.00001], # 학습률의 크기 너무 크면 최적의 로스값을 못잡고 너무 작으면 최소점에 가지도못하고 학습이끝남.
+              'learning_rate' : [0.01, 0.1, 0.005], # 학습률의 크기 너무 크면 최적의 로스값을 못잡고 너무 작으면 최소점에 가지도못하고 학습이끝남.
               'max_depth': [3],        #tree계열일때 깊이를 3개까지만 가겠다.
               'gamma': [0],
               'min_child_weight': [1], #최소의 
@@ -125,5 +125,4 @@ print('F1 Score:f1',f1)
 
 y_pred = best_model.predict_proba(test_x)
 submission = pd.DataFrame(data=y_pred, columns=sample_submission.columns, index=sample_submission.index)
-submission.to_csv('d:/study_data/_save/dacon_airplane/d23submission.csv')
-
+submission.to_csv('d:/study_data/_save/dacon_airplane/_sample_submission.csv')

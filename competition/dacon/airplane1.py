@@ -143,13 +143,14 @@ print(f'Recall: {recall}')
 y_pred = best_model.predict_proba(test_x)
 y_pred = np.round(y_pred, 4)
 
+print(best_model)
+
 #time
 import datetime
 date = datetime.datetime.now()
 date = date.strftime("%m%d_%H%M")
 
-save_path = 'd:/study_data/_save/air/dataset/'
+save_path = 'd:/study_data/_save/dacon_airplane/'
 submission = pd.DataFrame(data=y_pred, columns=sample_submission.columns, index=sample_submission.index)
-submission.to_csv(save_path + date + '_sample_submission.csv', index=False)
+submission.to_csv(save_path + date + '_sample_submission.csv', index=True)
 
-print(best_model)
