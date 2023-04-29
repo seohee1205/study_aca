@@ -1,4 +1,3 @@
-
 import random
 import os
 import numpy as np
@@ -24,12 +23,13 @@ def csv_to_parquet(csv_path, save_name):
     gc.collect()
     print(save_name, 'Done.')
 
-csv_to_parquet('./_data/dacon_air/train.csv', 'train')
-csv_to_parquet('./_data/dacon_air/test.csv', 'test')
+
+csv_to_parquet('d:/study_data/_data/dacon_airplane/train.csv', 'train')
+csv_to_parquet('d:/study_data/_data/dacon_airplane/test.csv', 'test')
 
 train = pd.read_parquet('./train.parquet')
 test = pd.read_parquet('./test.parquet')
-sample_submission = pd.read_csv('./_data/dacon_air/sample_submission.csv', index_col = 0)
+sample_submission = pd.read_csv('d:/study_data/_data/dacon_airplane/sample_submission.csv', index_col = 0)
 
 # Replace variables with missing values except for the label (Delay) with the most frequent values of the training data
 # 컬럼의 누락된 값은 훈련 데이터에서 해당 컬럼의 최빈값으로 대체됩니다.
@@ -94,23 +94,25 @@ cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=337)
 model = XGBClassifier(random_state=424,tree_method='gpu_hist', gpu_id=0, predictor = 'gpu_predictor')
 
 
-# 'n_estimators' : [100, 200, 300, 400, 500, 1000] 디폴트 100 / 1~inf / 정수
-# 'learning_rate' : [0.1, 0.2, 0.3, 0.5, 1, 0.01, 0.001] 디폴트 0.3 / 0~1 /
-# 'max_depth' : [None, 2, 3, 4, 5, 6, 7, 8, 9, 10] 디폴트 6 / 0~inf/ 정수
+# 'n_estimators' : [100, 200, 300, 400, 500, 1000], 디폴트 100 / 1~inf / 정수
+# 'learning_rate' : [0.1, 0.2, 0.3, 0.5, 1, 0.01, 0.001] 디폴트 0.3 / 0~1 / eta
+# 'max_depth' : [None, 2, 3, 4, 5, 6, 7, 8, 9, 10] 디폴트 6 / 0~inf / 정수
 # 'gamma' : [0, 1, 2, 3, 4, 5, 7, 10, 100] 디폴트 0 / 0~inf
-# 'min_child_weight' : [0, 0.01, 0.001, 0.1, 0.5, 1, 5, 10, 100] 디폴트1 
-# 'subsample' : [0, 0.1, 0.2, 0.3, 0.5, 0.7, 1] 디폴트 1 / 0~1
-# 'colsample_bytree' : [0, 0.1, 0.2, 0.3, 0.5, 0.7, 1] 디폴트1 / 0~1
-# 'colsample_bylevel': [0, 0.1, 0.2, 0.3, 0.5, 0.7, 1] 디폴트1 / 0~1
-# 'colsample_bynode': [0, 0.1, 0.2, 0.3, 0.5, 0.7, 1] 디폴트1 / 0~1
-# 'reg_alpha': [0, 0.1, 0.01, 0.001, 1, 2, 10] 디폴트0 / 0~inf / L1 절대값 가중치 규제
-# 'reg_lambda': [0, 0.1, 0.01, 0.001, 1, 2, 10] 디폴트0 / 0~inf / L2 제곱 가중치 규제
+# 'min_child_weight' : [0, 0.01, 0.001, 0.1, 0.5, 1, 5, 10, 100] 디폴트 1 / 0~inf
+# 'subsample' : [0, 0.1, 0.2, 0.3, 0.5, 0.7, 1] / 디폴트 1 / 0~1
+# 'colsample_bytree' : [0, 0.1, 0.2, 0.3, 0.5, 0.7, 1] / 디폴트 1 / 0~1
+# 'colsample_bylevel' : [0, 0.1, 0.2, 0.3, 0.5, 0.7, 1] / 디폴트 1 / 0~1
+# 'colsample_bynode' : [0, 0.1, 0.2, 0.3, 0.5, 0.7, 1] / 디폴트 1 / 0~1
+# 'reg_alpha' : [0, 0.1, 0.01, 0.001, 1, 2, 10] / 디폴트 0 / 0~inf / L1 절대값 가중치 규제 / alpha
+# 'reg_lambda' : [0, 0.1, 0.01, 0.001, 1, 2, 10] / 디폴트 1 / 0~inf / L2 제곱 가중치 규제 / lambda
 
 
-
-param_grid = {'n_estimators' : [150],
-    'learning_rate': [0.02, 0.2, 0.002],
+param_grid = {'n_estimators' : [5],
+    'learning_rate': [0.002],
     'max_depth': [6, 5],
+    'subsample' :  [1],
+    'colsample_bytree' : [ 1],
+    'colsample_bylevel' : [1]
 }
 
 grid = GridSearchCV(model,
@@ -139,8 +141,15 @@ print(f'Recall: {recall}')
 # 하이퍼파라미터 튜닝 결과를 바탕으로 최적의 모델을 선택하고 테스트 세트의 목표 변수를 예측하는 데 사용합니다.
 # Model prediction
 y_pred = best_model.predict_proba(test_x)
-y_pred = np.round(y_pred, 6)
+y_pred = np.round(y_pred, 4)
+
+#time
+import datetime
+date = datetime.datetime.now()
+date = date.strftime("%m%d_%H%M")
+
+save_path = 'd:/study_data/_save/air/dataset/'
 submission = pd.DataFrame(data=y_pred, columns=sample_submission.columns, index=sample_submission.index)
-submission.to_csv('./_save/dacon_air/sub_sample_너가해.csv', index=True)
+submission.to_csv(save_path + date + '_sample_submission.csv', index=False)
 
 print(best_model)

@@ -32,12 +32,6 @@ print(test_datas)
 test_datas=Imputation(split_month_day_hour(test_datas))
 PM25=test_datas['PM2.5']
 answer_sample['PM2.5']=np.round(PM25[missing_indices].values, 3)
-
-
-import datetime
-date = datetime.datetime.now()
-date = date.strftime("%m%d_%H%M")
-save_path = 'd:/study_data/_save/aif/초미세먼지/'
-answer_sample.to_csv(save_path + date + 'sample_sub.csv', index=False)
-
-
+answer_sample.to_csv('./_save/spark/sample_sub1052.csv',index=False)
+end = time.time()
+print('걸린 시간 :', np.round(end-sta,2),'초')
