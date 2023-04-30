@@ -114,7 +114,7 @@ param_grid = {'n_estimators' : [4],
     'subsample' :  [0.2, 1],
     'colsample_bytree' : [0.1, 1],
     'colsample_bylevel' : [0.1, 1],
-    'colsample_bynode' : [0.2, 1],
+    'colsample_bynode' : [0.2, 1]
 }
 
 grid = GridSearchCV(model,
