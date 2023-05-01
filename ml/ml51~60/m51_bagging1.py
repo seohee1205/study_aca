@@ -26,10 +26,12 @@ model = BaggingClassifier(DecisionTreeClassifier(),
                           n_estimators= 10,     # 모델을 10번 돌린다
                           n_jobs= -1,
                           random_state= 337,
-                        #   bootstrap= True,
-                          bootstrap = False
+                          bootstrap= True,    # 디폴트: True
+                        #   bootstrap = False
                           )
 # DecisionTree를 10번 배깅한다
+##### bootstrap = True 쓰면 성능 좋아짐
+
 
 #3. 훈련
 model.fit(x_train, y_train)
@@ -47,6 +49,10 @@ print('acc : ', accuracy_score(y_test, y_pred))
 # model.score :  0.9824561403508771
 # acc :  0.9824561403508771
 
-# Bagging 에 10번 돌린 결과
+# Bagging 에 10번 돌린 결과 / 부스트트랩 트루(디폴트)
 # model.score :  0.9912280701754386
 # acc :  0.9912280701754386
+
+# Bagging / 10번 / 부스트트랩 펄스
+# model.score :  0.956140350877193
+# acc :  0.956140350877193

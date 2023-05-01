@@ -6,68 +6,87 @@
 
 import numpy as np
 import pandas as pd
-from sklearn.datasets import load_iris, load_breast_cancer, load_digits, load_wine
-from sklearn.preprocessing import MinMaxScaler, StandardScaler, RobustScaler, MaxAbsScaler
 from sklearn.model_selection import train_test_split
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from xgboost import XGBClassifier
-import xgboost as xgb
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
+from sklearn.tree import DecisionTreeRegressor
+from xgboost import XGBRFRegressor
+from sklearn.preprocessing import MinMaxScaler, MaxAbsScaler, StandardScaler, RobustScaler
+from sklearn.metrics import r2_score
+from sklearn.datasets import fetch_california_housing, load_diabetes
+
+#1 데이터
+ddarung_path = 'c:/_study/_data/_ddarung/'
+kaggle_bike_path = 'c:/_study/_data/_kaggle_bike/'
+
+ddarung = pd.read_csv(ddarung_path + 'train.csv', index_col = 0).dropna()
+kaggle_bike = pd.read_csv(kaggle_bike_path + 'train.csv', index_col = 0).dropna()
+
+x1 = ddarung.drop(['count'], axis = 1).values
+y1 = ddarung['count'].values
+
+x2 = kaggle_bike.drop(['count', 'casual', 'registered'], axis = 1).values
+y2 = kaggle_bike['count'].values
+
+num_classes = len(np.unique(np.concatenate((y1, y2))))
 
 
+data_list = [fetch_california_housing(return_X_y = True),
+             load_diabetes(return_X_y = True),
+             (x1, y1),
+             (x2, y2)]
 
-num_classes = 3
-params = {
-    'objective': 'multi:softmax',
-    'num_class': num_classes
-    }
+scaler_list = [MinMaxScaler(),
+               MaxAbsScaler(),
+               StandardScaler(),
+               RobustScaler()]
 
-#1. 데이터
-data_list = [load_iris(), load_breast_cancer(), load_digits(), load_wine()]
-model_list = [DecisionTreeClassifier(), RandomForestClassifier(), GradientBoostingClassifier(), XGBClassifier(objective='multi:softmax', num_class=num_classes)]
-# scaler_list = [MinMaxScaler(), StandardScaler(), RobustScaler(), MaxAbsScaler()] 
+model_list = [DecisionTreeRegressor(),
+              RandomForestRegressor(),
+              GradientBoostingRegressor(),
+              XGBRFRegressor(num_class=num_classes, objective='multi:softmax')]
+
+data_list_name = ['캘리포니아',
+                  '디아뱃',
+                  '따릉이',
+                  '캐글 바이크']
+
+model_list_name = ['DecisionTreeClassifier',
+                   'RandomForestClassifier',
+                   'GradientBoostingClassifier',
+                   'XGBClassifier']
 
 for i in range(len(data_list)):
-    data = data_list[i]
-    x, y = data.data, data.target
-    x_train, x_test, y_train, y_test = train_test_split(
-        x, y, train_size= 0.8, random_state= 337, stratify=y
-    )
-
-    for j, model in enumerate(model_list): 
-            # 모델 훈련
+    x, y = data_list[i]
+    if i == 4:  # '데이콘 디아뱃' dataset
+        x = x.to_numpy()
+    x_train, x_test, y_train, y_test = train_test_split(x, y, train_size = 0.7, shuffle = True, random_state = 1234)
+    
+    for j in range(len(scaler_list)):
+        scaler = scaler_list[j]
+        x_train = scaler.fit_transform(x_train)
+        x_test = scaler.transform(x_test)
+        
+        for k in range(len(model_list)):
+            model = model_list[k]
             model.fit(x_train, y_train)
-            test_acc =model.score(x_test, y_test)
             
-
-            # feature importance 계산
-            feature_importance = model.feature_importances_
-            feature_importance_percent = feature_importance / feature_importance.sum()
-
-            # 중요도가 낮은 컬럼 제거
-            threshold = np.percentile(feature_importance_percent, 25) # 하위 25% /  함수는 배열에서 지정된 백분율의 값을 계산합니다.
+            y_predict = model.predict(x_test)
             
-            #feature_importance_percent의 값이 threshold 이상인 위치를 선택하여 feature_idx에 저장
-            feature_idx = np.where(feature_importance_percent >= threshold)[0] # 배열에서 25%에 해당하는 값 이하의 모든 값을 선택하려면 / where() 함수는 조건을 만족하는 위치를 반환
+            r2 = r2_score(y_test, y_predict)
+            print(data_list_name[i], model_list_name[k], 'r2_score : ', r2)
             
-            #selected_x_train과 selected_x_test는 x_train과 x_test에서 선택된 feature만을 포함하는 새로운 배
-            selected_x_train = x_train[:, feature_idx]
-            selected_x_test = x_test[:, feature_idx]
+            idx = np.argsort(model.feature_importances_)[int(len(model.feature_importances_) * 0.2) : int(len(model.feature_importances_) * 0.25)]
+            keep_idx = np.delete(np.arange(x.shape[1]), idx)
+            x_drop = x[:, keep_idx]
 
-            # 모델 훈련 후 정확도 계산
-            model.fit(selected_x_train,y_train)
-            test_acc_del = model.score(selected_x_test, y_test)
-
-            # 결과 출력
-            print(f"Dataset: {data_list[i].DESCR.splitlines()[0]}")
-            print(f"Model: {type(model).__name__}")  # type(model).__name__는 모델 객체의 클래스 이름을 가져와서 출력
+            x_train1, x_test1, y_train1, y_test1 = train_test_split(x_drop, y, train_size = 0.7, shuffle = True, random_state = 123)
             
-            #feature importance를 계산한 후 선택된 feature의 개수와 전체 feature의 개수를 출력
-            print(f"Selected Features: {len(feature_idx)} / {x_train.shape[1]}") 
+            x_train1 = scaler.fit_transform(x_train1)
+            x_test1 = scaler.transform(x_test1)
             
-            print(f"Test Accuracy: {test_acc:.4f}")
-            print(f"Test Accuracy Del: {test_acc_del:.4f}")
+            model.fit(x_train1, y_train1)
             
-            print("=" * 50)
-
-
+            y_predict1 = model.predict(x_test1)
+                        
+            r22 = r2_score(y_test1, y_predict1)
+            print(data_list_name[i], model_list_name[k], 'r2_score2 : ', r22)
