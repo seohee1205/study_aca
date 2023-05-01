@@ -21,6 +21,7 @@ def split_month_day_hour(DataFrame:pd.DataFrame)->pd.DataFrame:
     time=pd.Series([float(i[0])for i in time_min],name='시', index=DataFrame.index)
     DataFrame=pd.concat([month,date,time,DataFrame],axis=1)
     return DataFrame
+
 sta = time.time()
 answer_sample=pd.read_csv('d:/study_data/_data/aif/초미세먼지/answer_sample.csv')
 print(answer_sample)

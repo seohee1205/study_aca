@@ -79,7 +79,7 @@ test_x = test.drop(columns=['ID'])
 # 교육 데이터는 교육 및 검증 세트로 분할되고 수치 기능은 StandardScaler를 사용하여 정규화됩니다.
 # 모델은 GridSearchCV와 5겹 교차 검증을 사용하여 수행되는 하이퍼파라미터 튜닝과 함께 XGBClassifier를 사용하여 훈련됩니다.
 # Split the training dataset into a training set and a validation set
-train_x, val_x, train_y, val_y = train_test_split(train_x, train_y, test_size=0.15, random_state=337, stratify=train_y)
+train_x, val_x, train_y, val_y = train_test_split(train_x, train_y, test_size= 0.15, random_state= 337, stratify= train_y)
 
 # Normalize numerical features
 scaler = MinMaxScaler()
@@ -88,10 +88,10 @@ val_x = scaler.transform(val_x)
 test_x = scaler.transform(test_x)
 
 # Cross-validation with StratifiedKFold
-cv = StratifiedKFold(n_splits= 5, shuffle=True, random_state=337)
+cv = StratifiedKFold(n_splits= 5, shuffle= True, random_state= 337)
 
 # Model and hyperparameter tuning using GridSearchCV
-model = XGBClassifier(random_state=424,tree_method='gpu_hist', gpu_id=0, predictor = 'gpu_predictor')
+model = XGBClassifier(random_state= 424,tree_method= 'gpu_hist', gpu_id= 0, predictor = 'gpu_predictor')
 
 
 # 'n_estimators' : [100, 200, 300, 400, 500, 1000], 디폴트 100 / 1~inf / 정수
@@ -119,10 +119,10 @@ param_grid = {'n_estimators' : [4],
 
 grid = GridSearchCV(model,
                     param_grid,
-                    cv=cv,
+                    cv= cv,
                     scoring='accuracy',
-                    n_jobs=-1,
-                    verbose=1)
+                    n_jobs= -1,
+                    verbose= 1)
 
 grid.fit(train_x, train_y)
 
@@ -131,9 +131,9 @@ best_model = grid.best_estimator_
 # Model evaluation
 val_y_pred = best_model.predict(val_x)
 accuracy = accuracy_score(val_y, val_y_pred)
-f1 = f1_score(val_y, val_y_pred, average='weighted')
-precision = precision_score(val_y, val_y_pred, average='weighted')
-recall = recall_score(val_y, val_y_pred, average='weighted')
+f1 = f1_score(val_y, val_y_pred, average= 'weighted')
+precision = precision_score(val_y, val_y_pred, average= 'weighted')
+recall = recall_score(val_y, val_y_pred, average= 'weighted')
 
 print(f'Accuracy: {accuracy}')
 print(f'F1 Score: {f1}')
@@ -153,6 +153,6 @@ date = datetime.datetime.now()
 date = date.strftime("%m%d_%H%M")
 
 save_path = 'd:/study_data/_save/dacon_airplane/'
-submission = pd.DataFrame(data=y_pred, columns=sample_submission.columns, index=sample_submission.index)
+submission = pd.DataFrame(data= y_pred, columns= sample_submission.columns, index= sample_submission.index)
 submission.to_csv(save_path + date + '_sample_submission.csv', index=True)
 
