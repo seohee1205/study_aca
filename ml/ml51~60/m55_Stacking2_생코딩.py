@@ -42,7 +42,7 @@ for model in models:
 # print(li)
 y_stacking_predict = np.concatenate(li, axis = 1)
 # print(y_stacking_predict)
-print(y_stacking_predict.shape)    # (114, 3)
+# print(y_stacking_predict.shape)    # (114, 3)
 
 model = CatBoostClassifier(verbose =0)
 model.fit(y_stacking_predict, y_test)
@@ -53,3 +53,4 @@ print("스태킹 결과 : ", score)
 # XGBClassifier ACC : 0.9474
 # LGBMClassifier ACC : 0.9474
 # CatBoostClassifier ACC : 0.9386
+# 스태킹 결과 :  0.956140350877193

@@ -1,7 +1,5 @@
 # 실습
 
-
-
 import numpy as np
 import pandas as pd
 from sklearn.datasets import load_iris, load_breast_cancer, load_digits, load_wine, fetch_covtype
@@ -53,7 +51,9 @@ for i, v in enumerate(data_list):
             print('==========', data_name_list[i], '==========')
             print("{0} 정확도 : {1:.4f}".format(class_name, score2))
             # print('model.score : ', model.score(x_test, y_test))
-            print('voting acc : ', accuracy_score(y_test, y_predict))
+            print('Stacking acc : ', accuracy_score(y_test, y_predict))
             list.append(score2)
-            
+
+
+
 

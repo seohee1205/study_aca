@@ -146,18 +146,31 @@ y = train_dataset['PM2.5']
 print(x, '\n', y)
 
 x_train, x_test, y_train, y_test = train_test_split(
-    x, y, train_size= 0.8, random_state= 3337, shuffle= True
+    x, y, train_size= 0.85, random_state= 3377, shuffle= True
 )
 
+# 'n_estimators' : [100, 200, 300, 400, 500, 1000], 디폴트 100 / 1~inf / 정수
+# 'learning_rate' : [0.1, 0.2, 0.3, 0.5, 1, 0.01, 0.001] 디폴트 0.3 / 0~1 / eta
+# 'max_depth' : [None, 2, 3, 4, 5, 6, 7, 8, 9, 10] 디폴트 6 / 0~inf / 정수
+# 'gamma' : [0, 1, 2, 3, 4, 5, 7, 10, 100] 디폴트 0 / 0~inf
+# 'min_child_weight' : [0, 0.01, 0.001, 0.1, 0.5, 1, 5, 10, 100] 디폴트 1 / 0~inf
+# 'subsample' : [0, 0.1, 0.2, 0.3, 0.5, 0.7, 1] / 디폴트 1 / 0~1
+# 'colsample_bytree' : [0, 0.1, 0.2, 0.3, 0.5, 0.7, 1] / 디폴트 1 / 0~1
+# 'colsample_bylevel' : [0, 0.1, 0.2, 0.3, 0.5, 0.7, 1] / 디폴트 1 / 0~1
+# 'colsample_bynode' : [0, 0.1, 0.2, 0.3, 0.5, 0.7, 1] / 디폴트 1 / 0~1
+# 'reg_alpha' : [0, 0.1, 0.01, 0.001, 1, 2, 10] / 디폴트 0 / 0~inf / L1 절대값 가중치 규제 / alpha
+# 'reg_lambda' : [0, 0.1, 0.01, 0.001, 1, 2, 10] / 디폴트 1 / 0~inf / L2 제곱 가중치 규제 / lambda
+
+
 parameters =  {'n_estimators' : 10000,               # = epochs
-              'learning_rate' : 0.3,
-              'max_depth' : 5,
+              'learning_rate' : 0.5,
+              'max_depth' :7,
               'gamma' : 1,
-            #   'min_child_weight' : 1,
-            #   'subsample' : 1,                     # dropout
-            #   'colsample_bytree' : 1,
-            #   'colsample_bylevel' : 1,
-            #   'colsample_bynode' : 1,
+              'min_child_weight' : 1.2,
+              'subsample' : 0.9,                     # dropout
+              'colsample_bytree' : 0.8,
+              'colsample_bylevel' : 0.8,
+              'colsample_bynode' : 0.8,
             #   'reg_alpha' : 0,                    # 절대값: 레이어에서 양수만들겠다/ 라쏘 / 머신러닝 모델
             #   'reg_lambda' : 1,                   # 제곱: 레이어에서 양수만들겠다/ 리지   / 머신러닝 모델
             #   'random_state' : 3377,
@@ -233,4 +246,4 @@ path = './_save/pickle_test/'
 # pickle.dump(model, open(path + 'm43_pickle1_save.dat', 'wb'))   # wb: write
 
 import joblib
-joblib.dump(model, path + 'm50_factory_save.dat')
+joblib.dump(model, path + 'm50_factory_save_0502_.dat')
