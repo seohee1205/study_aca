@@ -10,6 +10,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier,BaggingClassifier
 from sklearn.ensemble import VotingClassifier, StackingClassifier
+from sklearn.ensemble import RandomForestClassifier
 
 #1. 데이터
 x,y  = load_breast_cancer(return_X_y=True)
@@ -31,6 +32,10 @@ dt = DecisionTreeClassifier()
 model = StackingClassifier(
     estimators=[('LR', lr), ('KNN', knn), ('DT', dt)],
                 # voting='soft', #디폴트는 하드, 성능은 소프트가 더 좋음.
+    # final_estimator= DecisionTreeClassifier()
+    # final_estimator= LogisticRegression()   # 디폴트
+    # final_estimator= KNeighborsClassifier()
+    final_estimator= RandomForestClassifier()
 )
 
 #3. 훈련
@@ -59,4 +64,9 @@ for model2 in Classifiers:
     print("{0}정확도 : {1:4f}".format(class_name, score2))
     
     
-    
+# Stacking 
+# model.score :  0.9649122807017544
+# Stacking.acc :  0.9649122807017544
+# LogisticRegression정확도 : 0.964912
+# KNeighborsClassifier정확도 : 0.929825
+# DecisionTreeClassifier정확도 : 0.921053
