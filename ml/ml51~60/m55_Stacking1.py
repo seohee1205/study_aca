@@ -32,10 +32,11 @@ dt = DecisionTreeClassifier()
 model = StackingClassifier(
     estimators=[('LR', lr), ('KNN', knn), ('DT', dt)],
                 # voting='soft', #디폴트는 하드, 성능은 소프트가 더 좋음.
-    # final_estimator= DecisionTreeClassifier()
-    # final_estimator= LogisticRegression()   # 디폴트
-    # final_estimator= KNeighborsClassifier()
-    final_estimator= RandomForestClassifier()
+    # final_estimator= DecisionTreeClassifier(),
+    # final_estimator= LogisticRegression(),   # 디폴트
+    # final_estimator= KNeighborsClassifier(),
+    final_estimator= RandomForestClassifier(),
+    # final_estimator = VotingClassifier()  # 스태킹 안에 보팅도 가능
 )
 
 #3. 훈련

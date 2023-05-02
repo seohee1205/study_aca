@@ -37,6 +37,7 @@ for i, v in enumerate(data_list):
     x_train = scaler.fit_transform(x_train)
     x_test = scaler.transform(x_test)
     
+    list =[]
     for j, v2 in enumerate(model_list):
         
         model = VotingClassifier(
@@ -50,13 +51,8 @@ for i, v in enumerate(data_list):
             class_name = model2.__class__.__name__
             print('==========', data_name_list[i], '==========')
             print("{0} 정확도 : {1:.4f}".format(class_name, score2))
-        
-            #3. 훈련
-            model.fit(x_train, y_train)
-            
-            #4. 평가, 예측
-            y_pred = model.predict(x_test)
-            print('model.score : ', model.score(x_test, y_test))
-            print('voting acc : ', accuracy_score(y_test, y_pred))
+            # print('model.score : ', model.score(x_test, y_test))
+            print('voting acc : ', accuracy_score(y_test, y_predict))
+            list.append(score2)
             
 
