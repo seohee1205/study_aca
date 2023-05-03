@@ -146,7 +146,7 @@ y = train_dataset['PM2.5']
 print(x, '\n', y)
 
 x_train, x_test, y_train, y_test = train_test_split(
-    x, y, train_size= 0.85, random_state= 3377, shuffle= True
+    x, y, train_size= 0.85, random_state= 555, shuffle= True
 )
 
 # 'n_estimators' : [100, 200, 300, 400, 500, 1000], 디폴트 100 / 1~inf / 정수
@@ -164,8 +164,8 @@ x_train, x_test, y_train, y_test = train_test_split(
 
 parameters =  {'n_estimators' : 10000,               # = epochs
               'learning_rate' : 0.5,
-              'max_depth' :7,
-              'gamma' : 1,
+              'max_depth' : 6,
+              'gamma' : 0,
               'min_child_weight' : 1.2,
               'subsample' : 0.9,                     # dropout
               'colsample_bytree' : 0.8,
@@ -184,7 +184,7 @@ model = XGBRegressor()
 #3. 컴파일, 훈련
 model.set_params(**parameters,
                  eval_metric = 'mae',
-                 early_stopping_rounds = 150,
+                 early_stopping_rounds = 130,
                  )
 
 start_time = time.time()
@@ -246,4 +246,4 @@ path = './_save/pickle_test/'
 # pickle.dump(model, open(path + 'm43_pickle1_save.dat', 'wb'))   # wb: write
 
 import joblib
-joblib.dump(model, path + 'm50_factory_save_0502_.dat')
+joblib.dump(model, path + 'm50_factory_save_0503_1630.dat')
