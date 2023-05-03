@@ -21,7 +21,7 @@ parameters = {'n_estimators' : 1000,               # = epochs
               'max_depth' : 2,
               'gamma' : 0,
               'min_child_weight' : 0,
-              'subsample' : 0.2,                     # dropout
+              'subsample' : 0.2,                    # dropout과 비슷함
               'colsample_bytree' : 0.5,
               'colsample_bylevel' : 0,
               'colsample_bynode' : 0,
