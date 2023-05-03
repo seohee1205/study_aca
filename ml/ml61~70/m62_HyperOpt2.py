@@ -1,91 +1,49 @@
-from bayes_opt import BayesianOptimization
-from lightgbm import LGBMRegressor
-from catboost import CatBoostClassifier
+# 최소값 찾는 것
+# 베이지안옵티마이제이션은 최대값을 찾는 것
+# pip install hyperopt
+import hyperopt
+print(hyperopt.__version__)     # 0.2.7
 import numpy as np
-
-from sklearn.datasets import load_iris
-from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import r2_score, mean_squared_error
-import warnings
-warnings.filterwarnings('ignore')
-import time
-
-#1. 데이터
-x, y = load_iris(return_X_y=True)
-x_train, x_test, y_train, y_test = train_test_split(
-    x, y, train_size= 0.8, random_state= 337
-)
-scaler = StandardScaler()
-x_train = scaler.fit_transform(x_train)
-x_test = scaler.transform(x_test)
 
 from hyperopt import hp, fmin, tpe, Trials, STATUS_OK
 
-#2. 모델    # 정수형 quniform, 실수형 uniform
 search_space = {
-    'learning_rate' : hp.uniform('learning_rate', 0.001, 1),
-    'depth' : hp.quniform('depth', 3, 16, 1),   # 3부터 16까지 1간격으로
-    'one_hot_max_size' : hp.quniform('one_hot_max_size', 24, 64, 1),
-    'min_data_in_leaf' : hp.quniform('min_data_in_leaf', 10, 200, 1),
-    'bagging_temperature' : hp.uniform('bagging_temperature', 0.5, 1),
-    'random_strength' : hp.uniform('random_strength', 0.5, 1),
-    'l2_leaf_reg' : hp.uniform('l2_leaf_reg', 0.001, 10)
+    'x1' : hp.quniform('x1', -10, 10, 1),
+    'x2' : hp.quniform('x2', -15, 15, 1)
+    #      hp.quniform(label, low, high, q)
 }
-# hp.quniform(lable, low, high, q) : 최소부터 최대까지 q 간격
-# hp.uniform(label, low, high) : 최소부터 최대까지 정규분포 간격
-# np.randint(label, upper): 0부터 최대값 upper까지 random한 정수값
-# hp.loguniform(label, low, high) : exp(uniform(low, high))값 반환 / 이거 역시 정규분포
+print(search_space)
 
-
-def lgb_hamsu(search_space):
-    params = {
-        'iterations' : 10,
-        'learning_rate' : search_space['learning_rate'],
-        'depth' : int(search_space['depth']),           
-        'l2_leaf_reg' : search_space['l2_leaf_reg'],          
-        'bagging_temperature' :search_space['bagging_temperature'],   
-        'random_strength' : search_space['random_strength'],     
-        'one_hot_max_size' : int(search_space['one_hot_max_size']),       
-        'min_data_in_leaf' : int(search_space['min_data_in_leaf']),
-        'task_type' : 'CPU',    
-        'logging_level' : 'Silent'                   
-    }
+def objective_func(search_space):
+    x1 = search_space['x1']
+    x2 = search_space['x2']
+    return_value = x1**2 - 20*x2
     
-    model = CatBoostClassifier(**params)
+    return return_value
+    # 권장리턴방식 return {'loss':return_value, 'status':"STATUS_OK"}
 
-    model.fit(x_train, y_train,
-          eval_set=[(x_train, y_train), (x_test, y_test)],
-          verbose=0,
-          early_stopping_rounds=50
-    )
-    
-    y_predict = model.predict(x_test)
-    results = mean_squared_error(y_test, y_predict)
-    
-    return results
+trial_val = Trials()
 
-trial_val = Trials()    # hist를 보기위해
-
-# lgb_bo = BayesianOptimization(f= lgb_hamsu,
-#                               pbounds= bayesian_params,
-#                               random_state= 337
-#                               )
 best = fmin(
-    fn = lgb_hamsu, 
+    fn = objective_func,
     space = search_space,
-    algo= tpe.suggest,
-    max_evals= 50,
-    trials= trial_val,
-    rstate= np.random.default_rng(seed=10)
+    algo = tpe.suggest,         # 디폴트
+    max_evals = 20,  # ?번 돌리겠다
+    trials = trial_val,
+    rstate = np.random.default_rng(seed= 10)
 )
+
 print('best : ', best)
-# best :  {'learning_rate': 0.2509097581813602, 'max_depth': 7.0, 'numleaves': 41.0, 'subsample': 0.8759587138041729}
+# best :  {'x1': 0.0, 'x2': 15.0}
 
+# print(trial_val.results)
+# [{'loss': -216.0, 'status': 'ok'}, ..., {'loss': 0.0, 'status': 'ok'}]
 
+# print(trial_val.vals)
+# {'x1': [-2.0, -5.0, 7.0, 10.0, 10.0, ...], 
+# 'x2': [11.0, 10.0, -4.0, -5.0, ...]}
 
 ##### pandas 데이터프레임에 trial_val, vals를 넣어봐라 #####
-## results컬럼 최소값이 있는 행을 출력
 import pandas as pd
 
 results = [aaa['loss'] for aaa in trial_val.results]     # trial_val 결과값들을 반복해라 반복하는 걸 aaa라고 라고 그거에 대한 결과를 aaa['loss']에 저장해라
@@ -93,17 +51,13 @@ results = [aaa['loss'] for aaa in trial_val.results]     # trial_val 결과값�
 # for aaa in trial_val.results:
 #     losses.append(aaa['loss'])        # 위 한 줄과 동일
 
-df = pd.DataFrame({'learning_rate' : trial_val.vals['learning_rate'],
-                   'depth' : trial_val.vals['depth'],
-                   'l2_leaf_reg' : trial_val.vals['l2_leaf_reg'],
-                   'bagging_temperature' : trial_val.vals['bagging_temperature'],
-                   'random_strength' : trial_val.vals['random_strength'],
-                   'one_hot_max_size' : trial_val.vals['one_hot_max_size'],
-                   'min_data_in_leaf' : trial_val.vals['min_data_in_leaf'],
+df = pd.DataFrame({'x1' : trial_val.vals['x1'],
+                   'x2' : trial_val.vals['x2'],
                    'results' : results})
 print(df)
 
-min_idx = df['results'].idxmin()
-print(df.iloc[min_idx])
+    
+
+
 
 
