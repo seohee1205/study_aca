@@ -1,9 +1,10 @@
 from bayes_opt import BayesianOptimization
 from lightgbm import LGBMRegressor
-from catboost import CatBoostClassifier
+from catboost import CatBoostClassifier, CatBoostRegressor
 import numpy as np
+import pandas as pd
 
-from sklearn.datasets import load_iris
+from sklearn.datasets import fetch_california_housing
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error, accuracy_score
@@ -12,10 +13,23 @@ warnings.filterwarnings('ignore')
 import time
 
 #1. 데이터
-x, y = load_iris(return_X_y=True)
+#1. 데이터
+path = './_data/dacon_ddarung/'
+path_save = './_save/dacon_ddarung/'
+train_csv = pd.read_csv(path + 'train.csv', index_col=0)
+test_csv = pd.read_csv(path + 'test.csv', index_col=0)
+
+###결측치제거### 
+train_csv = train_csv.dropna() 
+
+###데이터분리(train_set)###
+x = train_csv.drop(['count'], axis=1)
+y = train_csv['count']
+
 x_train, x_test, y_train, y_test = train_test_split(
-    x, y, train_size= 0.8, random_state= 337
+    x, y, random_state=337, train_size=0.8
 )
+
 scaler = StandardScaler()
 x_train = scaler.fit_transform(x_train)
 x_test = scaler.transform(x_test)
@@ -52,7 +66,7 @@ def lgb_hamsu(search_space):
         'logging_level' : 'Silent'                   
     }
     
-    model = CatBoostClassifier(**params)
+    model = CatBoostRegressor(**params)
 
     model.fit(x_train, y_train,
           eval_set=[(x_train, y_train), (x_test, y_test)],
@@ -61,7 +75,7 @@ def lgb_hamsu(search_space):
     )
     
     y_predict = model.predict(x_test)
-    results = -1*accuracy_score(y_test, y_predict)
+    results = mean_squared_error(y_test, y_predict)
     
     return results
 
@@ -107,11 +121,11 @@ min_idx = df['results'].idxmin()
 print(df.iloc[min_idx])
 
 
-# learning_rate            0.163366
-# depth                   14.000000
-# l2_leaf_reg              5.676998
-# bagging_temperature      0.779716
-# random_strength          0.649914
-# one_hot_max_size        52.000000
-# min_data_in_leaf       165.000000
-# results                 -1.000000
+# learning_rate             0.465581
+# depth                    10.000000
+# l2_leaf_reg               4.046427
+# bagging_temperature       0.626598
+# random_strength           0.919577
+# one_hot_max_size         33.000000
+# min_data_in_leaf         37.000000
+# results                1610.446731

@@ -1,9 +1,9 @@
 from bayes_opt import BayesianOptimization
 from lightgbm import LGBMRegressor
-from catboost import CatBoostClassifier
+from catboost import CatBoostClassifier, CatBoostRegressor
 import numpy as np
 
-from sklearn.datasets import load_iris
+from sklearn.datasets import fetch_california_housing
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error, accuracy_score
@@ -12,7 +12,7 @@ warnings.filterwarnings('ignore')
 import time
 
 #1. 데이터
-x, y = load_iris(return_X_y=True)
+x, y = fetch_california_housing(return_X_y=True)
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, train_size= 0.8, random_state= 337
 )
@@ -52,7 +52,7 @@ def lgb_hamsu(search_space):
         'logging_level' : 'Silent'                   
     }
     
-    model = CatBoostClassifier(**params)
+    model = CatBoostRegressor(**params)
 
     model.fit(x_train, y_train,
           eval_set=[(x_train, y_train), (x_test, y_test)],
@@ -61,7 +61,7 @@ def lgb_hamsu(search_space):
     )
     
     y_predict = model.predict(x_test)
-    results = -1*accuracy_score(y_test, y_predict)
+    results = mean_squared_error(y_test, y_predict)
     
     return results
 
@@ -107,11 +107,11 @@ min_idx = df['results'].idxmin()
 print(df.iloc[min_idx])
 
 
-# learning_rate            0.163366
-# depth                   14.000000
-# l2_leaf_reg              5.676998
-# bagging_temperature      0.779716
-# random_strength          0.649914
-# one_hot_max_size        52.000000
-# min_data_in_leaf       165.000000
-# results                 -1.000000
+# learning_rate           0.456652
+# depth                  11.000000
+# l2_leaf_reg             4.549757
+# bagging_temperature     0.739639
+# random_strength         0.545584
+# one_hot_max_size       24.000000
+# min_data_in_leaf       32.000000
+# results                 0.269592

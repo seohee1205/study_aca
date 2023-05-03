@@ -2,7 +2,7 @@
 # 회귀 평가지표 : mse, mae(최솟값이므로 -넣기) or r2(최댓값)
 
 import numpy as np
-from sklearn.datasets import load_iris
+from sklearn.datasets import load_breast_cancer
 from sklearn.model_selection import KFold, StratifiedKFold
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
@@ -14,11 +14,10 @@ from sklearn.metrics import r2_score, accuracy_score
 import time
 import warnings
 warnings.filterwarnings('ignore')
-# *UserWarning: 'early_stopping_rounds' argument is deprecated and will be removed in a future release of LightGBM. 
-# Pass 'early_stopping()' callback via 'callbacks' argument instead.
+
 
 #1. 데이터 
-x, y = load_iris(return_X_y=True)
+x, y = load_breast_cancer(return_X_y=True)
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, random_state=337, train_size=0.8, stratify=y

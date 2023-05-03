@@ -2,8 +2,9 @@ from bayes_opt import BayesianOptimization
 from lightgbm import LGBMRegressor
 from catboost import CatBoostClassifier
 import numpy as np
+import pandas as pd
 
-from sklearn.datasets import load_iris
+from sklearn.datasets import load_digits
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error, accuracy_score
@@ -11,11 +12,46 @@ import warnings
 warnings.filterwarnings('ignore')
 import time
 
-#1. 데이터
-x, y = load_iris(return_X_y=True)
+#1. 데이터 
+path = './_data/dacon_wine/'
+path_save = './_save/dacon_wine/'
+
+train_csv = pd.read_csv(path + 'train.csv', index_col=0)
+print(train_csv) #[5497 rows x 13 columns]
+print(train_csv.shape) #(5497,13)
+ 
+test_csv = pd.read_csv(path + 'test.csv', index_col=0)
+print(test_csv) #[1000 rows x 12 columns] / quality 제외 (1열)
+
+#labelencoding
+from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()
+le.fit(train_csv['type'])
+aaa = le.transform(train_csv['type'])
+print(aaa)   #[1 0 1 ... 1 1 1]
+print(type(aaa))  #<class 'numpy.ndarray'>
+print(aaa.shape)
+print(np.unique(aaa, return_counts=True))
+
+train_csv['type'] = aaa
+print(train_csv)
+test_csv['type'] = le.transform(test_csv['type'])
+
+print(le.transform(['red', 'white'])) #[0 1]
+
+
+#1-1 결측치 제거 
+# print(train_csv.isnull().sum()) #결측치없음 
+
+x = train_csv.drop(['quality'], axis=1)
+# print(x.shape)                       #(5497, 12)
+y = train_csv['quality']
+
+
 x_train, x_test, y_train, y_test = train_test_split(
-    x, y, train_size= 0.8, random_state= 337
+    x, y, random_state=337, train_size=0.8, stratify=y
 )
+
 scaler = StandardScaler()
 x_train = scaler.fit_transform(x_train)
 x_test = scaler.transform(x_test)
@@ -107,11 +143,11 @@ min_idx = df['results'].idxmin()
 print(df.iloc[min_idx])
 
 
-# learning_rate            0.163366
-# depth                   14.000000
-# l2_leaf_reg              5.676998
-# bagging_temperature      0.779716
-# random_strength          0.649914
-# one_hot_max_size        52.000000
-# min_data_in_leaf       165.000000
-# results                 -1.000000
+# learning_rate           0.990839
+# depth                  16.000000
+# l2_leaf_reg             1.599968
+# bagging_temperature     0.502306
+# random_strength         0.997949
+# one_hot_max_size       24.000000
+# min_data_in_leaf       47.000000
+# results                -0.647273

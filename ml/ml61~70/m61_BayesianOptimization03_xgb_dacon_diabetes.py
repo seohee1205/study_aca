@@ -2,7 +2,8 @@
 # 회귀 평가지표 : mse, mae(최솟값이므로 -넣기) or r2(최댓값)
 
 import numpy as np
-from sklearn.datasets import load_iris
+import pandas as pd
+from sklearn.datasets import load_breast_cancer, load_diabetes, load_iris
 from sklearn.model_selection import KFold, StratifiedKFold
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
@@ -14,11 +15,16 @@ from sklearn.metrics import r2_score, accuracy_score
 import time
 import warnings
 warnings.filterwarnings('ignore')
-# *UserWarning: 'early_stopping_rounds' argument is deprecated and will be removed in a future release of LightGBM. 
-# Pass 'early_stopping()' callback via 'callbacks' argument instead.
+
 
 #1. 데이터 
-x, y = load_iris(return_X_y=True)
+path = './_data/dacon_diabetes/'
+path_save = './_save/dacon_diabetes/'
+
+train_csv= pd.read_csv(path+'train.csv', index_col=0)
+test_csv= pd.read_csv(path+'test.csv', index_col=0)
+x = train_csv.drop(['Outcome'], axis=1)
+y = train_csv['Outcome']
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, random_state=337, train_size=0.8, stratify=y
@@ -66,7 +72,7 @@ def lgbm_hamsu(learning_rate, max_depth, gamma,min_child_weight,subsample,colsam
     model = XGBClassifier(**params)
     model.fit(x_train, y_train,
               eval_set=[(x_train, y_train), (x_test, y_test)],
-              eval_metric='merror',
+              eval_metric='error',
               verbose=0,
               early_stopping_rounds=50
               )

@@ -2,26 +2,25 @@
 # 회귀 평가지표 : mse, mae(최솟값이므로 -넣기) or r2(최댓값)
 
 import numpy as np
-from sklearn.datasets import load_iris
+from sklearn.datasets import fetch_california_housing
 from sklearn.model_selection import KFold, StratifiedKFold
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.preprocessing import StandardScaler, RobustScaler 
 from xgboost import XGBClassifier, XGBRegressor
-from lightgbm import LGBMRegressor, LGBMClassifier
+from lightgbm import LGBMRegressor
 from bayes_opt import BayesianOptimization
-from sklearn.metrics import r2_score, accuracy_score
+from sklearn.metrics import r2_score, mean_squared_error
 import time
 import warnings
 warnings.filterwarnings('ignore')
-# *UserWarning: 'early_stopping_rounds' argument is deprecated and will be removed in a future release of LightGBM. 
-# Pass 'early_stopping()' callback via 'callbacks' argument instead.
+
 
 #1. 데이터 
-x, y = load_iris(return_X_y=True)
+x, y = fetch_california_housing(return_X_y=True)
 
 x_train, x_test, y_train, y_test = train_test_split(
-    x, y, random_state=337, train_size=0.8, stratify=y
+    x, y, random_state=337, train_size=0.8
 )
 
 scaler = StandardScaler()
@@ -63,17 +62,18 @@ def lgbm_hamsu(learning_rate, max_depth, gamma,min_child_weight,subsample,colsam
         'reg_alpha' : reg_alpha                                       #-최대한 위에서 파라미터 범위내로 잡아주는게 좋음 
         }
     
-    model = XGBClassifier(**params)
+    model = XGBRegressor(**params)
     model.fit(x_train, y_train,
               eval_set=[(x_train, y_train), (x_test, y_test)],
-              eval_metric='merror',
+              eval_metric='rmse',
               verbose=0,
               early_stopping_rounds=50
               )
     y_predict = model.predict(x_test)
-    results = accuracy_score(y_test, y_predict)
-    return results
-
+    RMSE = -1*np.sqrt(mean_squared_error(y_test, y_predict))
+    return RMSE
+    # results = r2_score(y_test, y_predict)
+    # return results
 
 #BayesianOptimization 정의
 lgbm_bo = BayesianOptimization(f = lgbm_hamsu, 
