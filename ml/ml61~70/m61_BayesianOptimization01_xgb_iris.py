@@ -50,7 +50,7 @@ bayesian_params = {
 #모델 정의 
 def lgbm_hamsu(learning_rate, max_depth, gamma,min_child_weight,subsample,colsample_bytree,colsample_bylevel,colsample_bynode,reg_lambda,reg_alpha):
     params = { 
-        'n_estimators' : 1000,
+        'n_estimators' : 20,
         'learning_rate' : learning_rate,   
         'max_depth' : int(round(max_depth)),
         'gamma' : gamma,
@@ -89,3 +89,11 @@ end_time = time.time()
 
 print(lgbm_bo.max)
 print(n_iter, "번 걸린시간:", end_time-start_time)
+
+
+# {'target': 0.9666666666666667, 'params': {'colsample_bylevel': 0.4856854869079368, 
+# 'colsample_bynode': 0.17923221644163645, 'colsample_bytree': 0.5485108817982015, 
+# 'gamma': 0.0, 'learning_rate': 0.20160857225003212, 'max_depth': 11.515389662339736, 
+# 'min_child_weight': 6.584722927365092, 'reg_alpha': 3.629438919024237, 
+# 'reg_lambda': 5.233192248011521, 'subsample': 1.0}}
+# 100 번 걸린시간: 25.77003765106201

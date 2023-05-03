@@ -122,3 +122,11 @@ min_idx = df['results'].idxmin()
 print(df.iloc[min_idx])
 
 
+# learning_rate              0.512835
+# depth                     16.000000
+# l2_leaf_reg                1.504458
+# bagging_temperature        0.500615
+# random_strength            0.511467
+# one_hot_max_size          26.000000
+# min_data_in_leaf          57.000000
+# results                21505.222106

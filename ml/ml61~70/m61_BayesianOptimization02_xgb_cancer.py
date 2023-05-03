@@ -88,3 +88,4 @@ end_time = time.time()
 
 print(lgbm_bo.max)
 print(n_iter, "번 걸린시간:", end_time-start_time)
+
