@@ -57,41 +57,46 @@ test_x = test.drop(columns=['ID'])
 pf = PolynomialFeatures(degree=2)
 train_x = pf.fit_transform(train_x)
 
-for k in range(42, 1000):
-    # Split the training dataset into a training set and a validation set
+for k in range(42, 70):
+
     train_x, val_x, train_y, val_y = train_test_split(train_x, train_y, test_size = 0.3, random_state=k, shuffle=True)
     
-    # Cross-validation with StratifiedKFold
-    cv = StratifiedKFold(n_splits=5, shuffle=True, random_state= k)
-    
-    # Model and hyperparameter tuning using GridSearchCV
     model = XGBClassifier(tree_method= 'gpu_hist',
                           gpu_id = 0,
                           predictor = 'gpu_predictor',
                           learning_rate = 0.015,
                           max_depth = 6,
-                          n_estimators=649)
+                          n_estimators=649,
+                          # n_samples = 1
+                          )
+    model.fit(train_x, train_y)
     
-# Model evaluation
-val_y_pred = model.predict(val_x)
+    # Model evaluation
+    val_y_pred = model.predict(val_x)
 
-acc = accuracy_score(val_y, val_y_pred)
-f1 = f1_score(val_y, val_y_pred, average='weighted')
-pre = precision_score(val_y, val_y_pred, average='weighted')
-recall = recall_score(val_y, val_y_pred, average='weighted')
-log = log_loss(val_y, val_y_pred)
+    acc = accuracy_score(val_y, val_y_pred)
+    f1 = f1_score(val_y, val_y_pred, average='weighted')
+    pre = precision_score(val_y, val_y_pred, average='weighted')
+    recall = recall_score(val_y, val_y_pred, average='weighted')
+    log = log_loss(val_y, val_y_pred)
 
-print('Accuracy_score:',acc)
-print('F1 Score:f1',f1)
-print('logloss : ', log)
-y_pred = model.predict_proba(test_x)
+    print('Accuracy_score:',acc)
+    print('F1 Score:f1',f1)
+    print('logloss : ', log)
+    y_pred = model.predict_proba(test_x)
+    print(y_pred[:,0])
+    print('not_delayave : ', y_pred[:,0].mean())
+    print('delayavr : ', y_pred[:,1].mean())
+    
+    if y_pred[:,0].mean()<0.5:
+        submission = pd.DataFrame(data=y_pred, columns=sample_submission.columns, index=sample_submission.index)
+    
+        import datetime
+        date = datetime.datetime.now()
+        date = date.strftime("%m%d_%H%M")
 
+        save_path = 'd:/study_data/_save/dacon_airplane/'    
+        
+        submission.to_csv(save_path + date + f'_sample_submission_{k}.csv', float_format='%.3f')
 
-import datetime
-date = datetime.datetime.now()
-date = date.strftime("%m%d_%H%M")
-
-save_path = 'd:/study_data/_save/dacon_airplane/'
-submission = pd.DataFrame(data= y_pred, columns= sample_submission.columns, index= sample_submission.index)
-submission.to_csv(save_path + date + '_sample_submission.csv', index=True)
 
