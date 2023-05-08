@@ -3,8 +3,7 @@ import math
 import pandas as pd
 
 
-path_meta = './_data/aifact_05/META/'
-
+path_meta = 'D:/study_data/_data/aif/초미세먼지/META/'
 
 # read in the csv files
 
@@ -14,7 +13,6 @@ awsmap_csv = pd.read_csv(path_meta+'awsmap.csv', index_col=False, encoding='utf-
 
 
 # create a dictionary of places in awsmap.csv
-
 places_awsmap = {}
 
 for i, row in awsmap_csv.iterrows():
@@ -57,22 +55,22 @@ for i, row_a in pmmap_csv.iterrows():
 
         dist = distance(row_a['Latitude'], row_a['Longitude'], row_b['Latitude'], row_b['Longitude'])
 
-    if len(closest_places) < 3:
+        if len(closest_places) < 3:
 
-        closest_places.append(row_b['Location'])
+            closest_places.append(row_b['Location'])
 
-        closest_distances.append(dist)
+            closest_distances.append(dist)
 
-    else:
+        else:
 
-        max_index = closest_distances.index(max(closest_distances))
+            max_index = closest_distances.index(max(closest_distances))
 
-        if dist < closest_distances[max_index]:
+            if dist < closest_distances[max_index]:
 
-            closest_places[max_index] = row_b['Location']
+                closest_places[max_index] = row_b['Location']
 
-            closest_distances[max_index] = dist
+                closest_distances[max_index] = dist
 
 # print the closest places for the location in pmmap.csv
 
-print("Closest places to {}: {}, {}, {}".format(row_a['Location'], closest_places[0], closest_places[1], closest_places[2]))
+    print("Closest places to {}: {}, {}, {}".format(row_a['Location'], closest_places[0], closest_places[1], closest_places[2]))

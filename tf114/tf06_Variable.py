@@ -8,6 +8,6 @@ y = tf.Variable([3], dtype=tf.float32)
 init = tf.compat.v1.global_variables_initializer()
 sess.run(init)
 
-print(sess.run(x + y))
+print(sess.run(x + y))  # [5.]
 
 
