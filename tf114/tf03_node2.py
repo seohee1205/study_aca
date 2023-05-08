@@ -18,12 +18,11 @@ node6 = node1 / node2
 
 sess = tf.compat.v1.Session() 
 
-print(sess.run(node3))
-print(sess.run(node4))
-print(sess.run(node5))
-print(sess.run(node6))
+print(sess.run(node3))  # 5.0
+print(sess.run(node4))  # -1.0
+print(sess.run(node5))  # 6.0
+print(sess.run(node6))  # 0.6666667
 
-# 5.0
-# -1.0
-# 6.0
-# 0.6666667
+
+
+
