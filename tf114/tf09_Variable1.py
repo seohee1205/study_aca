@@ -23,5 +23,6 @@ sess.close()
 sess = tf.compat.v1.InteractiveSession()
 sess.run(tf.compat.v1.global_variables_initializer())
 ccc = 변수.eval()
-print('ccc : ', ccc)
+print('ccc : ', ccc)    # ccc :  [-1.5080816   0.26086742]
 sess.close()
+
