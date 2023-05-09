@@ -23,7 +23,6 @@ train_files = glob.glob(path + "TRAIN/*.csv")
 # print(train_files)
 train_aws_files = glob.glob(path + "train_aws/*.csv")
 # print(train_aws_files)
-
 test_input_files = glob.glob(path + "test_input/*.csv")
 # print(test_input_files)
 test_aws_files = glob.glob(path + "test_aws/*.csv")
@@ -92,19 +91,22 @@ test_aws_dataset = pd.concat(list, axis = 0,
                           ignore_index= True)   # 새로운 index 생성
 print(test_aws_dataset)   # [131376 rows x 4 columns]
 
+
 ######################################## 측정소 지역 라벨인코더 ###########################################
 le = LabelEncoder()
-train_dataset['locate'] = le.fit_transform(train_dataset['측정소'])          # 새로운 메모리 공간 locate 새로 만듦
-train_aws_dataset['locate'] = le.fit_transform(train_aws_dataset['측정소'])     
+train_dataset['locate'] = le.fit_transform(train_dataset['측정소'])          # 새로운 메모리 공간 locate 새로 만듦    
 test_input_dataset['locate'] = le.transform(test_input_dataset['측정소'])     # 데이터의 위치나 값이 바뀔 수 있기 때문에 train_fit 그대로 사용(fit X)
-test_aws_dataset['locate'] = le.fit_transform(test_aws_dataset['측정소']) 
+train_aws_dataset['지점'] = le.transform(train_aws_dataset['지점'])
+test_aws_dataset['지점'] = le.transform(test_aws_dataset['지점'])
+
 # print(train_dataset)        # [596088 rows x 5 columns]
-print(train_aws_dataset)
 # print(test_input_dataset)   # [131376 rows x 5 columns]
-print(test_aws_dataset)
+print(train_aws_dataset) 
+print(test_aws_dataset) 
 
 train_dataset = train_dataset.drop(['측정소'], axis = 1)                 # axis = 0 -> 행삭제, 1 -> 열삭제
 test_input_dataset = test_input_dataset.drop(['측정소'], axis = 1)       # axis = 0 -> 행삭제, 1 -> 열삭제
+
 # print(train_dataset)        # [596088 rows x 4 columns]
 # print(test_input_dataset)   # [131376 rows x 4 columns]
 
