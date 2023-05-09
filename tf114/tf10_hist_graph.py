@@ -83,7 +83,7 @@ axs[0].set_ylabel('loss')
 # 두 번째 서브플롯: w_val_list 그래프
 axs[1].plot(w_val_list)
 axs[1].set_xlabel('epochs')
-axs[1].set_ylabel('weights')
+axs[1].set_ylabel('loss')
 
 # 세 번째 서브플롯: w_val_list vs. loss_val_list 그래프
 axs[2].plot(w_val_list, loss_val_list)

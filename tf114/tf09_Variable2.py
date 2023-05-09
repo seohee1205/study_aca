@@ -40,26 +40,9 @@ with tf.compat.v1.Session() as sess:
 # 08_2를 카피해서 아래를 맹그러봐
 
 ################## 1. Session() // sess.run(변수)
-sess = tf.compat.v1.Session()
-sess.run(tf.compat.v1.global_variables_initializer())
-aaa = sess.run(w)
-print('aaa : ', aaa)    # aaa :  [-1.5080816   0.26086742]
-sess.close()
+
 
 ################## 2. Session() // 변수.eval(Session=sess)
-sess = tf.compat.v1.Session()
-sess.run(tf.compat.v1.global_variables_initializer())
-bbb = w.eval(session=sess)   # 텐서플로 데이터형인 '변수'를 파이썬에서 볼 수 있는 놈으로 바꿔줘
-print('bbb : ', bbb)    # bbb :  [-1.5080816   0.26086742]
-sess.close()
+
 
 ################## 3. InteractiveSession() // 변수.eval
-sess = tf.compat.v1.InteractiveSession()
-sess.run(tf.compat.v1.global_variables_initializer())
-ccc = w.eval()
-print('ccc : ', ccc)    # ccc :  [-1.5080816   0.26086742]
-sess.close()
-
-# aaa :  [-1.5080816   0.26086742]
-# bbb :  [-1.5080816   0.26086742]
-# ccc :  [-1.5080816   0.26086742]
