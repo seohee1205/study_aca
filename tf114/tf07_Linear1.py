@@ -10,15 +10,16 @@ b = tf.Variable(100, dtype= tf.float32)   # b 초기값은 항상 0
 
 #2. 모델 구성
 # y = wx + b
-hypothesis = x * w + b
+hypothesis = x * w + b    
 
 #3-1. 컴파일
 loss = tf.reduce_mean(tf.square(hypothesis - y))    # mse
 
-optimizer = tf.train.GradientDescentOptimizer(learning_rate= 0.01)  # 그래프 경사하강법
+optimizer = tf.train.GradientDescentOptimizer(learning_rate= 0.01)  # learning_rate: 그래프 경사하강법 생각해봐 (너무 작으면 못 감, 너무 크면 못 찾아)
+# w = w - lr * loss를 w로 미분
+# 그 시점을 미분한다: 그 시점의 기울기 (방향성을 나타냄)
 train = optimizer.minimize(loss)    # loss의 최소값을 뽑는다
 # model.compile(loss='mse', optimizer='sgd')  # sgd: 확률적 GradientDescent
-# w = w - lr * loss를 w로 미분
 
 #3-2. 훈련
 sess = tf.compat.v1.Session()
