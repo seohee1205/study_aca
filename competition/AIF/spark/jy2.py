@@ -27,6 +27,7 @@ def split_x(dataset, timesteps): # split_x라는 함수를 정의
     return np.array(aaa) # 충족할때까지 반복한다.
 col_name = ['연도','일시', '측정소', 'PM2.5']
 le_col_name = ['일시', '측정소']
+
 path = 'd:/study_data/_data/aif/초미세먼지/'
 path_train = 'd:/study_data/_data/aif/초미세먼지/TRAIN/'
 path_test = 'd:/study_data/_data/aif/초미세먼지/TEST_INPUT/'
@@ -34,12 +35,6 @@ path_train_AWS = 'd:/study_data/_data/aif/초미세먼지/TRAIN_AWS/'
 path_test_AWS = 'd:/study_data/_data/aif/초미세먼지/TEST_AWS/'
 path_save = 'd:/study_data/_save/aif/초미세먼지/'
 path_meta = 'd:/study_data/_data/aif/초미세먼지/META/'
-
-data_name_list = [
-    '공주.csv','노은동.csv','논산.csv','대천2동.csv','독곶리.csv','동문동.csv',
-    '모종동.csv','문창동.csv','성성동.csv','신방동.csv','신흥동.csv','아름동.csv',
-    '예산군.csv', '읍내동.csv','이원면.csv','정림동.csv','홍성읍.csv']
-
 
 
 # read in the csv files
@@ -90,6 +85,7 @@ for i, row_a in pmmap_csv.iterrows():
 
 
 #### 1. 데이터
+
 train_files = glob.glob(path+'TRAIN/*.csv')
 # train_aws_files = glob.glob(path+'TRAIN_AWS/*.csv')
 
@@ -170,7 +166,17 @@ test_input_dataset= pd.concat(test_li,axis=0,
                          )
 print(test_input_dataset)
 
-
+train_li=[]
+for filename in train_files :
+    df = pd.read_csv(filename,index_col=None, 
+                     header=0, # 위에 컬럼에 대한 인식하게 함 
+                     encoding='utf-8')
+    train_li.append(df)
+train_dataset= pd.concat(train_li,axis=0,
+                         ignore_index=True # 원래 있던 인덱스는 사라지고 새로운 인덱스가 생성된다. 
+                         )
+# print(train_dataset)
+print(train_dataset.shape) # (596088, 4)
 gongjoo_test_csv=pd.read_csv(path_test_AWS +'공주.csv',encoding='utf-8',index_col=False)
 
 sego_test_csv=pd.read_csv(path_test_AWS +'세종고운.csv',encoding='utf-8',index_col=False)
@@ -179,7 +185,6 @@ gyeryong_test_csv=pd.read_csv(path_test_AWS +'계룡.csv',encoding='utf-8',index
 Oworld_test_csv=pd.read_csv(path_test_AWS +'오월드.csv',encoding='utf-8',index_col=False)
 jangdong_test_csv=pd.read_csv(path_test_AWS +'장동.csv',encoding='utf-8',index_col=False)
 Oworld_test_csv02=pd.read_csv(path_test_AWS +'오월드.csv',encoding='utf-8',index_col=False)
-
 nonsan_test_csv=pd.read_csv(path_test_AWS +'논산.csv',encoding='utf-8',index_col=False)
 deacheon_test_csv=pd.read_csv(path_test_AWS +'대천항.csv',encoding='utf-8',index_col=False)
 deasan_test_csv=pd.read_csv(path_test_AWS +'대산.csv',encoding='utf-8',index_col=False)
@@ -206,16 +211,7 @@ for v in test_csv_list:
     v['지점'] = v['지점'].fillna(mode)
 print('Done.')
 
-test_aws_dataset = pd.concat([
-    sego_test_csv,seyun_test_csv,
-    gyeryong_test_csv,Oworld_test_csv,
-    jangdong_test_csv,Oworld_test_csv02,
-    gongjoo_test_csv,nonsan_test_csv,
-    deacheon_test_csv,deasan_test_csv,
-    sung_test_csv,yesan_test_csv,
-    teaan_test_csv,asan_test_csv,
-    teaan02_test_csv,aan_test_csv,sung02_test_csv],axis=0,ignore_index=True
-)
+test_aws_dataset = pd.concat(test_csv_list,axis=0,ignore_index=True)
 
 ################### 일시 -> 월, 일, 시간으로 분리 ###############################
 # 12-31 21 : 00 / 12와 21 추출 
@@ -275,7 +271,7 @@ test_all_dataset['hour'] = test_all_dataset['일시'].str[6:8]
 test_all_dataset['month'] = test_all_dataset['month'].astype('Int16')
 test_all_dataset['day'] = test_all_dataset['day'].astype('Int16')
 test_all_dataset['hour'] = test_all_dataset['hour'].astype('Int16')
-
+print(test_all_dataset['month'])
 test_all_dataset= test_all_dataset.drop(['일시'],axis=1)
 
 
@@ -342,16 +338,24 @@ for i in range(1088) : # 3일치가 1088묶음으로 있다.
         test_all_dataset[a + 48:a + 120] # 3일치
                           ) 
     a =+ 120 # 2일 
-true_test = pd.concat(true_test_list,axis=0,ignore_index=True)
-print('true_test.head(200) : ',true_test.head(200))
-print('true_test.shape : ',true_test.shape) # (78264, 11)
-print('len(true_test) : ',len(true_test)) # 78264
+true_test = pd.concat(true_test_list,axis=0, ignore_index= True)
+print('true_test.head(200) : ', true_test.head(200))
+print('true_test.shape : ', true_test.shape) # (78264, 11)
+print('len(true_test) : ', len(true_test)) # 78264
 # print(len(true_test)) # 78336
 
+timesteps = 24
 y = train_all_dataset['PM2.5']
-x = train_all_dataset.drop(['PM2.5'],axis=1)
-x_train,x_test, y_train, y_test = train_test_split(
-    x,y,test_size = 0.2, random_state=337,
+x = train_all_dataset.drop(['PM2.5'], axis=1)
+
+x = split_x(x,timesteps)
+y = y[(timesteps-1):]
+print('x:',x,'y:',y)
+print(x.shape,y.shape)
+
+x_train, x_test, y_train, y_test = train_test_split(
+    x, y, test_size = 0.2, 
+    # random_state=337,
     # shuffle=True
 )
 
@@ -361,71 +365,35 @@ scaler = RobustScaler()
 x_train = scaler.fit_transform(x_train)
 x_test = scaler.transform(x_test)
 
-XGBparameter = {
-    # "n_estimators" : [100,200,300,400,500,600], # 디폴트 100 / 1 ~ inf / 정수
-    # "learning_rate" : [0.1,0.2,0.3,0.5,1,0.01,0.001], # 디폴트 0.3 / 0 ~ 1 / eta
-    # "max_depth" : [None,2,3,4,5,6,7,8,9,10], # 디폴트 6 / 0 ~ inf / 정수
-    # "gamma" : [0,1,2,3,4,5,7,8,9,10], # 디폴트 0 / 0 ~ inf 
-    # "min_child_weight" : [0,0.1,0.01,0.001,0.5,1,5,10,100], # 디폴트 1 / 0 ~ inf 
-    # "subsample" : [0,0.1,0.2,0.3,0.5,0.7,1], # 디폴트 1 / 0 ~ 1 
-    # "colsample_bytree" : [0,0.1,0.2,0.3,0.5,0.7,1], # 디폴트 / 0 ~ 1 
-    # "colsample_bylevel":[0,0.1,0.2,0.3,0.5,0.7,1], # 디폴트 / 0 ~ 1 
-    # "colsample_bynode":[0,0.1,0.2,0.3,0.5,0.7,1], # 디폴트 / 0 ~ 1 
-    # "reg_alpha":[0,0.1,0.01,0.001,1,2,10], # 디폴트 0 / 0 ~ inf / L1 절대값 가중치 규제 / alpha
-    # "reg_lambda":[0,0.1,0.01,0.001,1,2,10], # 디폴트 1 / 0 ~ inf / L2 제곱 가중치 규제 / lambda
-}
-
-KNNparameter = {
-    "n_neighbors" : [1,2,3,4,5,6,7,8,9,10,
-                    #  11,12,14,18,20,26,32,
-                     40
-                     ],
-    'weights' : ['distance','uniform'],
-    'algorithm' : ['auto','ball_tree','kd_tree','brute'],
-    'leaf_size' : [1,2,4,8,16,32,64,100],
-}
 
 #2. 모델 
-print('KNeighborsRegressor')
-start= time.time()
-from sklearn.experimental import enable_halving_search_cv
-from sklearn.model_selection import KFold, StratifiedKFold, GridSearchCV, RandomizedSearchCV,HalvingGridSearchCV
-KNN= KNeighborsRegressor(**KNNparameter)
-model = HalvingGridSearchCV(
-    KNN,
-    param_grid=KNNparameter,
-    # cv=5,
-    verbose=1,
-    n_jobs=-1,
-    factor=3.2,
-    refit= True,
-)
 
+start= time.time()
+
+model= Sequential()
+model.add(LSTM(32, return_sequences=True, input_shape=(x_train.shape[1], 1)))
+model.add(Dense(16, activation='relu'))
+model.add(Dense(8, activation='relu'))
+model.add(Dense(1))
+# model.summary()
 
 #3. 훈련 
-
-print('훈련')
-model.fit(x_train,y_train)
-print("최적의 매개변수 : ",model.best_estimator_) 
-print("최적의 파라미터 : ",model.best_params_)
-print("best_score_ : ",model.best_score_) # train의 베스트 스코어 
-print("model.score : ",model.score(x_test,y_test))
+model.compile(optimizer= 'adam', loss= 'mse')
+from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
+es = EarlyStopping(monitor= 'loss', mode= 'min', restore_best_weights= True, patience= 8)
+model.fit(x_test, y_test, epochs= 48, verbose= 1, callbacks= [es])
 end= time.time()
 print('걸린 시간 : ',round(end -start,2),'초')
 
-
 # 4. 평가, 예측
-print('평가, 예측')
-
-result = model.score(x_test,y_test)
+result = model.evaluate(x_test,y_test)
 y_pred = model.predict(x_test)
 print("model.score : ",result)
 r2 = r2_score(y_test,y_pred)
 print('r2 : ',r2)
 mae = mean_absolute_error(y_test,y_pred)
 print('mae : ',mae)
-y_pred_best= model.best_estimator_.predict(x_test)
-print('최적의 튠  r2_score : ',r2_score(y_test,y_pred_best))
+
 
 # 5. 제출
 print('제출')
@@ -433,10 +401,14 @@ print('제출')
 # print(true_test.head(50))
 # print(true_test.shape) # (78336, 4)
 true_test = true_test.drop(['PM2.5'],axis=1).copy()
-
 submission_csv = pd.read_csv(path +'answer_sample.csv')
 print(submission_csv.shape)
 y_submit = model.predict(true_test)
+
+import datetime
+date = datetime.datetime.now()
+date = date.strftime("%m%d_%H%M")
 submission_csv['PM2.5'] = y_submit
-submission_csv.to_csv(path_save + '0510_KNN_pm.csv',encoding='utf-8')
+submission_csv.to_csv(path_save + date + '_submission.csv', encoding='utf-8')
 print('완료')
+
