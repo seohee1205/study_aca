@@ -40,8 +40,6 @@ data_name_list = [
     '모종동.csv','문창동.csv','성성동.csv','신방동.csv','신흥동.csv','아름동.csv',
     '예산군.csv', '읍내동.csv','이원면.csv','정림동.csv','홍성읍.csv']
 
-
-
 # read in the csv files
 pmmap_csv = pd.read_csv(path_meta+'pmmap.csv', index_col=False, encoding='utf-8')
 awsmap_csv = pd.read_csv(path_meta+'awsmap.csv', index_col=False, encoding='utf-8')
@@ -155,7 +153,7 @@ train_aws_li = [gongjoo_train_csv,gyeryong_train_csv,
     teaan02_train_csv,Oworld_train_csv02,aan_train_csv
 ]
 
-train_aws_dataset = pd.concat( train_aws_li, axis=0,ignore_index=True)
+train_aws_dataset = pd.concat( train_aws_li, axis=0, ignore_index=True)
 print(train_aws_dataset.shape)
 ############################# test 폴더 #########################################
 
@@ -223,11 +221,12 @@ test_aws_dataset = pd.concat([
 train_dataset = train_dataset.drop(['일시','연도'],axis=1)
 train_aws_dataset = train_aws_dataset.drop(['지점'],axis=1)
 train_all_dataset = pd.concat([train_dataset,train_aws_dataset],axis=1)
-print(train_all_dataset.columns)
+# print(train_all_dataset.columns)
+
 test_input_dataset = test_input_dataset.drop(['일시','연도'],axis=1)
 test_aws_dataset = test_aws_dataset.drop(['지점'],axis=1)
 test_all_dataset = pd.concat([test_input_dataset,test_aws_dataset],axis=1)
-print(test_all_dataset.columns)
+# print(test_all_dataset.columns)
 '''
 Index(['측정소', 'PM2.5', '연도', '일시', '지점', '기온(°C)', '풍향(deg)', '풍속(m/s)',
        '강수량(mm)', '습도(%)'],
@@ -350,8 +349,8 @@ print('len(true_test) : ',len(true_test)) # 78264
 
 y = train_all_dataset['PM2.5']
 x = train_all_dataset.drop(['PM2.5'],axis=1)
-x_train,x_test, y_train, y_test = train_test_split(
-    x,y,test_size = 0.2, random_state=337,
+x_train, x_test, y_train, y_test = train_test_split(
+    x, y, test_size = 0.2, random_state= 777,
     # shuffle=True
 )
 
@@ -376,29 +375,26 @@ XGBparameter = {
 }
 
 KNNparameter = {
-    "n_neighbors" : [1,2,3,4,5,6,7,8,9,10,
+    "n_neighbors" : [1,2,3,
                     #  11,12,14,18,20,26,32,
-                     40
+                     # 40
                      ],
     'weights' : ['distance','uniform'],
     'algorithm' : ['auto','ball_tree','kd_tree','brute'],
-    'leaf_size' : [1,2,4,8,16,32,64,100],
+    'leaf_size' : [2,8],
 }
 
 #2. 모델 
 print('KNeighborsRegressor')
 start= time.time()
-from sklearn.experimental import enable_halving_search_cv
-from sklearn.model_selection import KFold, StratifiedKFold, GridSearchCV, RandomizedSearchCV,HalvingGridSearchCV
+from sklearn.model_selection import KFold, StratifiedKFold, GridSearchCV, RandomizedSearchCV
 KNN= KNeighborsRegressor(**KNNparameter)
-model = HalvingGridSearchCV(
+model = GridSearchCV(
     KNN,
     param_grid=KNNparameter,
     # cv=5,
     verbose=1,
-    n_jobs=-1,
-    factor=3.2,
-    refit= True,
+    n_jobs=-1
 )
 
 
@@ -429,14 +425,14 @@ print('최적의 튠  r2_score : ',r2_score(y_test,y_pred_best))
 
 # 5. 제출
 print('제출')
-
 # print(true_test.head(50))
 # print(true_test.shape) # (78336, 4)
 true_test = true_test.drop(['PM2.5'],axis=1).copy()
 
 submission_csv = pd.read_csv(path +'answer_sample.csv')
-print(submission_csv.shape)
+# print(submission_csv.shape)
+
 y_submit = model.predict(true_test)
 submission_csv['PM2.5'] = y_submit
-submission_csv.to_csv(path_save + '0510_KNN_pm.csv',encoding='utf-8')
+submission_csv.to_csv(path_save + date + '_submission.csv', encoding= 'utf-8')
 print('완료')
