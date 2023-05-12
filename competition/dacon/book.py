@@ -10,7 +10,6 @@ from tensorflow.python.keras.callbacks import EarlyStopping
 from sklearn.metrics import mean_squared_error
 
 
-
 #1. 데이터
 path = 'd:/study_data/_data/dacon_book/'
 train_csv = pd.read_csv(path + 'train.csv', index_col = 0)
@@ -46,8 +45,14 @@ model = SVD(n_factors=200,
             reg_all = 0.01)
 model.fit(train)
 
-loss = model.evaluate(x_test, y_test)
-print('loss : ', loss)
+# loss = model.evaluate(x_test, y_test)
+# print('loss : ', loss)
+testset = list(zip(x_test['User-ID'], x_test['Book-ID'], x_test['Book-Rating']))
+predicted_ratings = model.test(testset)
+
+# MSE 계산
+mse = mean_squared_error([pred.r_ui for pred in predicted_ratings], [pred.est for pred in predicted_ratings])
+print("MSE:", mse)
 
 y_predict = model.predict(x_test)
 def RMSE(y_test, y_predict):
