@@ -375,11 +375,11 @@ XGBparameter = {
 }
 
 KNNparameter = {
-    "n_neighbors" : [1,2,3,
+    "n_neighbors" : [4,
                     #  11,12,14,18,20,26,32,
                      # 40
                      ],
-    'weights' : ['distance','uniform'],
+    'weights' : ['distance',], #'uniform'],
     'algorithm' : ['auto','ball_tree','kd_tree','brute'],
     'leaf_size' : [2,8],
 }

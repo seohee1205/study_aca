@@ -44,7 +44,7 @@ model = SVD(n_factors=200,
             n_epochs = 1000,
             lr_all = 0.001,
             reg_all = 0.01)
-model.fit(x_train, y_train)
+model.fit(train)
 
 loss = model.evaluate(x_test, y_test)
 print('loss : ', loss)
@@ -69,7 +69,7 @@ date = date.strftime("%m%d_%H%M")
 
 # Submission
 save_path = 'd:/study_data/_save/dacon_book/'
-submit.to_csv(save_path + date + '_sample_submission.csv', index=False)
+submit.to_csv(save_path + date + '_sample_submission.csv', index=True)
 
 
 ###################
