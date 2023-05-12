@@ -33,10 +33,10 @@ device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cp
 
 CFG = {
     'NUM_CLASS':34,
-    'IMG_SIZE':512,
+    'IMG_SIZE':128,
     'EPOCHS':10,
     'LR':3e-4,
-    'BATCH_SIZE': 2,
+    'BATCH_SIZE': 8,
     'SEED':41
 }
 
