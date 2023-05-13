@@ -15,7 +15,7 @@ loss = tf.reduce_mean(tf.square(hypothesis - y))    # mse
 ############### optimizer ###############
 lr = 0.1
 # gradient = tf.reduce_mean((w * x - y) * x)    # 이렇게 쓰면 안 돼
-gradient = tf.reduce_mean((x * w - y) * x)      # gradient의 식(미분값)
+gradient = tf.reduce_mean((x * w - y) * x)      # gradient의 식(loss의 미분값)
 # gradient = tf.reduce_mean((hypothesis - y) * x)
 
 descent = w - lr * gradient
@@ -42,4 +42,4 @@ print('=============== Loss history ===============')
 print(loss_history)
 
 
-
+# 체인룰: 미분에 미분 = 미분미분
