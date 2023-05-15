@@ -1,12 +1,12 @@
 import tensorflow as tf
 tf.compat.v1.set_random_seed(337)
-from sklearn.datasets import load_diabetes
+from sklearn.datasets import fetch_california_housing
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
 import numpy as np
 
 # Load the diabetes dataset
-diabetes = load_diabetes()
+diabetes = fetch_california_housing()
 X = diabetes.data
 y = diabetes.target
 
