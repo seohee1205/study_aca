@@ -26,7 +26,7 @@ hypothesis = x1*w1 + x2*w2 + x3*w3 + b
 
 #3-1. 컴파일
 loss = tf.reduce_mean(tf.square(hypothesis - y))     # mse
-optimizer = tf.train.GradientDescentOptimizer(learning_rate=1e-5)
+optimizer = tf.compat.v1.train.GradientDescentOptimizer(learning_rate=1e-5)
 train = optimizer.minimize(loss)
 
 # r2 스코어까지 만들기
@@ -36,20 +36,33 @@ train = optimizer.minimize(loss)
 with tf.compat.v1.Session() as sess:
     sess.run(tf.compat.v1.global_variables_initializer())
 
-    epochs = 100
+# #3-2. 훈련
+
+# with tf.compat.v1.Session() as sess:
+#     sess.run(tf.compat.v1.global_variables_initializer())
+
+#     epochs = 100
+#     for step in range(epochs):
+#         _, loss_val, w1_val, w2_val, w3_val, b_val = sess.run([train, loss, w1, w2, w3, b],
+#                                                               feed_dict={x1: x1_data, x2: x2_data, x3: x3_data, y: y_data})
+#         if step % 20 == 0:
+#             print(step, loss_val, w1_val, w2_val, w3_val, b_val)
+
+    epochs = 2001
     for step in range(epochs):
-        _, loss_val, w1_val, w2_val, w3_val, b_val = sess.run([train, loss, w1, w2, w3, b],
-                                                              feed_dict={x1: x1_data, x2: x2_data, x3: x3_data, y: y_data})
-        if step % 20 == 0:
-            print(step, loss_val, w1_val, w2_val, w3_val, b_val)
+        # cost_val, hy_val, _ = sess.run([loss, hypothesis, train],
+        cost_val, _ = sess.run([loss, train],                               
+                                        feed_dict={x1: x1_data, x2: x2_data, x3: x3_data, y: y_data})
+        if step % 20 ==0:
+            print(epochs, 'loss : ', cost_val)
 
-#4. 평가
-    x_test_data = [93., 88., 89., 90., 70.]
-    y_test_data = [185., 180., 182., 179., 150.]
+# #4. 평가
+#     x_test_data = [93., 88., 89., 90., 70.]
+#     y_test_data = [185., 180., 182., 179., 150.]
     
-    y_predict_val = sess.run(hypothesis, feed_dict={x1: x_test_data, x2: x_test_data, x3: x_test_data, b: b_val})
-    r2 = r2_score(y_test_data, y_predict_val)
+#     y_predict_val = sess.run(hypothesis, feed_dict={x1: x_test_data, x2: x_test_data, x3: x_test_data, b: b_val})
+#     r2 = r2_score(y_test_data, y_predict_val)
 
-    print("R2 Score:", r2)   
+#     print("R2 Score:", r2)   
 
 # R2 Score: 0.8682793069880151

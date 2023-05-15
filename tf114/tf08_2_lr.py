@@ -22,8 +22,8 @@ b = tf.Variable(tf.random_normal([1]), dtype=tf.float32)
 hypothesis = x * w + b
 
 # 3-1. 컴파일
-loss = tf.reduce_mean(tf.square(hypothesis - y))  # mse
-optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.08235)
+loss = tf.reduce_mean(tf.square(hypothesis - y))  # loss = mse,
+optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.08235)    # optimizer = sgd
 train = optimizer.minimize(loss)  # loss의 최소값을 뽑는다
 
 # 3-2. 훈련
