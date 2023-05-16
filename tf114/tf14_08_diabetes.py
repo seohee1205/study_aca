@@ -10,6 +10,8 @@ diabetes = load_diabetes()
 X = diabetes.data
 y = diabetes.target
 
+print(X.shape, y.shape)     # (442, 10) (442,)
+
 # Reshape y to have shape (n_samples, 1)
 y = y.reshape(-1, 1)
 
