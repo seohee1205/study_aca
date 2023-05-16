@@ -8,6 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import f1_score
 from catboost import CatBoostClassifier
 
+
 #0. fix seed
 def seed_everything(seed):
     random.seed(seed)
@@ -33,30 +34,30 @@ test_csv = pd.get_dummies(test_csv, columns=qual_col)
 
 # train, test 분리
 x_train, x_test, y_train, y_test = train_test_split(
-    x, y, train_size= 0.8, random_state= 77
+    x, y, train_size= 0.8, random_state= 7777
 )
 
 model = CatBoostClassifier(
-    iterations = 5000,
+    iterations = 20000,
     depth = 14,  # 기본값: 6
     learning_rate = 0.000001,
-    l2_leaf_reg = 0.07,
-    one_hot_max_size = 22,
+    l2_leaf_reg = 0.06,
+    one_hot_max_size = 24,
     random_strength = 0.03,
     bagging_temperature = 0.9,
     border_count = 250    # 기본값: 254
     # verbose=0,
     )
 
-# model = LGBMClassifier(num_leaves=3000,
-#                        max_depth=6,
-#                        learning_rate=0.002,
-#                        n_estimators=2000,
-#                        subsample_for_bin=200000,
-#                        min_child_samples= 30,
+# model = LGBMClassifier(num_leaves=10000,
+#                        max_depth=12,
+#                        learning_rate=0.0001,
+#                        n_estimators=2500,
+#                        subsample_for_bin=20000,
+#                        min_child_samples= 28,
 #                        reg_alpha=0.2,
 #                        reg_lambda=0.2,
-#                        colsample_bytree=0.9,
+#                        colsample_bytree=0.8,
 #                        subsample=0.8)
 
 model.fit(x_train, y_train)
