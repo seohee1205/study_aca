@@ -14,6 +14,7 @@ datasets = load_breast_cancer()
 x = datasets.data
 y = datasets['target']
 
+print(x.shape, y.shape) # (569, 30) (569,)
 print(type(x))      # <class 'numpy.ndarray'>
 print(x)
 

@@ -21,8 +21,10 @@ cost = -tf.reduce_mean(y*tf.log(hypothesis) + (1-y)*tf.log(1-hypothesis))
 
 train = tf.train.GradientDescentOptimizer(learning_rate=0.01).minimize(cost)
 
-predicted = tf.cast(hypothesis > 0.5, dtype= tf.float32)
+predicted = tf.cast(hypothesis > 0.5, dtype= tf.float32)    # cast -> True 아니면 False
 accuracy = tf.reduce_mean(tf.cast(tf.equal(predicted, y), dtype=tf.float32))
+# accuracy = false, True로 반환 -> float32 1.0, 2.0 이렇게 됨 -> 숫자의 나누기 4해서 0.5가 됨
+
 
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())

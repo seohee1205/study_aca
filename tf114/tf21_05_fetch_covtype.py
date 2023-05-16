@@ -2,15 +2,15 @@ import tensorflow as tf
 import numpy as np
 tf.compat.v1.set_random_seed(337)
 from sklearn.metrics import accuracy_score
-from sklearn.datasets import load_iris
+from sklearn.datasets import fetch_covtype
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
 
 # 1. 데이터
-x, y = load_iris(return_X_y=True)
+x, y = fetch_covtype(return_X_y=True)
 
-print(x.shape, y.shape)
+print(x.shape, y.shape) # (581012, 54) (581012,)
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=123, train_size=0.8, stratify=y)
 
@@ -22,30 +22,34 @@ x_test = scaler.transform(x_test)
 encoder = OneHotEncoder(sparse=False)
 y_train = encoder.fit_transform(y_train.reshape(-1, 1))
 y_test = encoder.transform(y_test.reshape(-1, 1))
-print(y_train.shape)
+print(y_train.shape)    # (464809, 7)
 
 # 2. 모델
-x = tf.compat.v1.placeholder(tf.float32, shape=[None, 4])
-y = tf.compat.v1.placeholder(tf.float32, shape=[None, 3])
+x = tf.compat.v1.placeholder(tf.float32, shape=[None, 54])
+y = tf.compat.v1.placeholder(tf.float32, shape=[None, 7])
 
-w1 = tf.compat.v1.Variable(tf.random.normal([4, 50], dtype=tf.float32), name='weight1')
+w1 = tf.compat.v1.Variable(tf.random.normal([54, 50], dtype=tf.float32), name='weight1')
 b1 = tf.compat.v1.Variable(tf.zeros([50], dtype=tf.float32), name='bias1')
 layer1 = tf.compat.v1.matmul(x, w1) + b1
 
-w2 = tf.compat.v1.Variable(tf.random.normal([50, 40], dtype=tf.float32), name='weight2')
-b2 = tf.compat.v1.Variable(tf.zeros([40], dtype=tf.float32), name='bias2')
+w2 = tf.compat.v1.Variable(tf.random.normal([50, 50], dtype=tf.float32), name='weight2')
+b2 = tf.compat.v1.Variable(tf.zeros([50], dtype=tf.float32), name='bias2')
 layer2 = tf.compat.v1.matmul(layer1, w2) + b2
 
-w3 = tf.compat.v1.Variable(tf.random.normal([40, 40], dtype=tf.float32), name='weight3')
-b3 = tf.compat.v1.Variable(tf.zeros([40], dtype=tf.float32), name='bias3')
+w3 = tf.compat.v1.Variable(tf.random.normal([50, 50], dtype=tf.float32), name='weight3')
+b3 = tf.compat.v1.Variable(tf.zeros([50], dtype=tf.float32), name='bias3')
 layer3 = tf.compat.v1.matmul(layer2, w3) + b3
 
-w4 = tf.compat.v1.Variable(tf.random.normal([40, 40], dtype=tf.float32), name='weight4')
-b4 = tf.compat.v1.Variable(tf.zeros([40], dtype=tf.float32), name='bias4')
+w4 = tf.compat.v1.Variable(tf.random.normal([50, 50], dtype=tf.float32), name='weight4')
+b4 = tf.compat.v1.Variable(tf.zeros([50], dtype=tf.float32), name='bias4')
 layer4 = tf.nn.softmax(tf.matmul(layer3, w4) + b4)
 
-w5 = tf.compat.v1.Variable(tf.random.normal([40, 3], dtype=tf.float32), name='weight5')
-b5 = tf.compat.v1.Variable(tf.zeros([3], dtype=tf.float32), name='bias5')
+w5 = tf.compat.v1.Variable(tf.random.normal([50, 50], dtype=tf.float32), name='weight5')
+b5 = tf.compat.v1.Variable(tf.zeros([50], dtype=tf.float32), name='bias5')
+layer5 = tf.nn.softmax(tf.matmul(layer4, w5) + b5)
+
+w6 = tf.compat.v1.Variable(tf.random.normal([50, 7], dtype=tf.float32), name='weight6')
+b6 = tf.compat.v1.Variable(tf.zeros([7], dtype=tf.float32), name='bias6')
 hypothesis = tf.nn.softmax(tf.matmul(layer4, w5) + b5)
 
 # 3. 컴파일, 훈련
@@ -76,4 +80,4 @@ with tf.compat.v1.Session() as sess:
     accuracy = accuracy_score(y_test_label, y_pred_label)
     print("Accuracy:", accuracy)
     
-# Accuracy: 0.8
+# 
