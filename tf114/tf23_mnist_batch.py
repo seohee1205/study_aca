@@ -7,13 +7,14 @@ from keras.utils.np_utils import to_categorical
 from sklearn.metrics import accuracy_score
 import tensorflow as tf
 import numpy as np
+import time
 
-# tf.compat.v1.disable_eager_execution()  # 즉시모드 안 해 1.0 
+tf.compat.v1.disable_eager_execution()  # 즉시모드 안 해 1.0 
 # tf.compat.v1.enable_eager_execution()  # 즉시모드 해 2.0 
 
 
-tf.set_random_seed(337) # 이거 1.x 돼
-# tf.random.set_seed(337) # 이거 2.x 돼
+# tf.set_random_seed(337) # 이거 1.x 돼
+tf.random.set_seed(337) # 이거 2.x 돼
 
 #1. 데이터
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
@@ -73,19 +74,45 @@ train = tf.compat.v1.train.AdamOptimizer(learning_rate= 0.01).minimize(loss)  # 
 sess = tf.compat.v1.Session()
 sess.run(tf.compat.v1.global_variables_initializer())
 
-epochs = 500
+batch_size = 100
+total_batch = int(len(x_train)/batch_size)  # 60000/100 = 600
+epochs = 100
+
+start_time = time.time()
 for step in range(epochs):
-    _, loss_val, w_val, b_val = sess.run([train, loss, w4, b4], feed_dict={x:x_train, y:y_train})
-    if step % 100 == 0:
-       print(step, loss_val, w_val, b_val)
+    
+    avg_cost = 0
+    for i in range(int(total_batch)):       # 100개씩 600번 돈다
+        start = i * batch_size          # 0 , 100, 200, ...,  59900
+        end = start + batch_size        # 100, 200, 300, ..., 60000
 
-# 훈련된 모델을 통해 예측값 출력
-y_pred = sess.run(hypothesis, feed_dict = {x:x_test})
+        cost_val, _, w_bal, b_val = sess.run([loss, train, w4, b4],
+                      feed_dict={x:x_train[start:end], y:y_train[start:end]})    
+        
+        avg_cost += cost_val / total_batch
+           
+    print('Epoch : ', step + 1, 'loss : {:.9f}'.format(avg_cost))
 
-# 평가지표 계산
-y_pred_label = np.argmax(y_pred, axis = 1)
-y_test_label = np.argmax(y_test, axis = 1)
+end_time = time.time()
+print("훈련 끝!")
+        
+        
+#4. 평가, 예측
+y_predict = sess.run(hypothesis, feed_dict={x:x_test})
+y_predict_arg = sess.run(tf.argmax(y_predict, 1))
 
-acc = accuracy_score(y_test_label, y_pred_label)
-print('Accuracy : ', acc)
+y_test_arg = np.argmax(y_test, 1)
 
+acc = accuracy_score(y_predict_arg, y_test_arg)
+
+print("tf", tf.__version__, "걸린시간 : ", end_time - start_time)
+print('acc : ', acc)
+# acc :  0.8605
+
+sess.close()
+
+# tf 1.14.0 걸린시간 :  85.96859121322632
+# acc :  0.8605
+
+# tf 2.7.4 걸린시간 :  424.810986995697
+# acc :  0.9204
