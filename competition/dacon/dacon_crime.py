@@ -25,6 +25,8 @@ test_csv = pd.read_csv(path + 'test.csv', index_col = 0)
 x = train_csv.drop(['TARGET'], axis = 1)
 y = train_csv['TARGET']
 
+
+
 # 범주형 변수 리스트
 qual_col = ['요일', '범죄발생지']
 
