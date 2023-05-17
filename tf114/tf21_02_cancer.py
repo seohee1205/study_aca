@@ -1,19 +1,19 @@
 import tensorflow as tf
 import numpy as np
 tf.compat.v1.set_random_seed(337)
-from sklearn.metrics import accuracy_score, r2_score
-from sklearn.datasets import load_diabetes
+from sklearn.metrics import accuracy_score
+from sklearn.datasets import load_breast_cancer
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
 
 # 1. 데이터
-x, y = load_diabetes(return_X_y=True)
+x, y = load_breast_cancer(return_X_y=True)
 
 y = y.reshape(-1, 1)        
-print(x.shape, y.shape)     # (442, 10) (442, 1)
+print(x.shape, y.shape)     # (569, 30) (569, 1)
 
-x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=123, train_size=0.8)
+x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=123, train_size=0.8, stratify=y)
 
 scaler = StandardScaler()
 x_train = scaler.fit_transform(x_train)
@@ -21,30 +21,30 @@ x_test = scaler.transform(x_test)
 
 
 # 2. 모델
-x = tf.compat.v1.placeholder(tf.float32, shape=[None, 10])
+x = tf.compat.v1.placeholder(tf.float32, shape=[None, 30])
 y = tf.compat.v1.placeholder(tf.float32, shape=[None, 1])
 
-w1 = tf.compat.v1.Variable(tf.random.normal([10, 15], dtype=tf.float32), name='weight1')
-b1 = tf.compat.v1.Variable(tf.zeros([15], dtype=tf.float32), name='bias1')
+w1 = tf.compat.v1.Variable(tf.random.normal([30, 5], dtype=tf.float32), name='weight1')
+b1 = tf.compat.v1.Variable(tf.zeros([5], dtype=tf.float32), name='bias1')
 layer1 = tf.compat.v1.matmul(x, w1) + b1
 
-w2 = tf.compat.v1.Variable(tf.random.normal([15, 7], dtype=tf.float32), name='weight2')
+w2 = tf.compat.v1.Variable(tf.random.normal([5, 7], dtype=tf.float32), name='weight2')
 b2 = tf.compat.v1.Variable(tf.zeros([7], dtype=tf.float32), name='bias2')
 layer2 = tf.compat.v1.matmul(layer1, w2) + b2
 
-w3 = tf.compat.v1.Variable(tf.random.normal([7, 10], dtype=tf.float32), name='weight3')
-b3 = tf.compat.v1.Variable(tf.zeros([10], dtype=tf.float32), name='bias3')
+w3 = tf.compat.v1.Variable(tf.random.normal([7, 12], dtype=tf.float32), name='weight3')
+b3 = tf.compat.v1.Variable(tf.zeros([12], dtype=tf.float32), name='bias3')
 layer3 = tf.compat.v1.matmul(layer2, w3) + b3
 
-w4 = tf.compat.v1.Variable(tf.random.normal([10, 13], dtype=tf.float32), name='weight4')
-b4 = tf.compat.v1.Variable(tf.zeros([13], dtype=tf.float32), name='bias4')
+w4 = tf.compat.v1.Variable(tf.random.normal([12, 4], dtype=tf.float32), name='weight4')
+b4 = tf.compat.v1.Variable(tf.zeros([4], dtype=tf.float32), name='bias4')
 layer4 = tf.nn.sigmoid(tf.matmul(layer3, w4) + b4)
 
-w5 = tf.compat.v1.Variable(tf.random.normal([13, 5], dtype=tf.float32), name='weight5')
-b5 = tf.compat.v1.Variable(tf.zeros([5], dtype=tf.float32), name='bias5')
+w5 = tf.compat.v1.Variable(tf.random.normal([4, 3], dtype=tf.float32), name='weight5')
+b5 = tf.compat.v1.Variable(tf.zeros([3], dtype=tf.float32), name='bias5')
 layer5 = tf.nn.sigmoid(tf.matmul(layer4, w5) + b5)
 
-w6 = tf.compat.v1.Variable(tf.random.normal([5, 1], dtype=tf.float32), name='weight6')
+w6 = tf.compat.v1.Variable(tf.random.normal([3, 1], dtype=tf.float32), name='weight6')
 b6 = tf.compat.v1.Variable(tf.zeros([1], dtype=tf.float32), name='bias6')
 hypothesis = tf.nn.sigmoid(tf.matmul(layer5, w6) + b6)
 
@@ -76,3 +76,4 @@ with tf.compat.v1.Session() as sess:
     print("Predictions:", y_pred_result)
     print("Accuracy:", accuracy_result)
     
+    # Accuracy: 0.6315789

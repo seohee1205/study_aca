@@ -12,8 +12,8 @@ tf.set_random_seed(4145)
 # 1 데이터
 random_state = 12351356
 
-ddarung_path = 'c:/_study/_data/_dacon_ddarung/'
-kaggle_bike_path = 'c:/_study/_data/_kaggle_bike/'
+ddarung_path = './_data/_dacon_ddarung/'
+kaggle_bike_path = './_data/_kaggle_bike/'
 
 ddarung = pd.read_csv(ddarung_path + 'train.csv', index_col = 0).dropna()
 kaggle_bike = pd.read_csv(kaggle_bike_path + 'train.csv', index_col = 0).dropna()
