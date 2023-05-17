@@ -17,7 +17,6 @@ from sklearn.metrics import accuracy_score
 
 # [실습] 맹그러
 
-
 # One-hot 인코딩
 encoder = OneHotEncoder(sparse=False)
 x_train = x_train.reshape(60000, -1)
@@ -31,7 +30,6 @@ y_test = encoder.transform(y_test.reshape(10000, -1))
 scaler = StandardScaler()
 x_train = scaler.fit_transform(x_train)
 x_test = scaler.transform(x_test)
-
 
 # 2. 모델
 x = tf.compat.v1.placeholder(tf.float32, shape=[None, 784])
@@ -84,5 +82,5 @@ with tf.compat.v1.Session() as sess:
 
     accuracy = accuracy_score(y_test_label, y_pred_label)
     print("Accuracy:", accuracy)
-    
-    
+       
+# Accuracy: 0.639
