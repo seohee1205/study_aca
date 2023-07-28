@@ -1,0 +1,114 @@
+====================GPU 가상환경 설치===============================
+1. 그래픽카드 드라이버 : 최신 버전
+2. Cuda : 11.4.4
+3. CuDNN : v8.2.4 for CODA 11.4
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.4 복붙
+4. 아나콘다 : 최신 버전(관리자 모드로 just me)
+5. vscode : 최신 버전
+6. tensorflow-gpu==2.7.4(cmd 관리자 모드)
+   가상환경에 설치
+conda env list
+activate base
+deactivate
+conda create -n tf274gpu python=3.9.12 anaconda
+activate tf274gpu
+pip list
+pip install tensorflow-gpu==2.7.4
+scikit-learn
+conda env remove -n 가상환경 이름(삭제)
+
+========================CPU 가상환경 설치===========================
+conda create -n tf273cpu python=3.9.13 anaconda
+activate tf273cpu
+pip install tensorflow-cpu==2.7.3
+====== 설치 확인 =======
+
+import tensorflow as tf
+>>> tf.__version__
+
+===============텐서1 가상환경 설치=================
+                    ==cpu==
+conda create -n tf114cpu python=3.6.13 anaconda
+conda env list(설치 확인)
+pip install tensorflow==1.14(텐서 설치)
+python
+import tensorflow as tf
+tf.__version__(버전 확인)
+conda create -n tf114cpu python==3.7.13 anaconda
+pip uninstall protobuf
+pip install protobuf==3.19.6
+pip uninstall numpy
+pip uninstall daal4py
+pip uninstall xarray
+pip uninstall statsmodels
+pip uninstall scikit-image
+pip uninstall pywavelets
+pip uninstall pyerfa
+pip uninstall pandas
+pip uninstall numba
+pip uninstall matplotlib
+pip uninstall gensim
+pip uninstall astropy
+pip install numpy==1.16.6
+pip uninstall h5py
+pip install h5py==1.10.6
+
+
+conda remove --name tf114gpu --all(가상 환경 전체 삭제) 사용자에서 파일도 삭제 해야함
+==================================================
+d:
+md temp
+cd temp
+dir /w
+pip download tensorflow-cpu==2.7.2
+conda create -n tf272cpu python=3.9.15
+pip uninstall protobuf
+pip download protobuf==3.20.0
+pip install protobuf-3.20.0-cp39-cp39-win_amd64.whl
+pip install tensorflow_cpu-2.7.2-cp39-cp39-win_amd64.whl
+tf.__version__
+
+============================================
+ipconfig : ip주소,서브넷,게이트웨이 = 192.168.0.83, 255.255.255.0, 192.168.0.1
+ipconfig/all : DNS 서버 = 203.248.252.2, 164.124.101.2
+ip 주소:포트번호
+
+cls : 클리어
+=====================원격 접속 방법=====================
+0. IP세팅
+범주 : 자세히
+1. 제어판 - 시스템 - 원격데스크톱 : 끔 -> 켬
+
+2. 제어판 - windows defender 방화면 - windows Defender방화벽을 통해 앱 또는 기능 허용 - 허용되는 앱 - 원격데스크톱에서 개인, 공용 2개 체크
+
+3. 제어판 - 시스템 - 고급시스템설정 - 원격 - 이 컴퓨터에 대한 원격 연결 허용 체크 - 밑에 체크 된거 체크해제
+
+4. 네트워크 및 공유센터 - 고급공유설정
+네트워크 검색 : 네트워크 검색 켜기, 네트워크 연결장치의 자동설정을 켭니다. 체크
+파일 및 프린터 공유 끄기 -> 켜기 - 이거해야 핑 나간다.
+
+내부망 : 원격 데스크톱 연결 IP주소 -> 컴퓨터 이름, 비밀번호 입력
+외무방 : 106.241.252.52:33182 = aiacademy.iptime.org:33182 두개중에 아무거나 해도된다.
+
+컨트롤 + 알트 + 딜리트 눌러서 암호변경
+윈도우 + L 누르면 화면 잠긴다.
+
+외부 IP 106.241.252.52:포트번호
+도메인 : aiacademy.iptime.org:포트번호
+
+cmd 확인 pint -t (ip 주소)
+
+1.244.154.190:001031
+  TCP    127.0.0.1:61821        조현규:61822              ESTABLISHED
+  TCP    127.0.0.1:61822        조현규:61821              ESTABLISHED
+  TCP    127.0.0.1:61823        조현규:61824              ESTABLISHED
+  TCP    127.0.0.1:61824        조현규:61823              ESTABLISHED
+  TCP    127.0.0.1:64581        조현규:65001              ESTABLISHED
+  TCP    127.0.0.1:64650        조현규:64665              ESTABLISHED
+  TCP    127.0.0.1:64665        조현규:64650              ESTABLISHED
+  TCP    127.0.0.1:65001        조현규:64581
+  11
+
+=================깃허브===============
+git pull --rebase origin main
+git push origin +main

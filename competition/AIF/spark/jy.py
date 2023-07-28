@@ -315,7 +315,7 @@ imputer = IterativeImputer(estimator=XGBRegressor(
         tree_method='gpu_hist',
         predictor='gpu_predictor',
         gpu_id=0,
-    )) # knn알고리즘으로 평균값을 찾아낸 것이다. 
+    )) # 알고리즘으로 평균값을 찾아낸 것이다. 
 # train_dataset = train_dataset.interpolate(order=2)
 # train_aws_dataset = train_aws_dataset.interpolate(order=2)
 # test_aws_dataset = test_aws_dataset.interpolate(order=2)
