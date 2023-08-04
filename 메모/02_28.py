@@ -22,3 +22,5 @@ print(x7.shape) #
 print(x8.shape) # 
 print(x9.shape) # 
 print(x10.shape) # 
+
+#
