@@ -61,3 +61,5 @@ tf.__version__
 pip download 통해서 로컬로 설치파일을 미리 받아놔야함
 pip install (텐서플로 설치 디렉토리)
 whl 파일에 모아뒀다가 한번에 보내기
+
+#
