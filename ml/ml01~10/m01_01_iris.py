@@ -15,7 +15,7 @@ warnings.filterwarnings(action = 'ignore')
 index1 = [load_iris, load_breast_cancer, load_digits, fetch_covtype, load_wine]
 index2 = [LinearSVC(), LogisticRegression(), DecisionTreeClassifier(), RandomForestClassifier()]
 
-scaler = MinMaxScaler()
+scaler = MinMaxScaler() #
 
 for i in index1:
     x, y = i(return_X_y=True)
