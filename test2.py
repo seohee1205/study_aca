@@ -27,4 +27,4 @@ plt.show()
 image_10x10.shape
 image_10x10.flatten().shape
 
-#
+##
