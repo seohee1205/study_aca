@@ -7,22 +7,29 @@ train_datagen = ImageDataGenerator(rescale = 1./255)
 test_datagen = ImageDataGenerator(rescale = 1./255)
 
 xy_train = train_datagen.flow_from_directory(
-# 경로,
+'C:/study_aca/brain/train/',
 target_size= (100, 100),
-batch_size = 160,
+batch_size = 16,
 class_mode= 'binary',
 color_mode= 'grayscale',
 shuffle=True
-)
+)   # Found 133 images belonging to 2 classes.
+
 
 xy_test = test_datagen.flow_from_directory(
-# 경로,
+'C:/study_aca/brain/test/',
 target_size= (100, 100),
-batch_size = 160,
+batch_size = 16,
 class_mode= 'binary',
 color_mode= 'grayscale',
 shuffle=True
-)
+)   # Found 133 images belonging to 2 classes.
+
+# print(len(xy_train))    # 
+# print(len(xy_train[0])) 
+
+# print(len(xy_test))     # 
+
 
 #2. 모델구성
 from tensorflow.keras.models import Sequential
@@ -35,7 +42,7 @@ model.add(Dense(16))
 model.add(Dense(1, activation = 'sigmoid'))
 
 #3. 컴파일, 훈련
-model.compile(loss = 'binary_crossentropy', optimizer = 'adam')
+model.compile(loss = 'binary_crossentropy', optimizer = 'adam', metrics=['accuracy'])
 
 model.fit(xy_train, epochs = 1, batch_size = 16)
 

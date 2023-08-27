@@ -4,6 +4,18 @@
 # pip install opencv-contrib-python
 
 
+# 이미지 파일 경로
+image_path = 'path/to/your/image.jpg'
+# 이미지 로딩
+image = cv2.imread(image_path)
+# 이미지 크기 확인
+image_height, image_width, _ = image.shape
+
+print("Image height:", image_height)
+print("Image width:", image_width)
+# image_cropped = image[:900,:100]  # 높이, 너비?
+
+
 # 이미지 로드
 import cv2
 print(cv2.__version__) #OpenCV 버전 확인
@@ -61,6 +73,20 @@ image_cropped = image[:,:128] # 열의 처음 절반과 모든 행을 선택
 
 plt.imshow(image_cropped, cmap="gray"), plt.axis("off") # 이미지를 출력
 plt.show()
+
+# 일반적으로 이미지 배열의 형태는 (높이, 너비, 채널)로 구성됩니다. 여기서:
+
+# 높이(height): 이미지의 세로 방향 픽셀 수
+# 너비(width): 이미지의 가로 방향 픽셀 수
+# 채널(channel): 이미지의 색상 채널 수 (1: 흑백, 3: 컬러 RGB)
+# 따라서 image[a:b, c:d]에서:
+
+# a와 b는 이미지의 세로 방향 (높이)에서의 슬라이싱 범위를 나타냅니다.
+# c와 d는 이미지의 가로 방향 (너비)에서의 슬라이싱 범위를 나타냅니다.
+# 예를 들어, image_cropped = image[50:150, 20:100]은 높이 50부터 150까지, 너비 20부터 100까지의 영역을 이미지에서 잘라내어 image_cropped 배열로 만드는 것입니다. 이때 잘라내는 영역의 크기는 (100, 80, 채널)이 됩니다.
+
+# 즉, 세로 방향의 인덱스 범위가 먼저 지정되고, 그 다음 가로 방향의 인덱스 범위가 지정됩니다.
+
 
 
 # 이미지 투명도 처리
@@ -192,6 +218,10 @@ image_bgr = cv2.imread('./data/images/plane_256x256.jpg') # 이미지 로드
 image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB) # RGB로 변환
 
 rectangle = (0, 56, 256, 150) # 사각형 좌표: 시작점의 x, 시작점의 y, 너비, 높이
+# 첫 번째 값: 왼쪽 모서리의 x 좌표
+# 두 번째 값: 왼쪽 모서리의 y 좌표
+# 세 번째 값: 오른쪽 모서리의 x 좌표
+# 네 번째 값: 오른쪽 모서리의 y 좌표
 
 mask = np.zeros(image_rgb.shape[:2], np.uint8) # 초기 마스크를 만듭니다.
 
