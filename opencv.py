@@ -51,7 +51,7 @@ image = cv2.imread("./data/images/plane.jpg", cv2.IMREAD_GRAYSCALE) # 흑백 이
 cv2.imwrite("./data/images/plane_new.jpg", image) # 이미지를 저장
 
 
-# 이미지 크기 변경
+# 이미지 크기 변경 (해상도 변경 값이 클수록 고해상도)
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
