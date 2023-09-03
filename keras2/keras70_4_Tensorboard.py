@@ -87,7 +87,7 @@ print(f'acc : {acc}')
 print("걸린 시간: {}분 {}초".format(int(minutes), int(seconds)))
 
 # model.save('./_save/keras70_1_mnist_grape.h5')
-# history 객체 저장
+# history 객체 저장 
 # import pickle
 
 # with open('./_save/pickle_test/keras70_1_mnist_grape.pkl', 'wb') as f:
