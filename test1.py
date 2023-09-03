@@ -44,10 +44,13 @@ model.add(Dense(1, activation = 'sigmoid'))
 #3. 컴파일, 훈련
 model.compile(loss = 'binary_crossentropy', optimizer = 'adam', metrics=['accuracy'])
 
-model.fit(xy_train, epochs = 1, batch_size = 16)
+# model.fit(xy_train, epochs = 1, batch_size = 16)
+
 
 #4. 평가 및 예측
 results = model.evaluate(xy_test)
 
 print('loss : ' , results[0])
 print('acc : ' , results[1])
+
+
